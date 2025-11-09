@@ -1,0 +1,11 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <sys:String x:Key="STranslate_Plugin_Translate_BingDict">介紹</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_BingDict_Content">本插件可免費使用 Bing 詞典查詞服務</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_BingDict_SentenceExample">例句</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_BingDict_SentenceExample_Description">是否嘗試取得單詞例句</sys:String>
+
+</ResourceDictionary>

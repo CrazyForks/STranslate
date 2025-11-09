@@ -13,7 +13,7 @@
         <DebugSymbols>true</DebugSymbols>
         <DebugType>portable</DebugType>
         <Optimize>false</Optimize>
-        <OutputPath>..\..\.artifacts\Debug\Plugins\STranslate.Plugin.Translate.BingDict\</OutputPath>
+        <OutputPath>..\..\.artifacts\Debug\Plugins\STranslate.Plugin.Translate.BingDictBuiltIn\</OutputPath>
         <DefineConstants>DEBUG;TRACE</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
@@ -23,7 +23,7 @@
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <DebugType>none</DebugType>
         <Optimize>true</Optimize>
-        <OutputPath>..\..\.artifacts\Release\Plugins\STranslate.Plugin.Translate.BingDict\</OutputPath>
+        <OutputPath>..\..\.artifacts\Release\Plugins\STranslate.Plugin.Translate.BingDictBuiltIn\</OutputPath>
         <DefineConstants>TRACE</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>

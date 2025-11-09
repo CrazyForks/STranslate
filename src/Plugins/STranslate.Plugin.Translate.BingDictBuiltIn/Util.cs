@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace STranslate.Plugin.Translate.BingDict;
+namespace STranslate.Plugin.Translate.BingDictBuiltIn;
 
 public partial class Util
 {

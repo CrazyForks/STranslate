@@ -1,10 +1,10 @@
 {
   "PluginID": "4ed3beaab50842e6851a2e4bdbbeccae",
-  "Name": "Bing Dictionary",
-  "Description": "Bing dictionary plugin for stranslate",
+  "Name": "Bing Dict (Built-in)",
+  "Description": "Free Bing dictionary plugin for stranslate",
   "Author": "zggsong",
   "Version": "1.0.0",
   "Website": "https://github.com/ZGGSONG/STranslate",
-  "ExecuteFileName": "STranslate.Plugin.Translate.BingDict.dll",
+  "ExecuteFileName": "STranslate.Plugin.Translate.BingDictBuiltIn.dll",
   "IconPath": "icon.png"
 }

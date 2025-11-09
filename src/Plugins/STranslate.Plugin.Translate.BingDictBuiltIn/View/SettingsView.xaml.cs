@@ -1,4 +1,4 @@
-namespace STranslate.Plugin.Translate.BingDict.View;
+namespace STranslate.Plugin.Translate.BingDictBuiltIn.View;
 
 public partial class SettingsView
 {

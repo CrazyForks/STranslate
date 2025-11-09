@@ -1,11 +1,11 @@
-using STranslate.Plugin.Translate.BingDict.View;
-using STranslate.Plugin.Translate.BingDict.ViewModel;
+using STranslate.Plugin.Translate.BingDictBuiltIn.View;
+using STranslate.Plugin.Translate.BingDictBuiltIn.ViewModel;
 using System.Collections.ObjectModel;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
 
-namespace STranslate.Plugin.Translate.BingDict;
+namespace STranslate.Plugin.Translate.BingDictBuiltIn;
 
 public class Main : DictionaryPluginBase
 {
@@ -18,7 +18,7 @@ public class Main : DictionaryPluginBase
 
     public override Control GetSettingUI()
     {
-        _viewModel ??= new SettingsViewModel();
+        _viewModel ??= new SettingsViewModel(Context, Settings);
         _settingUi ??= new SettingsView { DataContext = _viewModel };
         return _settingUi;
     }
@@ -112,7 +112,7 @@ public class Main : DictionaryPluginBase
             }
 
             // 提取例句
-            if (posDesc == "例句")
+            if (Settings.EnableSentenceExample && posDesc == "例句")
             {
                 ProcessSentences(group, result);
                 continue;
