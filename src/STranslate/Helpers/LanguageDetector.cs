@@ -16,13 +16,14 @@ public class LanguageDetector
     private static readonly Internationalization _i18n = Ioc.Default.GetRequiredService<Internationalization>();
     private static readonly Settings _settings = Ioc.Default.GetRequiredService<Settings>();
 
-    public static async Task<(LangEnum source, LangEnum target)> GetLanguageAsync(
+    public static async Task<(bool isSuccess, LangEnum source, LangEnum target)> GetLanguageAsync(
         string content,
         CancellationToken cancellationToken = default,
         Action? onStarted = default,
         Action<bool, LangEnum>? onCompleted = default,
         Action? onFinished = default)
     {
+        bool isSuccess = true;
         var source = _settings.SourceLang;
         if (_settings.SourceLang == LangEnum.Auto)
         {
@@ -30,7 +31,7 @@ public class LanguageDetector
             try
             {
                 var detected = await DetectAsync(content, _settings.LanguageDetector, token: cancellationToken).ConfigureAwait(false);
-                var isSuccess = detected != LangEnum.Auto;
+                isSuccess = detected != LangEnum.Auto;
                 source = isSuccess ? detected : _settings.SourceLangIfAuto;
 
                 onCompleted?.Invoke(isSuccess, source);
@@ -40,7 +41,7 @@ public class LanguageDetector
                 onFinished?.Invoke();
             }
         }
-        return (source, GetTargetLanguage(source));
+        return (isSuccess, source, GetTargetLanguage(source));
     }
 
     private static LangEnum GetTargetLanguage(LangEnum source)

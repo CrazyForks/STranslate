@@ -141,7 +141,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         if (!string.IsNullOrEmpty(force))
             IdentifiedLanguage = string.Empty;
 
-        var (source, target) = await LanguageDetector.GetLanguageAsync(InputText, cancellationToken, StartProcess, CompleteProcess, FinishProcess);
+        var (_, source, target) = await LanguageDetector.GetLanguageAsync(InputText, cancellationToken, StartProcess, CompleteProcess, FinishProcess);
 
         var maxConcurrency = Math.Min(enabledPlugins.Count, Environment.ProcessorCount * 10);
         using var semaphore = new SemaphoreSlim(maxConcurrency, maxConcurrency);
@@ -172,7 +172,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         if (service.Plugin is not ITranslatePlugin plugin || plugin.TransResult.IsProcessing)
             return;
 
-        var (source, target) = await LanguageDetector
+        var (_, source, target) = await LanguageDetector
             .GetLanguageAsync(InputText, cancellationToken, StartProcess, CompleteProcess, FinishProcess)
             .ConfigureAwait(false);
 
@@ -190,7 +190,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         if (service.Plugin is not ITranslatePlugin plugin || plugin.TransBackResult.IsProcessing)
             return;
 
-        var (source, target) = await LanguageDetector
+        var (_, source, target) = await LanguageDetector
             .GetLanguageAsync(InputText, cancellationToken, StartProcess, CompleteProcess, FinishProcess)
             .ConfigureAwait(false);
         await ExecuteBackAsync(plugin, target, source, cancellationToken).ConfigureAwait(false);
@@ -487,7 +487,12 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
             var (success, text) = await GetTextAsync();
             if (!success || string.IsNullOrWhiteSpace(text)) return;
 
-            var (source, target) = await LanguageDetector.GetLanguageAsync(InputText, cancellationToken).ConfigureAwait(false);
+            var (isSuccess, source, target) = await LanguageDetector.GetLanguageAsync(InputText, cancellationToken).ConfigureAwait(false);
+            if (!isSuccess)
+            {
+                _logger.LogWarning($"Language detection failed for text: {text}");
+                _notification.Show("提示", "语言检测失败");
+            }
             var result = new TranslateResult();
             await transPlugin.TranslateAsync(new TranslateRequest(text, source, target), result, cancellationToken).ConfigureAwait(false);
 

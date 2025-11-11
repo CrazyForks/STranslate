@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using STranslate.Controls;
 using STranslate.Core;
@@ -28,6 +29,7 @@ public partial class ImageTranslateWindowViewModel : ObservableObject, IDisposab
     #region Constructor & DI
 
     public ImageTranslateWindowViewModel(
+        ILogger<ImageTranslateWindowViewModel> logger,
         Settings settings,
         DataProvider dataProvider,
         MainWindowViewModel mainWindowViewModel,
@@ -35,8 +37,10 @@ public partial class ImageTranslateWindowViewModel : ObservableObject, IDisposab
         TranslateInstance translateInstance,
         TtsInstance ttsInstance,
         Internationalization i18n,
-        ISnackbar snackbar)
+        ISnackbar snackbar,
+        INotification notification)
     {
+        _logger = logger;
         Settings = settings;
         DataProvider = dataProvider;
         _mainWindowViewModel = mainWindowViewModel;
@@ -45,6 +49,7 @@ public partial class ImageTranslateWindowViewModel : ObservableObject, IDisposab
         _ttsInstance = ttsInstance;
         _i18n = i18n;
         _snackbar = snackbar;
+        _notification = notification;
 
         OcrEngines = _ocrInstance.Services;
         SelectedOcrEngine = _ocrInstance.Services.FirstOrDefault(x => x.IsEnabled);
@@ -66,6 +71,8 @@ public partial class ImageTranslateWindowViewModel : ObservableObject, IDisposab
         Settings.PropertyChanged += OnSettingsPropertyChanged;
     }
 
+    private readonly ILogger<ImageTranslateWindowViewModel> _logger;
+
     #endregion
 
     #region Properties
@@ -79,7 +86,7 @@ public partial class ImageTranslateWindowViewModel : ObservableObject, IDisposab
     private readonly TtsInstance _ttsInstance;
     private readonly Internationalization _i18n;
     private readonly ISnackbar _snackbar;
-
+    private readonly INotification _notification;
     private const double WidthMultiplier = 2;
     private const double WidthAdjustment = 12;
 
@@ -182,7 +189,12 @@ public partial class ImageTranslateWindowViewModel : ObservableObject, IDisposab
 
             await Parallel.ForEachAsync(_lastOcrResult.OcrContents, cancellationToken, async (content, cancellationToken) =>
             {
-                var (source, target) = await LanguageDetector.GetLanguageAsync(content.Text, cancellationToken).ConfigureAwait(false);
+                var (isSuccess, source, target) = await LanguageDetector.GetLanguageAsync(content.Text, cancellationToken).ConfigureAwait(false);
+                if (!isSuccess)
+                {
+                    _logger.LogWarning($"Language detection failed for text: {content.Text}");
+                    _notification.Show("提示", "语言检测失败");
+                }
                 var result = new TranslateResult();
                 await tranSvc.TranslateAsync(new TranslateRequest(content.Text, source, target), result, cancellationToken);
                 content.Text = result.IsSuccess ? result.Text : content.Text;
