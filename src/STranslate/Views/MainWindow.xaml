@@ -29,6 +29,7 @@
     ui:TitleBar.MinimizeButtonAvailability="Collapsed"
     ui:WindowHelper.SystemBackdropType="Mica"
     ui:WindowHelper.UseModernWindowStyle="True"
+    FontFamily="{DynamicResource AppFont}"
     Icon="/Resources/app.ico"
     Left="{Binding Settings.MainWindowLeft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
     Loaded="OnLoaded"

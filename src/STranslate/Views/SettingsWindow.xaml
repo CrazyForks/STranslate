@@ -26,6 +26,7 @@
     ui:TitleBar.Height="48"
     ui:WindowHelper.SystemBackdropType="Mica"
     ui:WindowHelper.UseModernWindowStyle="True"
+    FontFamily="{DynamicResource AppFont}"
     Icon="/Resources/app.ico"
     KeyDown="OnKeyDown"
     WindowStartupLocation="CenterScreen"

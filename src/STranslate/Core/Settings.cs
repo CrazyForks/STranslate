@@ -18,6 +18,8 @@ public partial class Settings : ObservableObject
     [ObservableProperty] public partial bool AutoStartup { get; set; } = false;
     [ObservableProperty] public partial StartMode StartMode { get; set; } = StartMode.Normal;
 
+    [ObservableProperty] public partial string AppFont { get; set; } = Win32Helper.GetSystemDefaultFont(false);
+
     [ObservableProperty] public partial string Language { get; set; } = Constant.SystemLanguageCode;
 
     [ObservableProperty] public partial bool HideOnStartup { get; set; } = false;
@@ -283,6 +285,7 @@ public partial class Settings : ObservableObject
 
     public void LazyInitialize()
     {
+        ApplyAppFont();
         ApplyLanguage(true);
         ApplyTheme();
         ApplyDeactived();
@@ -332,6 +335,9 @@ public partial class Settings : ObservableObject
         else
             i18n.ChangeLanguage(Language);
     }
+
+    private void ApplyAppFont() =>
+        App.Current.Resources["AppFont"] = new System.Windows.Media.FontFamily(AppFont);
 
     private void ApplyTheme()
     {
@@ -383,6 +389,9 @@ public partial class Settings : ObservableObject
                 break;
             case nameof(Language):
                 ApplyLanguage();
+                break;
+            case nameof(AppFont):
+                ApplyAppFont();
                 break;
             case nameof(ColorScheme):
                 ApplyTheme();

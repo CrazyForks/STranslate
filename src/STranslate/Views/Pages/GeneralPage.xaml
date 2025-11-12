@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cnvt="clr-namespace:STranslate.Converters"
+    xmlns:componentmodel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     xmlns:control="clr-namespace:STranslate.Controls"
     xmlns:core="clr-namespace:STranslate.Core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -17,6 +18,15 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+    <ui:Page.Resources>
+        <ResourceDictionary>
+            <CollectionViewSource x:Key="SortedFonts" Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}">
+                <CollectionViewSource.SortDescriptions>
+                    <componentmodel:SortDescription PropertyName="Source" />
+                </CollectionViewSource.SortDescriptions>
+            </CollectionViewSource>
+        </ResourceDictionary>
+    </ui:Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -374,16 +384,34 @@
                         OnContent="{DynamicResource Show}" />
                 </ui:SettingsCard>
 
-                <ui:SettingsCard Header="{DynamicResource General_Language}">
-                    <ui:SettingsCard.HeaderIcon>
-                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.LocalLanguage_20_Regular}" />
-                    </ui:SettingsCard.HeaderIcon>
-                    <ComboBox
-                        DisplayMemberPath="Display"
-                        ItemsSource="{Binding Languages}"
-                        SelectedValue="{Binding Settings.Language}"
-                        SelectedValuePath="LanguageCode" />
-                </ui:SettingsCard>
+                <control:CardGroup>
+
+                    <ui:SettingsCard Header="{DynamicResource General_Language}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.LocalLanguage_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ComboBox
+                            DisplayMemberPath="Display"
+                            ItemsSource="{Binding Languages}"
+                            SelectedValue="{Binding Settings.Language}"
+                            SelectedValuePath="LanguageCode" />
+                    </ui:SettingsCard>
+
+                    <ui:SettingsCard Header="字体">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.TextFont_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="12">
+                            <Button Command="{Binding ResetFontCommand}" Content="重置" />
+                            <ComboBox
+                                DisplayMemberPath="Source"
+                                ItemsSource="{Binding Source={StaticResource SortedFonts}}"
+                                SelectedValue="{Binding Settings.AppFont, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                SelectedValuePath="Source" />
+                        </ikw:SimpleStackPanel>
+                    </ui:SettingsCard>
+
+                </control:CardGroup>
 
                 <!--#endregion-->
             </ikw:SimpleStackPanel>

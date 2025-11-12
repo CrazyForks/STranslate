@@ -236,6 +236,8 @@
     <sys:String x:Key="AutoTransBack">自动回译</sys:String>
     <sys:String x:Key="ConfigureService">配置服务</sys:String>
     <sys:String x:Key="CloseService">关闭服务</sys:String>
+    <sys:String x:Key="Paraphrase">释义</sys:String>
+    <sys:String x:Key="Expand">扩展</sys:String>
 
     <!--  // Prompt //  -->
     <sys:String x:Key="NewPrompt">新提示词</sys:String>

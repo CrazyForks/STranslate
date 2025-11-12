@@ -6,6 +6,12 @@
     xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
     xmlns:xf="clr-namespace:XamlFlair;assembly=XamlFlair.WPF">
 
+    <!--#region FontFamily-->
+
+    <FontFamily x:Key="AppFont">Microsoft YaHei UI</FontFamily>
+
+    <!--#endregion-->
+
     <!--#region Expander-->
 
     <Style x:Key="AnimatedExpanderCardStyle" TargetType="Expander">
@@ -197,9 +203,13 @@
 
     <!--#endregion-->
 
+    <!--#region Image-->
+
     <Style TargetType="Image">
         <Setter Property="UseLayoutRounding" Value="True" />
         <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
     </Style>
+
+    <!--#endregion-->
 
 </ResourceDictionary>

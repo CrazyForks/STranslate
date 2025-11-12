@@ -1,10 +1,11 @@
+using CommunityToolkit.Mvvm.Input;
 using STranslate.Core;
 using STranslate.Helpers;
 using STranslate.Plugin;
 
 namespace STranslate.ViewModels.Pages;
 
-public class GeneralViewModel : SearchViewModelBase
+public partial class GeneralViewModel : SearchViewModelBase
 {
     public GeneralViewModel(
         Settings settings,
@@ -15,6 +16,10 @@ public class GeneralViewModel : SearchViewModelBase
         DataProvider = dataProvider;
         Languages = i18n.LoadAvailableLanguages();
     }
+
+    [RelayCommand]
+    private void ResetFont() => Settings.AppFont = Win32Helper.GetSystemDefaultFont(false);
+
     public List<int> ScreenNumbers
     {
         get

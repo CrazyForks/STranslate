@@ -1,7 +1,9 @@
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Markup;
 using System.Windows.Media;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -233,4 +235,84 @@ public static class Win32Helper
             Environment.OSVersion.Version.Build >= 19041;
 
     #endregion
+
+    #region System Font
+
+    private static readonly Dictionary<string, string> _languageToNotoSans = new()
+    {
+        { "ko", "Noto Sans KR" },
+        { "ja", "Noto Sans JP" },
+        { "zh-CN", "Noto Sans SC" },
+        { "zh-SG", "Noto Sans SC" },
+        { "zh-Hans", "Noto Sans SC" },
+        { "zh-TW", "Noto Sans TC" },
+        { "zh-HK", "Noto Sans TC" },
+        { "zh-MO", "Noto Sans TC" },
+        { "zh-Hant", "Noto Sans TC" },
+        { "th", "Noto Sans Thai" },
+        { "ar", "Noto Sans Arabic" },
+        { "he", "Noto Sans Hebrew" },
+        { "hi", "Noto Sans Devanagari" },
+        { "bn", "Noto Sans Bengali" },
+        { "ta", "Noto Sans Tamil" },
+        { "el", "Noto Sans Greek" },
+        { "ru", "Noto Sans" },
+        { "en", "Noto Sans" },
+        { "fr", "Noto Sans" },
+        { "de", "Noto Sans" },
+        { "es", "Noto Sans" },
+        { "pt", "Noto Sans" }
+    };
+
+    /// <summary>
+    /// Gets the system default font.
+    /// </summary>
+    /// <param name="useNoto">
+    /// If true, it will try to find the Noto font for the current culture.
+    /// </param>
+    /// <returns>
+    /// The name of the system default font.
+    /// </returns>
+    public static string GetSystemDefaultFont(bool useNoto = true)
+    {
+        try
+        {
+            if (useNoto)
+            {
+                var culture = CultureInfo.CurrentCulture;
+                var language = culture.Name; // e.g., "zh-TW"
+                var langPrefix = language.Split('-')[0]; // e.g., "zh"
+
+                // First, try to find by full name, and if not found, fallback to prefix
+                if (TryGetNotoFont(language, out var notoFont) || TryGetNotoFont(langPrefix, out notoFont))
+                {
+                    // If the font is installed, return it
+                    if (Fonts.SystemFontFamilies.Any(f => f.Source.Equals(notoFont)))
+                    {
+                        return notoFont;
+                    }
+                }
+            }
+
+            // If Noto font is not found, fallback to the system default font
+            var font = SystemFonts.MessageFontFamily;
+            if (font.FamilyNames.TryGetValue(XmlLanguage.GetLanguage("en-US"), out var englishName))
+            {
+                return englishName;
+            }
+
+            return font.Source ?? "Segoe UI";
+        }
+        catch
+        {
+            return "Segoe UI";
+        }
+    }
+
+    private static bool TryGetNotoFont(string langKey, out string notoFont)
+    {
+        return _languageToNotoSans.TryGetValue(langKey, out notoFont!);
+    }
+
+#endregion
 }

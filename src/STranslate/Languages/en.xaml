@@ -236,6 +236,8 @@
     <sys:String x:Key="AutoTransBack">Auto Trans Back</sys:String>
     <sys:String x:Key="ConfigureService">Configure Service</sys:String>
     <sys:String x:Key="CloseService">Close Service</sys:String>
+    <sys:String x:Key="Paraphrase">Definition</sys:String>
+    <sys:String x:Key="Expand">Expand</sys:String>
 
     <!--  // Prompt //  -->
     <sys:String x:Key="NewPrompt">New Prompt</sys:String>
