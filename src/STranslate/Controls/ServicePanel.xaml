@@ -177,7 +177,6 @@
                     </MultiBinding>
                 </DataTrigger.Binding>
                 <DataTrigger.Setters>
-                    <Setter TargetName="SvcCard" Property="BorderThickness" Value="2" />
                     <Setter TargetName="SvcCard" Property="BorderBrush" Value="{DynamicResource {x:Static ui:ThemeKeys.SystemFillColorCautionBrushKey}}" />
                 </DataTrigger.Setters>
             </DataTrigger>
@@ -189,7 +188,6 @@
                     </MultiBinding>
                 </DataTrigger.Binding>
                 <DataTrigger.Setters>
-                    <Setter TargetName="SvcCard" Property="BorderThickness" Value="2" />
                     <Setter TargetName="SvcCard" Property="BorderBrush" Value="{DynamicResource {x:Static ui:ThemeKeys.SystemFillColorSuccessBrushKey}}" />
                 </DataTrigger.Setters>
             </DataTrigger>
@@ -238,6 +236,9 @@
                                 Color="{DynamicResource {x:Static ui:ThemeKeys.SystemFillColorSuccessKey}}" />
                         </Setter.Value>
                     </Setter>
+                    <Setter TargetName="SvcCard" Property="TextOptions.TextFormattingMode" Value="Display" />
+                    <Setter TargetName="SvcCard" Property="TextOptions.TextRenderingMode" Value="ClearType" />
+                    <Setter TargetName="SvcCard" Property="RenderOptions.ClearTypeHint" Value="Enabled" />
                 </MultiDataTrigger.Setters>
             </MultiDataTrigger>
         </DataTemplate.Triggers>

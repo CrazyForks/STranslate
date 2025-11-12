@@ -53,12 +53,14 @@
                         <!--  TemplateBinding 是 OneWay 绑定的简化写法，只能从控件属性传递到模板元素，不能反向传递  -->
                         <TextBlock
                             x:Name="PART_TextBlock"
+                            SnapsToDevicePixels="True"
                             Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                             Visibility="{Binding IsEditing, RelativeSource={RelativeSource TemplatedParent}, Converter={cnvt:EqualToVisibilityConverter}, ConverterParameter=False}" />
 
                         <TextBox
                             x:Name="PART_TextBox"
                             HorizontalAlignment="Stretch"
+                            SnapsToDevicePixels="True"
                             Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                             Visibility="{Binding IsEditing, RelativeSource={RelativeSource TemplatedParent}, Converter={cnvt:EqualToVisibilityConverter}, ConverterParameter=True}" />
                     </Grid>
