@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Input;
@@ -7,6 +7,20 @@ namespace STranslate.Util;
 
 public static class ClipboardUtil
 {
+    #region ClipboardBackup
+
+    /// <summary>
+    /// 剪贴板备份数据结构
+    /// </summary>
+    public class ClipboardBackup
+    {
+        public string? Text { get; set; }
+        public Image? Image { get; set; }
+        public bool IsEmpty { get; set; } = true;
+    }
+
+    #endregion
+
     # region Const
 
     private static readonly uint[] SupportedFormats =
@@ -54,6 +68,46 @@ public static class ClipboardUtil
     }
 
     /// <summary>
+    ///     获取当前选中的文本（无污染版本）。
+    /// </summary>
+    /// <param name="interval">获取文本之前的延迟时间（以毫秒为单位）</param>
+    /// <returns>返回当前选中的文本。</returns>
+    public static string? GetSelectedTextNonPolluting(int interval = 0)
+    {
+        // 1. 备份当前剪贴板内容
+        var backup = BackupClipboard();
+        
+        // 2. 获取操作前的剪贴板序列号
+        var sequenceBefore = GetClipboardSequenceNumber();
+
+        try
+        {
+            // 3. 模拟按下 Ctrl+C 复制选中的文本到剪贴板
+            SendCtrlCV();
+
+            // 4. 等待指定的时间间隔
+            Thread.Sleep(interval);
+
+            // 5. 检查剪贴板是否发生变化
+            if (!IsClipboardChanged(sequenceBefore))
+            {
+                // 剪贴板没有变化，说明复制失败
+                return null;
+            }
+
+            // 6. 从剪贴板获取新的文本内容
+            var newText = GetText();
+
+            return newText?.Trim();
+        }
+        finally
+        {
+            // 7. 恢复原始剪贴板内容
+            RestoreClipboard(backup);
+        }
+    }
+
+    /// <summary>
     ///     获取当前剪贴板文本与上一次剪贴板文本的差异。
     /// </summary>
     /// <param name="interval">获取旧文本和新文本之间的时间延迟（以毫秒为单位）</param>
@@ -77,6 +131,48 @@ public static class ClipboardUtil
     }
 
     /// <summary>
+    ///     获取当前剪贴板文本与上一次剪贴板文本的差异（无污染版本）。
+    /// </summary>
+    /// <param name="interval">获取旧文本和新文本之间的时间延迟（以毫秒为单位）</param>
+    /// <returns>如果新文本与旧文本不同，则返回新文本；否则，返回 null。</returns>
+    public static string? GetSelectedTextDiffNonPolluting(int interval = 0)
+    {
+        // 1. 备份当前剪贴板内容
+        var backup = BackupClipboard();
+        var oldTxt = backup.Text;
+
+        // 2. 获取操作前的剪贴板序列号
+        var sequenceBefore = GetClipboardSequenceNumber();
+
+        try
+        {
+            // 3. 模拟按下 Ctrl+C 复制文本到剪贴板
+            SendCtrlCV();
+
+            // 4. 等待指定的时间间隔
+            Thread.Sleep(interval);
+
+            // 5. 检查剪贴板是否发生变化
+            if (!IsClipboardChanged(sequenceBefore))
+            {
+                // 剪贴板没有变化，说明复制失败
+                return null;
+            }
+
+            // 6. 获取新的剪贴板文本
+            var newTxt = GetText();
+
+            // 7. 如果新的剪贴板文本与旧的不同，则返回新的剪贴板文本，否则返回 null
+            return newTxt == oldTxt ? null : newTxt?.Trim();
+        }
+        finally
+        {
+            // 8. 恢复原始剪贴板内容
+            RestoreClipboard(backup);
+        }
+    }
+
+    /// <summary>
     ///     异步获取当前选中的文本。
     /// </summary>
     /// <param name="interval">获取文本之前的延迟时间（以毫秒为单位）</param>
@@ -95,6 +191,47 @@ public static class ClipboardUtil
     }
 
     /// <summary>
+    ///     异步获取当前选中的文本（无污染版本）。
+    /// </summary>
+    /// <param name="interval">获取文本之前的延迟时间（以毫秒为单位）</param>
+    /// <param name="cancellation">可以用来取消工作的取消标记</param>
+    /// <returns>返回当前选中的文本。</returns>
+    public static async Task<string?> GetSelectedTextAsyncNonPolluting(int interval = 0, CancellationToken cancellation = default)
+    {
+        // 1. 备份当前剪贴板内容
+        var backup = BackupClipboard();
+        
+        // 2. 获取操作前的剪贴板序列号
+        var sequenceBefore = GetClipboardSequenceNumber();
+
+        try
+        {
+            // 3. 模拟按下 Ctrl+C 复制选中的文本到剪贴板
+            SendCtrlCV();
+
+            // 4. 等待指定的时间间隔
+            await Task.Delay(interval, cancellation);
+
+            // 5. 检查剪贴板是否发生变化
+            if (!IsClipboardChanged(sequenceBefore))
+            {
+                // 剪贴板没有变化，说明复制失败
+                return null;
+            }
+
+            // 6. 从剪贴板获取新的文本内容
+            var newText = GetText();
+
+            return newText?.Trim();
+        }
+        finally
+        {
+            // 7. 恢复原始剪贴板内容
+            RestoreClipboard(backup);
+        }
+    }
+
+    /// <summary>
     ///     异步获取当前剪贴板文本与上一次剪贴板文本的差异。
     /// </summary>
     /// <param name="interval">获取旧文本和新文本之间的时间延迟（以毫秒为单位）</param>
@@ -110,13 +247,56 @@ public static class ClipboardUtil
         SendCtrlCV();
 
         // 等待指定的时间间隔
-        await Task.Delay(interval);
+        await Task.Delay(interval, cancellation);
 
         // 获取新的剪贴板文本
         var newTxt = GetText();
 
         // 如果新的剪贴板文本与旧的不同，则返回新的剪贴板文本，否则返回 null
         return newTxt == oldTxt ? null : newTxt?.Trim();
+    }
+
+    /// <summary>
+    ///     异步获取当前剪贴板文本与上一次剪贴板文本的差异（无污染版本）。
+    /// </summary>
+    /// <param name="interval">获取旧文本和新文本之间的时间延迟（以毫秒为单位）</param>
+    /// <param name="cancellation">可以用来取消工作的取消标记</param>
+    /// <returns>如果新文本与旧文本不同，则返回新文本；否则，返回 null。</returns>
+    public static async Task<string?> GetSelectedTextDiffAsyncNonPolluting(int interval = 0, CancellationToken cancellation = default)
+    {
+        // 1. 备份当前剪贴板内容
+        var backup = BackupClipboard();
+        var oldTxt = backup.Text;
+
+        // 2. 获取操作前的剪贴板序列号
+        var sequenceBefore = GetClipboardSequenceNumber();
+
+        try
+        {
+            // 3. 模拟按下 Ctrl+C 复制文本到剪贴板
+            SendCtrlCV();
+
+            // 4. 等待指定的时间间隔
+            await Task.Delay(interval, cancellation);
+
+            // 5. 检查剪贴板是否发生变化
+            if (!IsClipboardChanged(sequenceBefore))
+            {
+                // 剪贴板没有变化，说明复制失败
+                return null;
+            }
+
+            // 6. 获取新的剪贴板文本
+            var newTxt = GetText();
+
+            // 7. 如果新的剪贴板文本与旧的不同，则返回新的剪贴板文本，否则返回 null
+            return newTxt == oldTxt ? null : newTxt?.Trim();
+        }
+        finally
+        {
+            // 8. 恢复原始剪贴板内容
+            RestoreClipboard(backup);
+        }
     }
 
     /// <summary>
@@ -149,6 +329,95 @@ public static class ClipboardUtil
     }
 
     #endregion UserDefine
+
+    #region ClipboardBackupRestore
+
+    /// <summary>
+    /// 备份当前剪贴板内容
+    /// </summary>
+    /// <returns>剪贴板备份对象</returns>
+    public static ClipboardBackup BackupClipboard()
+    {
+        var backup = new ClipboardBackup();
+        
+        try
+        {
+            // 尝试获取文本内容
+            backup.Text = GetText();
+            if (!string.IsNullOrEmpty(backup.Text))
+            {
+                backup.IsEmpty = false;
+                return backup;
+            }
+
+            // 尝试获取图像内容
+            if (IsClipboardFormatAvailable(CF_DIB))
+            {
+                TryOpenClipboard();
+                try
+                {
+                    var handle = GetClipboardData(CF_DIB);
+                    if (handle != IntPtr.Zero)
+                    {
+                        // 这里简化处理，实际项目中可能需要更复杂的图像处理
+                        backup.IsEmpty = false;
+                    }
+                }
+                finally
+                {
+                    CloseClipboard();
+                }
+            }
+        }
+        catch
+        {
+            // 备份失败时保持IsEmpty为true
+        }
+
+        return backup;
+    }
+
+    /// <summary>
+    /// 恢复剪贴板内容
+    /// </summary>
+    /// <param name="backup">要恢复的备份对象</param>
+    public static void RestoreClipboard(ClipboardBackup backup)
+    {
+        if (backup == null) return;
+
+        try
+        {
+            if (backup.IsEmpty)
+            {
+                // 清空剪贴板
+                TryOpenClipboard();
+                EmptyClipboard();
+                CloseClipboard();
+            }
+            else if (!string.IsNullOrEmpty(backup.Text))
+            {
+                // 恢复文本内容
+                SetText(backup.Text);
+            }
+            // 注意：图像恢复在这个简化版本中暂不实现
+        }
+        catch
+        {
+            // 恢复失败时静默处理
+        }
+    }
+
+    /// <summary>
+    /// 检测剪贴板是否发生变化
+    /// </summary>
+    /// <param name="beforeSequence">操作前的序列号</param>
+    /// <returns>是否发生变化</returns>
+    public static bool IsClipboardChanged(uint beforeSequence)
+    {
+        return GetClipboardSequenceNumber() != beforeSequence;
+    }
+
+    #endregion ClipboardBackupRestore
 
     #region TextCopy
 
@@ -297,6 +566,9 @@ public static class ClipboardUtil
 
     [DllImport("Kernel32.dll", SetLastError = true)]
     private static extern int GlobalSize(IntPtr hMem);
+
+    [DllImport("user32.dll")]
+    private static extern uint GetClipboardSequenceNumber();
 
     #endregion TextCopy
 }

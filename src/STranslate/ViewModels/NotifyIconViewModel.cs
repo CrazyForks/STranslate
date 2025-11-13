@@ -762,7 +762,7 @@ public partial class NotifyIconViewModel : ObservableObject
         var interval = _configHelper.CurrentConfig?.WordPickingInterval ?? 100;
         try
         {
-            content = ClipboardUtil.GetSelectedText(interval)?.Trim();
+            content = ClipboardUtil.GetSelectedTextNonPolluting(interval)?.Trim();
             if (string.IsNullOrEmpty(content))
             {
                 LogService.Logger.Warn($"取词失败, 可能原因有:\n" +

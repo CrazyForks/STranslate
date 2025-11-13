@@ -1,4 +1,4 @@
-﻿using System.Windows.Forms;
+using System.Windows.Forms;
 using STranslate.Log;
 using STranslate.Util;
 
@@ -84,7 +84,7 @@ public sealed class MouseHookHelper
         try
         {
             var interval = Singleton<ConfigHelper>.Instance.CurrentConfig?.WordPickingInterval ?? 100;
-            var content = await ClipboardUtil.GetSelectedTextDiffAsync(interval);
+            var content = await ClipboardUtil.GetSelectedTextDiffAsyncNonPolluting(interval);
 
             if (string.IsNullOrEmpty(content))
             {
