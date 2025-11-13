@@ -6,6 +6,7 @@ using Serilog.Events;
 using STranslate.Helpers;
 using STranslate.Plugin;
 using STranslate.Views;
+using System.Windows.Media;
 
 namespace STranslate.Core;
 
@@ -18,7 +19,7 @@ public partial class Settings : ObservableObject
     [ObservableProperty] public partial bool AutoStartup { get; set; } = false;
     [ObservableProperty] public partial StartMode StartMode { get; set; } = StartMode.Normal;
 
-    [ObservableProperty] public partial string AppFont { get; set; } = Win32Helper.GetSystemDefaultFont(false);
+    [ObservableProperty] public partial string AppFont { get; set; } = Win32Helper.GetSystemDefaultFont();
 
     [ObservableProperty] public partial string Language { get; set; } = Constant.SystemLanguageCode;
 
@@ -285,7 +286,7 @@ public partial class Settings : ObservableObject
 
     public void LazyInitialize()
     {
-        ApplyAppFont();
+        ApplyAppFont(true);
         ApplyLanguage(true);
         ApplyTheme();
         ApplyDeactived();
@@ -336,14 +337,20 @@ public partial class Settings : ObservableObject
             i18n.ChangeLanguage(Language);
     }
 
-    private void ApplyAppFont()
+    private void ApplyAppFont(bool initialize = false)
     {
-        App.Current.Resources["AppFont"] = new System.Windows.Media.FontFamily(AppFont);
-        App.Current.Resources["ContentControlThemeFontFamily"] = new System.Windows.Media.FontFamily(AppFont);
+        // 初始化时检查字体有效性
+        if (initialize && !Fonts.SystemFontFamilies.Select(x => x.Source).Contains(AppFont))
+        {
+            AppFont = Win32Helper.GetSystemDefaultFont();
+            return;
+        }
+
+        App.Current.Resources["ContentControlThemeFontFamily"] = new FontFamily(AppFont);
 
         // TODO: https://github.com/iNKORE-NET/UI.WPF.Modern/blob/main/source/iNKORE.UI.WPF.Modern/Themes/Controls/TextStyles.xaml#L13
         // 这句写的有问题  更新后避免更新系统字体键以避免带来其他问题
-        App.Current.Resources[System.Windows.SystemFonts.MessageFontFamilyKey] = new System.Windows.Media.FontFamily(AppFont);
+        App.Current.Resources[System.Windows.SystemFonts.MessageFontFamilyKey] = new FontFamily(AppFont);
     }
 
     private void ApplyTheme()

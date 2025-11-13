@@ -138,8 +138,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
 
         ResetAllPlugins(enabledPlugins);
 
-        if (!string.IsNullOrEmpty(force))
-            IdentifiedLanguage = string.Empty;
+        IdentifiedLanguage = string.Empty;
 
         var (_, source, target) = await LanguageDetector.GetLanguageAsync(InputText, cancellationToken, StartProcess, CompleteProcess, FinishProcess);
 

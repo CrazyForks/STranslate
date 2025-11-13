@@ -24,7 +24,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <DockPanel Margin="20,10,20,12">
-            <TextBlock Style="{DynamicResource STranslateTitleTextBlockStyle}" Text="{DynamicResource Network}" />
+            <TextBlock Style="{DynamicResource {x:Static ui:ThemeKeys.SubtitleTextBlockStyleKey}}" Text="{DynamicResource Network}" />
 
             <ui:AutoSuggestBox
                 x:Name="PART_AutoSuggestBox"

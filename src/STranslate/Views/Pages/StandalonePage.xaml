@@ -22,7 +22,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <DockPanel Margin="20,10,20,12">
-            <TextBlock Style="{DynamicResource STranslateTitleTextBlockStyle}" Text="{DynamicResource Standalone}" />
+            <TextBlock Style="{DynamicResource {x:Static ui:ThemeKeys.SubtitleTextBlockStyleKey}}" Text="{DynamicResource Standalone}" />
 
             <ui:AutoSuggestBox
                 x:Name="PART_AutoSuggestBox"
@@ -68,7 +68,7 @@
                 <!--#region 文本识别-->
                 <TextBlock
                     Margin="0,8,0,4"
-                    Style="{DynamicResource STranslateBodyStrongTextBlockStyle}"
+                    Style="{DynamicResource BodyStrongTextBlockStyle}"
                     Text="{DynamicResource Ocr}" />
 
                 <ui:SettingsCard Description="{DynamicResource Standalone_OcrShowAnnotationDescription}" Header="{DynamicResource Standalone_OcrShowAnnotationHeader}">
@@ -95,7 +95,7 @@
                 <!--#region 图片翻译-->
                 <TextBlock
                     Margin="0,16,0,4"
-                    Style="{DynamicResource STranslateBodyStrongTextBlockStyle}"
+                    Style="{DynamicResource BodyStrongTextBlockStyle}"
                     Text="{DynamicResource ImageTranslate}" />
 
                 <ui:SettingsCard Description="{DynamicResource Standalone_ImTranShowAnnotatedDescription}" Header="{DynamicResource Standalone_ImTranShowAnnotatedHeader}">

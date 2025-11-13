@@ -39,7 +39,7 @@
         <DockPanel Grid.Row="0" Margin="4,0,0,12">
             <TextBlock
                 DockPanel.Dock="Left"
-                Style="{DynamicResource STranslateTitleTextBlockStyle}"
+                Style="{DynamicResource {x:Static ui:ThemeKeys.SubtitleTextBlockStyleKey}}"
                 Text="{Binding ServiceTitle}" />
 
             <ikw:SimpleStackPanel

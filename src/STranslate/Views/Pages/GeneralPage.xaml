@@ -33,7 +33,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <DockPanel Margin="20,10,20,12">
-            <TextBlock Style="{DynamicResource STranslateTitleTextBlockStyle}" Text="{DynamicResource General}" />
+            <TextBlock Style="{DynamicResource {x:Static ui:ThemeKeys.SubtitleTextBlockStyleKey}}" Text="{DynamicResource General}" />
 
             <ui:AutoSuggestBox
                 x:Name="PART_AutoSuggestBox"
@@ -80,7 +80,7 @@
 
                 <TextBlock
                     Margin="0,8,0,4"
-                    Style="{DynamicResource STranslateBodyStrongTextBlockStyle}"
+                    Style="{DynamicResource BodyStrongTextBlockStyle}"
                     Text="{DynamicResource Function}" />
                 <control:CardGroup>
                     <ui:SettingsCard Description="{DynamicResource General_AutoStartupDescription}" Header="{DynamicResource General_AutoStartup}">
@@ -215,7 +215,7 @@
 
                 <TextBlock
                     Margin="0,16,0,4"
-                    Style="{DynamicResource STranslateBodyStrongTextBlockStyle}"
+                    Style="{DynamicResource BodyStrongTextBlockStyle}"
                     Text="{DynamicResource Appearance}" />
 
                 <ui:SettingsCard Description="{DynamicResource General_HideOnStartupDescription}" Header="{DynamicResource General_HideOnStartup}">

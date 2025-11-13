@@ -27,7 +27,7 @@
             </Grid.RowDefinitions>
             <TextBlock
                 Margin="0,0,0,12"
-                Style="{DynamicResource STranslateTitleTextBlockStyle}"
+                Style="{DynamicResource {x:Static ui:ThemeKeys.SubtitleTextBlockStyleKey}}"
                 Text="{DynamicResource About}" />
             <ikw:SimpleStackPanel Grid.Row="1" Spacing="4">
 

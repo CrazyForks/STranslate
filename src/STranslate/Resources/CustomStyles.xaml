@@ -6,27 +6,6 @@
     xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
     xmlns:xf="clr-namespace:XamlFlair;assembly=XamlFlair.WPF">
 
-    <!--#region FontFamily-->
-
-    <FontFamily x:Key="AppFont">Segoe UI</FontFamily>
-    <StaticResource x:Key="ContentControlThemeFontFamily" ResourceKey="AppFont" />
-
-    <Style
-        x:Key="STranslateTitleTextBlockStyle"
-        BasedOn="{StaticResource {x:Static ui:ThemeKeys.TitleTextBlockStyleKey}}"
-        TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{DynamicResource AppFont}" />
-    </Style>
-
-    <Style
-        x:Key="STranslateBodyStrongTextBlockStyle"
-        BasedOn="{StaticResource BodyStrongTextBlockStyle}"
-        TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="{DynamicResource AppFont}" />
-    </Style>
-
-    <!--#endregion-->
-
     <!--#region Expander-->
 
     <Style x:Key="AnimatedExpanderCardStyle" TargetType="Expander">
