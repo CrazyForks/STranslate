@@ -24,6 +24,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0" Margin="0,0,0,12">
             <TextBlock
@@ -174,5 +175,32 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+
+        <ikw:SimpleStackPanel
+            Grid.Row="2"
+            HorizontalAlignment="Center"
+            Orientation="Horizontal"
+            Spacing="12">
+            <TextBlock>
+                <Run Text="所有插件: " />
+                <Run Text="10" />
+            </TextBlock>
+            <TextBlock>
+                <Run Text="文本翻译: " />
+                <Run Text="2" />
+            </TextBlock>
+            <TextBlock>
+                <Run Text="文本识别: " />
+                <Run Text="3" />
+            </TextBlock>
+            <TextBlock>
+                <Run Text="语音合成: " />
+                <Run Text="3" />
+            </TextBlock>
+            <TextBlock>
+                <Run Text="生词本: " />
+                <Run Text="2" />
+            </TextBlock>
+        </ikw:SimpleStackPanel>
     </Grid>
 </ui:Page>
