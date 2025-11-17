@@ -1,3 +1,5 @@
+using CommunityToolkit.Mvvm.DependencyInjection;
+using STranslate.Core;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -188,6 +190,50 @@ public class InputControl : Control
         {
             var pasteBinding = new CommandBinding(ApplicationCommands.Paste, OnPasteExecuted);
             _textBox.CommandBindings.Add(pasteBinding);
+
+            // 添加鼠标滚轮事件处理
+            _textBox.PreviewMouseWheel += OnTextBoxPreviewMouseWheel;
+        }
+    }
+
+    /// <summary>
+    /// 处理 TextBox 的鼠标滚轮事件，实现 Ctrl+鼠标滚轮调节字体大小
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void OnTextBoxPreviewMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        // 检查是否按下了 Ctrl 键
+        if (Keyboard.Modifiers == ModifierKeys.Control)
+        {
+            try
+            {
+                var settings = Ioc.Default.GetRequiredService<Settings>();
+
+                // 获取当前字体大小
+                var currentFontSize = settings.FontSize;
+
+                // 根据滚轮方向调整字体大小
+                var delta = e.Delta > 0 ? 1 : -1;
+                var newFontSize = currentFontSize + delta;
+
+                // 限制字体大小范围（10-20，与设置页面的滑块范围一致）
+                newFontSize = Math.Max(10, Math.Min(20, newFontSize));
+
+                // 更新字体大小
+                if (Math.Abs(newFontSize - currentFontSize) > 0.01)
+                {
+                    settings.FontSize = newFontSize;
+                }
+
+                // 标记事件已处理，防止页面滚动
+                e.Handled = true;
+            }
+            catch
+            {
+                // 如果出现异常，不处理事件，让默认行为继续
+                e.Handled = false;
+            }
         }
     }
 
