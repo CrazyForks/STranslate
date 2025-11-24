@@ -191,6 +191,49 @@ public class HeaderControl : Control
 
     #endregion
 
+    #region History
+
+    public bool IsHistoryNavigationVisible
+    {
+        get => (bool)GetValue(IsHistoryNavigationVisibleProperty);
+        set => SetValue(IsHistoryNavigationVisibleProperty, value);
+    }
+
+    public static readonly DependencyProperty IsHistoryNavigationVisibleProperty =
+        DependencyProperty.Register(
+            nameof(IsHistoryNavigationVisible),
+            typeof(bool),
+            typeof(HeaderControl),
+            new FrameworkPropertyMetadata(
+                true,
+                FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+    public ICommand? HistoryPreviousCommand
+    {
+        get => (ICommand?)GetValue(HistoryPreviousCommandProperty);
+        set => SetValue(HistoryPreviousCommandProperty, value);
+    }
+
+    public static readonly DependencyProperty HistoryPreviousCommandProperty =
+        DependencyProperty.Register(
+            nameof(HistoryPreviousCommand),
+            typeof(ICommand),
+            typeof(HeaderControl));
+
+    public ICommand? HistoryNextCommand
+    {
+        get => (ICommand?)GetValue(HistoryNextCommandProperty);
+        set => SetValue(HistoryNextCommandProperty, value);
+    }
+
+    public static readonly DependencyProperty HistoryNextCommandProperty =
+        DependencyProperty.Register(
+            nameof(HistoryNextCommand),
+            typeof(ICommand),
+            typeof(HeaderControl));
+
+    #endregion
+
     public override void OnApplyTemplate()
     {
         base.OnApplyTemplate();

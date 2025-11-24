@@ -803,6 +803,36 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
 
     #endregion
 
+    #region History Commands
+
+    [RelayCommand]
+    private void HistoryPrevious()
+    {
+        if (string.IsNullOrWhiteSpace(InputText))
+        {
+            // 取第一条历史记录
+        }
+        else
+        {
+            // 取当前输入文本的上一条历史记录
+        }
+    }
+
+    [RelayCommand]
+    private void HistoryNext()
+    {
+        if (string.IsNullOrWhiteSpace(InputText))
+        {
+            // 取第一条历史记录
+        }
+        else
+        {
+            // 取当前输入文本的下一条历史记录
+        }
+    }
+
+    #endregion
+
     #region Mouse Hook Feature
 
     [RelayCommand]

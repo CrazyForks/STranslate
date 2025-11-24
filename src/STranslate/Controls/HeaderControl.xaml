@@ -45,6 +45,18 @@
                                     ToolTip="{DynamicResource OpenSettings}"
                                     Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsSettingVisible, Converter={cnvt:BoolToVisibilityConverter}}" />
                                 <control:IconButton
+                                    ui:ControlHelper.CornerRadius="6,0,0,6"
+                                    BorderThickness="1,1,0,1"
+                                    Command="{TemplateBinding HistoryNextCommand}"
+                                    Icon="{x:Static ui:FluentSystemIcons.ChevronCircleRight_20_Regular}"
+                                    Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsHistoryNavigationVisible, Converter={cnvt:BoolToVisibilityConverter}}" />
+                                <control:IconButton
+                                    Margin="-2.5,0,0,0"
+                                    ui:ControlHelper.CornerRadius="0,6,6,0"
+                                    Command="{TemplateBinding HistoryPreviousCommand}"
+                                    Icon="{x:Static ui:FluentSystemIcons.ChevronCircleLeft_20_Regular}"
+                                    Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsHistoryNavigationVisible, Converter={cnvt:BoolToVisibilityConverter}}" />
+                                <control:IconButton
                                     Icon="{x:Static ui:FluentSystemIcons.SlideHide_20_Regular}"
                                     IsOn="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsHideInput}"
                                     ToolTip="{DynamicResource Hotkey_ShowHideInputBox}"

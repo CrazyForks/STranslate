@@ -48,10 +48,10 @@
                     x:Name="PART_SearchBox"
                     VerticalAlignment="Top"
                     ui:ControlHelper.PlaceholderText="{DynamicResource HistorySearch}"
+                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                     ToolTip="{DynamicResource HistorySearchToolTip}"
                     ToolTipService.InitialShowDelay="200"
-                    ToolTipService.Placement="Top"
-                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+                    ToolTipService.Placement="Top" />
 
                 <ui:ScrollViewerEx Grid.Row="1">
                     <i:Interaction.Triggers>

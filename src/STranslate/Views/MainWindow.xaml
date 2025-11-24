@@ -83,6 +83,8 @@
             Padding="6,3,6,0"
             VerticalAlignment="Center"
             ColorSchemeCommand="{Binding ChangeColorSchemeCommand}"
+            HistoryNextCommand="{Binding HistoryNextCommand}"
+            HistoryPreviousCommand="{Binding HistoryPreviousCommand}"
             IsColorSchemeVisible="{Binding Settings.IsColorSchemeVisible}"
             IsHideInput="{Binding Settings.HideInput}"
             IsHideInputVisible="{Binding Settings.IsHideInputVisible}"
