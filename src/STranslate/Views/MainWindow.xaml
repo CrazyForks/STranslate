@@ -84,6 +84,7 @@
             IsColorSchemeVisible="{Binding Settings.IsColorSchemeVisible}"
             IsHideInput="{Binding Settings.HideInput}"
             IsHideInputVisible="{Binding Settings.IsHideInputVisible}"
+            IsHistoryNavigationVisible="{Binding Settings.IsHistoryNavigationVisible}"
             IsMouseHook="{Binding IsMouseHook}"
             IsMouseHookVisible="{Binding Settings.IsMouseHookVisible}"
             IsScreenshotTranslateInImageVisible="{Binding Settings.IsScreenshotTranslateInImageVisible}"

@@ -368,6 +368,16 @@
                         OnContent="{DynamicResource Show}" />
                 </ui:SettingsCard>
 
+                <ui:SettingsCard Description="{DynamicResource General_ShowHistoryNavigationDescription}" Header="{DynamicResource General_ShowHistoryNavigation}">
+                    <ui:SettingsCard.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.AppRecent_20_Regular}" />
+                    </ui:SettingsCard.HeaderIcon>
+                    <ui:ToggleSwitch
+                        IsOn="{Binding Settings.IsHistoryNavigationVisible}"
+                        OffContent="{DynamicResource Hide}"
+                        OnContent="{DynamicResource Show}" />
+                </ui:SettingsCard>
+
                 <control:CardGroup>
 
                     <ui:SettingsCard Header="{DynamicResource General_FontFamily}">

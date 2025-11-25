@@ -68,6 +68,8 @@
     <sys:String x:Key="General_HideLanguageControlDescription">隱藏輸入框時是否一併隱藏語言選擇控制項。</sys:String>
     <sys:String x:Key="General_ShowMouseHook">顯示滑鼠鉤子</sys:String>
     <sys:String x:Key="General_ShowMouseHookDescription">主介面是否顯示快捷啟用/禁用監聽滑鼠劃詞圖示。</sys:String>
+    <sys:String x:Key="General_ShowHistoryNavigation">顯示歷史導航</sys:String>
+    <sys:String x:Key="General_ShowHistoryNavigationDescription">主介面是否顯示向前/向後歷史翻譯記錄導航圖示。</sys:String>
     <sys:String x:Key="General_FontSize">字體大小</sys:String>
     <sys:String x:Key="General_FontSizeDescription">調整除「右鍵選單」外的所有字型大小</sys:String>
     <sys:String x:Key="General_ShowPrompt">提示詞</sys:String>

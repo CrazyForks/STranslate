@@ -68,6 +68,8 @@
     <sys:String x:Key="General_HideLanguageControlDescription">Whether to hide the language selection control when hiding the input box.</sys:String>
     <sys:String x:Key="General_ShowMouseHook">Show Mouse Hook</sys:String>
     <sys:String x:Key="General_ShowMouseHookDescription">Whether to display the quick enable/disable mouse word selection icon on the main interface.</sys:String>
+    <sys:String x:Key="General_ShowHistoryNavigation">Show History Navigation</sys:String>
+    <sys:String x:Key="General_ShowHistoryNavigationDescription">Whether to display forward/backward history translation navigation icons on the main interface.</sys:String>
     <sys:String x:Key="General_FontSize">Font Size</sys:String>
     <sys:String x:Key="General_FontSizeDescription">Adjust font size for all elements except the right-click context menu</sys:String>
     <sys:String x:Key="General_ShowPrompt">Show Prompt</sys:String>
