@@ -38,10 +38,12 @@
 
                     <control:EditableTextBlock
                         Margin="10,0,20,0"
+                        DisallowSpecialCharacters="True"
                         FontSize="{DynamicResource STControlFontSize14}"
                         FontWeight="Bold"
                         Text="{Binding FullName}"
-                        ToolTip="{Binding FullName}" />
+                        ToolTip="{Binding FullName}"
+                        UpdateTextCommand="{Binding UpdateTextCommand, RelativeSource={RelativeSource AncestorType=control:WebDavContentDialog}}" />
 
                     <Button
                         Grid.Column="1"

@@ -32,6 +32,33 @@ public class EditableTextBlock : Control
         DependencyProperty.Register(nameof(IsEditing), typeof(bool), typeof(EditableTextBlock),
             new FrameworkPropertyMetadata(false));
 
+    public ICommand? UpdateTextCommand
+    {
+        get => (ICommand?)GetValue(UpdateTextCommandProperty);
+        set => SetValue(UpdateTextCommandProperty, value);
+    }
+
+    public static readonly DependencyProperty UpdateTextCommandProperty =
+        DependencyProperty.Register(
+            nameof(UpdateTextCommand),
+            typeof(ICommand),
+            typeof(EditableTextBlock));
+
+    public bool DisallowSpecialCharacters
+    {
+        get => (bool)GetValue(DisallowSpecialCharactersProperty);
+        set => SetValue(DisallowSpecialCharactersProperty, value);
+    }
+
+    public static readonly DependencyProperty DisallowSpecialCharactersProperty =
+        DependencyProperty.Register(
+            nameof(DisallowSpecialCharacters),
+            typeof(bool),
+            typeof(EditableTextBlock),
+            new PropertyMetadata(false));
+
+    private string _oldText = string.Empty;
+
     public override void OnApplyTemplate()
     {
         base.OnApplyTemplate();
@@ -43,6 +70,7 @@ public class EditableTextBlock : Control
                 if (e.ClickCount == 2)
                 {
                     IsEditing = true;
+                    _oldText = tb.Text;
 
                     // 延迟到UI渲染后再Focus+SelectAll
                     Dispatcher.BeginInvoke(new Action(() =>
@@ -59,18 +87,28 @@ public class EditableTextBlock : Control
 
         if (GetTemplateChild("PART_TextBox") is TextBox box)
         {
-            box.LostFocus += (s, e) => IsEditing = false;
+            void CommitEdit()
+            {
+                if (!IsEditing) return;
+                UpdateTextCommand?.Execute((_oldText, box.Text));
+                IsEditing = false;
+            }
+
+            box.LostFocus += (s, e) => CommitEdit();
             box.KeyDown += (s, e) =>
             {
-                if (e.Key == Key.Enter)
+                switch (e.Key)
                 {
-                    IsEditing = false;
-                }
-                else if (e.Key == Key.Escape)
-                {
-                    // 取消编辑时回退原值
-                    box.GetBindingExpression(TextBox.TextProperty)?.UpdateTarget();
-                    IsEditing = false;
+                    case Key.Enter:
+                        CommitEdit();
+                        e.Handled = true;
+                        break;
+                    case Key.Escape:
+                        // 取消编辑时回退原值
+                        box.GetBindingExpression(TextBox.TextProperty)?.UpdateTarget();
+                        IsEditing = false;
+                        e.Handled = true;
+                        break;
                 }
             };
         }

@@ -60,6 +60,7 @@
                         <TextBox
                             x:Name="PART_TextBox"
                             HorizontalAlignment="Stretch"
+                            control:DisallowSpecialCharactersTextboxBehavior.DisallowSpecialCharacters="{TemplateBinding DisallowSpecialCharacters}"
                             SnapsToDevicePixels="True"
                             Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                             Visibility="{Binding IsEditing, RelativeSource={RelativeSource TemplatedParent}, Converter={cnvt:EqualToVisibilityConverter}, ConverterParameter=True}" />

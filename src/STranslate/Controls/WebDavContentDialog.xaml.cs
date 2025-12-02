@@ -100,6 +100,50 @@ public partial class WebDavContentDialog
         }
     }
 
+    [RelayCommand]
+    private async Task UpdateTextAsync(ValueTuple<string, string> valueTuple)
+    {
+        if (_absolutePath == null || _webDavClient == null)
+            return;
+
+        var originFullName = valueTuple.Item1;
+        var targetFullname = valueTuple.Item2;
+
+        try
+        {
+            if (!targetFullname.EndsWith(".zip"))
+            {
+                targetFullname += ".zip";
+                Collections.First(x => x.FullName == valueTuple.Item1).FullName = targetFullname;
+            }
+
+            if (originFullName == targetFullname)
+                return;
+
+            //webdav operate
+            var source = $"{_absolutePath.TrimEnd('/')}/{originFullName}";
+            var target = $"{_absolutePath.TrimEnd('/')}/{targetFullname}";
+
+            var response = await _webDavClient.Move(source, target);
+
+            if (!response.IsSuccessful || response.StatusCode != 201)
+            {
+                Collections.First(x => x.FullName == targetFullname).FullName = originFullName;
+                _snackbar.ShowError($"重命名失败：{response.StatusCode} {response.Description}");
+                _logger.LogError("WebDav 重命名失败：{StatusCode} {Description}", response.StatusCode, response.Description);
+            }
+        }
+        catch (Exception ex)
+        {
+            // 关闭页面
+            _result = ContentDialogResult.None;
+            Hide();
+
+            _snackbar.ShowError($"重命名异常：{ex.Message}");
+            _logger.LogError(ex, "WebDav 重命名异常");
+        }
+    }
+
     private WebDavResult Find(string fullName)
     {
         return Collections.First(x => x.FullName == fullName);
