@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using iNKORE.UI.WPF.Modern.Common;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -155,7 +154,7 @@ public partial class App : ISingleInstanceApp, INavigation, IDisposable
                 .MinimumLevel.Override("Microsoft.Extensions.Http", LogEventLevel.Warning)
                 .MinimumLevel.ControlledBy(levelSwitch)
                 .WriteTo.File(
-                    path: Path.Combine(Constant.Logs, ".log"),
+                    path: Path.Combine(DataLocation.VersionLogDirectory, ".log"),
                     encoding: Encoding.UTF8,
                     rollingInterval: RollingInterval.Day,
                     outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] [{SourceContext}]: {Message:lj}{NewLine}{Exception}"
@@ -310,10 +309,7 @@ public partial class App : ISingleInstanceApp, INavigation, IDisposable
 #endif
             return;
         }
-        VelopackApp
-            .Build()
-            .OnFirstRun(_ => iNKORE.UI.WPF.Modern.Controls.MessageBox.Show("First Run!!!"))
-            .Run();
+        VelopackApp.Build().Run();
         application.InitializeComponent();
         application.Run();
     }

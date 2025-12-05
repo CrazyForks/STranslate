@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using STranslate.Core;
+using STranslate.Plugin;
 using STranslate.Services;
 using System.Diagnostics;
 using System.IO;
@@ -10,47 +11,50 @@ namespace STranslate.ViewModels.Pages;
 public partial class AboutViewModel(
     Settings settings,
     DataProvider dataProvider,
+    ISnackbar snackbar,
+    Internationalization i18n,
     UpdaterService updaterService,
     BackupService backupService) : ObservableObject
 {
     public Settings Settings { get; } = settings;
     public DataProvider DataProvider { get; } = dataProvider;
-    public string AppVersion => Constant.Version;
+    public string Version => Constant.Version switch
+    {
+        "1.0.0" => Constant.Dev,
+        _ => Constant.Version
+    };
 
     #region ICommand
 
     [RelayCommand]
-    private async Task CheckUpdateAsync() => await updaterService.UpdateAppAsync(silentUpdate: false);
-
-    [RelayCommand]
-    private void LocateUserData()
+    private async Task CheckUpdateAsync()
     {
-        var settingsFolderPath = Path.Combine(DataLocation.SettingsDirectory);
-        var parentFolderPath = Path.GetDirectoryName(settingsFolderPath);
-        if (Directory.Exists(parentFolderPath))
+        if (Version == Constant.Dev)
         {
-            Process.Start("explorer.exe", parentFolderPath);
+            snackbar.ShowWarning(i18n.GetTranslation("NoCheckUpdataInDev"));
+            return;
         }
+        await updaterService.UpdateAppAsync(silentUpdate: false);
     }
 
     [RelayCommand]
-    private void LocateLog()
-    {
-        var logFolderPath = Path.Combine(Constant.LogDirectory);
-        if (Directory.Exists(logFolderPath))
-        {
-            Process.Start("explorer.exe", logFolderPath);
-        }
-    }
+    private void LocateUserData() => Locate(Path.GetDirectoryName(Path.Combine(DataLocation.SettingsDirectory)));
 
     [RelayCommand]
-    private void LocateSettings()
+    private void LocateSettings() => Locate(DataLocation.SettingsDirectory);
+
+    [RelayCommand]
+    private void LocateLog() => Locate(Path.Combine(DataLocation.LogDirectory, Constant.Version));
+
+    [RelayCommand]
+    private void LocateCache() => Locate(DataLocation.CacheDirectory);
+
+    private void Locate(string? folder)
     {
-        var settingsFolderPath = Path.Combine(DataLocation.SettingsDirectory);
-        if (Directory.Exists(settingsFolderPath))
-        {
-            Process.Start("explorer.exe", settingsFolderPath);
-        }
+        if (string.IsNullOrWhiteSpace(folder) || !Directory.Exists(folder))
+            return;
+
+        Process.Start("explorer.exe", folder);
     }
 
     [RelayCommand]

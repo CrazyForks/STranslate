@@ -43,8 +43,8 @@
                         <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Toolbox_24_Regular}" />
                     </ui:SettingsCard.HeaderIcon>
                     <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="12">
-                        <Button Content="{DynamicResource ClearCache}" />
-                        <Button Content="{DynamicResource ClearLogs}" />
+                        <Button Content="{DynamicResource ClearCache}" IsEnabled="False" />
+                        <Button Content="{DynamicResource ClearLogs}" IsEnabled="False" />
                         <Button>
                             <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.FolderSearch_24_Regular}" />
                             <ui:FlyoutService.Flyout>
@@ -61,7 +61,7 @@
                                         </MenuItem.Icon>
                                     </MenuItem>
 
-                                    <MenuItem Header="{DynamicResource CacheDirectory}">
+                                    <MenuItem Command="{Binding LocateCacheCommand}" Header="{DynamicResource CacheDirectory}">
                                         <MenuItem.Icon>
                                             <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Folder_24_Regular}" />
                                         </MenuItem.Icon>
@@ -127,14 +127,10 @@
                         SelectedValuePath="Value" />
                 </ui:SettingsCard>
 
-                <ui:SettingsCard Header="检查更新">
-                    <ui:SettingsCard.HeaderIcon>
-                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.DualScreenUpdate_20_Regular}" />
-                    </ui:SettingsCard.HeaderIcon>
-                    <Button Command="{Binding CheckUpdateCommand}" Content="检查更新" />
-                </ui:SettingsCard>
-
-                <ui:SettingsExpander Description="© 2020 zggsong &amp; STranslate Contributors" Header="STranslate">
+                <ui:SettingsExpander
+                    Description="© 2020 zggsong &amp; STranslate Contributors"
+                    Header="STranslate"
+                    IsExpanded="True">
                     <ui:SettingsExpander.HeaderIcon>
                         <Image
                             Width="20"
@@ -149,9 +145,16 @@
                         Foreground="{DynamicResource {x:Static ui:ThemeKeys.TextFillColorSecondaryBrushKey}}"
                         IsReadOnly="True"
                         IsReadOnlyCaretVisible="False"
-                        Text="{Binding AppVersion, Mode=OneWay}"
+                        Text="{Binding Version, Mode=OneWay}"
                         TextAlignment="Right" />
                     <ui:SettingsExpander.Items>
+
+                        <ui:SettingsCard Header="{DynamicResource Version}">
+                            <Button Margin="0,0,-28,0" Command="{Binding CheckUpdateCommand}">
+                                <ui:IconAndText Content="{DynamicResource CheckUpdate}" Icon="{x:Static ui:FluentSystemIcons.GlobeArrowUp_20_Regular}" />
+                            </Button>
+                        </ui:SettingsCard>
+
                         <ui:SettingsCard
                             Click="OnRepoCopy"
                             Header="{DynamicResource CloneRepository}"
@@ -183,8 +186,17 @@
                         </ui:SettingsCard>
 
                         <ui:SettingsCard
+                            Click="OnSponsorRequest"
+                            Header="{DynamicResource Sponsor}"
+                            IsClickEnabled="True">
+                            <ui:SettingsCard.ActionIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Open_24_Regular}" />
+                            </ui:SettingsCard.ActionIcon>
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard
                             Click="OnReportRequest"
-                            Header="{DynamicResource FileBugReport}"
+                            Header="{DynamicResource Report}"
                             IsClickEnabled="True">
                             <ui:SettingsCard.ActionIcon>
                                 <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Open_24_Regular}" />

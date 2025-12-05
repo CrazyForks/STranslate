@@ -19,6 +19,8 @@ public class DataLocation
     public static readonly string InfoFilePath = Path.Combine(Constant.ProgramDirectory, Constant.InfoFileName);
     public static readonly string BackupFilePath = Path.Combine(Constant.ProgramDirectory, Constant.BackupFileName);
 
+    public static string VersionLogDirectory => Path.Combine(LogDirectory, Constant.Version);
+    public static string LogDirectory => Path.Combine(DataDirectory(), Constant.Logs);
     public static readonly string CacheDirectory = Path.Combine(DataDirectory(), Constant.Cache);
     public static readonly string SettingsDirectory = Path.Combine(DataDirectory(), Constant.Settings);
     public static readonly string PluginSettingsDirectory = Path.Combine(SettingsDirectory, Constant.Plugins);

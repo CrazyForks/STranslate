@@ -228,8 +228,9 @@
     <sys:String x:Key="LogsDirectory">日志目录</sys:String>
     <sys:String x:Key="CacheDirectory">缓存目录</sys:String>
     <sys:String x:Key="CloneRepository">仓库</sys:String>
-    <sys:String x:Key="FileBugReport">报告错误或请求新功能</sys:String>
     <sys:String x:Key="Website">网站</sys:String>
+    <sys:String x:Key="Sponsor">赞助</sys:String>
+    <sys:String x:Key="Report">发现Bug或请求新功能</sys:String>
     <sys:String x:Key="ConfirmDelete">确认删除?</sys:String>
     <sys:String x:Key="ConfirmDeleteService">确定要删除服务 '{0}' 吗？</sys:String>
     <sys:String x:Key="Close">关闭</sys:String>
@@ -258,6 +259,9 @@
     <sys:String x:Key="CreateBackup">创建备份</sys:String>
     <sys:String x:Key="Restore">恢复</sys:String>
     <sys:String x:Key="RestoreBackup">恢复备份</sys:String>
+    <sys:String x:Key="Version">版本</sys:String>
+    <sys:String x:Key="CheckUpdate">检查更新</sys:String>
+    <sys:String x:Key="NoCheckUpdataInDev">开发模式下禁止检查更新</sys:String>
 
     <!--  // Common //  -->
     <sys:String x:Key="Add">添加</sys:String>
