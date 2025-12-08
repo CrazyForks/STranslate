@@ -105,7 +105,7 @@ public class Main : ObservableObject, IOcrPlugin
             { "probability", "false" }
         };
 
-        var response = await Context.HttpService.PostAsync(url, formData.ToFormUrlEncodedContent(), options, cancellationToken);
+        var response = await Context.HttpService.PostFormAsync(url, formData, options, cancellationToken);
         var parsedData = JsonSerializer.Deserialize<Root>(response) ?? throw new Exception("Parse ocr result failed");
 
         // 判断是否出错

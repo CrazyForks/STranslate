@@ -21,18 +21,4 @@ internal static class EnumExtensions
 
         return attributes.Length > 0 ? attributes[0].Description : value.ToString();
     }
-
-    /// <summary>
-    /// 将 Dictionary 转换为 application/x-www-form-urlencoded 格式的字符串
-    /// </summary>
-    public static string ToFormUrlEncodedContent(this Dictionary<string, string> formData)
-    {
-        if (formData == null || formData.Count == 0)
-            return string.Empty;
-
-        var encodedPairs = formData.Select(kvp =>
-            $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(kvp.Value)}");
-
-        return string.Join("&", encodedPairs);
-    }
 }
