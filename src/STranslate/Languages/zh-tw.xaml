@@ -133,6 +133,7 @@
     <sys:String x:Key="ReplaceService">替換翻譯</sys:String>
     <sys:String x:Key="ImTranService">圖片翻譯</sys:String>
     <sys:String x:Key="NoServiceEnabled">未啟用服務</sys:String>
+    <sys:String x:Key="SpecialServiceInfo">拖拽左側服務至此或者右鍵選擇以啟用</sys:String>
     <sys:String x:Key="AsReplaceSvc">替換翻譯</sys:String>
     <sys:String x:Key="AsImTranSvc">圖片翻譯</sys:String>
     <sys:String x:Key="TransExecMode">翻譯模式</sys:String>

@@ -245,4 +245,21 @@
 
     <!--#endregion-->
 
+    <!--#region TextBlock-->
+
+    <Style x:Key="TextBlockInfoStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource ButtonForeground}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="ToolTipService.InitialShowDelay" Value="200" />
+        <Setter Property="ToolTipService.Placement" Value="Top" />
+        <Setter Property="FontFamily" Value="{DynamicResource FluentSystemIcons}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:ThemeKeys.ButtonForegroundPressedKey}}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--#endregion-->
+
 </ResourceDictionary>

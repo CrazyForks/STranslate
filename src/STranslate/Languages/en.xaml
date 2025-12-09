@@ -133,6 +133,7 @@
     <sys:String x:Key="ReplaceService">Replace Trans</sys:String>
     <sys:String x:Key="ImTranService">Image Trans</sys:String>
     <sys:String x:Key="NoServiceEnabled">No Service Enabled</sys:String>
+    <sys:String x:Key="SpecialServiceInfo">Drag services from the left here, or right-click to select and enable.</sys:String>
     <sys:String x:Key="AsReplaceSvc">Replace Translation</sys:String>
     <sys:String x:Key="AsImTranSvc">Image Translation</sys:String>
     <sys:String x:Key="TransExecMode">Translation Mode</sys:String>
