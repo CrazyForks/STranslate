@@ -138,7 +138,7 @@ public class Main : LlmTranslatePluginBase
         model = string.IsNullOrEmpty(model) ? "glm-4" : model;
 
         // 替换Prompt关键字
-        var messages = (Prompts.FirstOrDefault(x => x.IsEnabled) ?? throw new Exception("请先完善Propmpt配置"))
+        var messages = (Prompts.FirstOrDefault(x => x.IsEnabled) ?? throw new Exception("请先完善Prompt配置"))
             .Clone()
             .Items;
         messages.ToList()

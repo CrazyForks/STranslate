@@ -133,7 +133,7 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
             var model = string.IsNullOrEmpty(_settings.Model?.Trim()) ? "glm-4" : _settings.Model.Trim();
 
             // 替换Prompt关键字
-            var prompt = (Main.Prompts.FirstOrDefault(x => x.IsEnabled) ?? throw new Exception("请先完善Propmpt配置"));
+            var prompt = (Main.Prompts.FirstOrDefault(x => x.IsEnabled) ?? throw new Exception("请先完善Prompt配置"));
             var messages = prompt.Clone().Items;
             foreach (var item in messages)
             {
