@@ -68,6 +68,7 @@ public class Constant
         "76b14a8d707041c891a2dcd2f74be9c1", //OpenAI
         "2cc83275790ba8ce96b31c4fe0655743", //TransmartBuiltIn
         "2c1b2a2fa1e24ae79b7dc73bdea35159", //YandexBuiltIn
+        "6d90a1ae6fce5fe776f57961c5b8eef7", //Youdao
         "7a3ab25875294602b3afc4ae15fec627", //MicrosoftEdgeTts
         "d9537be74d23438ca581fd6d04e1d112", //EudictVocabulary
     ];
