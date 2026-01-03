@@ -490,7 +490,7 @@
                         OnContent="{DynamicResource Show}" />
                 </ui:SettingsCard>
 
-                <ui:SettingsCard Description="在主界面标题栏显示OCR按钮" Header="显示OCR按钮">
+                <ui:SettingsCard Description="{DynamicResource General_ShowOcrButtonDescription}" Header="{DynamicResource General_ShowOcrButton}">
                     <ui:SettingsCard.HeaderIcon>
                         <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ScanType_20_Regular}" />
                     </ui:SettingsCard.HeaderIcon>
