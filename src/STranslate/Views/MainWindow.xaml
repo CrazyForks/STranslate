@@ -101,6 +101,7 @@
             IsScreenshotTranslateInImageVisible="{Binding Settings.IsScreenshotTranslateInImageVisible}"
             IsTopmost="{Binding IsTopmost}"
             OcrCommand="{Binding OcrCommand}"
+            ScreenshotTranslateCommand="{Binding ScreenshotTranslateCommand}"
             ScreenshotTranslateInImage="{Binding Settings.ScreenshotTranslateInImage}"
             SettingCommand="{Binding OpenSettingsCommand}" />
 

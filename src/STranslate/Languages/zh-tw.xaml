@@ -63,7 +63,8 @@
     <sys:String x:Key="General_Language">語言</sys:String>
     <sys:String x:Key="General_ScreenshotTranslateInImage">圖片內翻譯</sys:String>
     <sys:String x:Key="General_ScreenshotTranslateInImageDescription">截圖翻譯時是否啟用圖片內翻譯。</sys:String>
-    <sys:String x:Key="General_ScreenshotTranslateInImageButtonVisible">在主界面顯示啟用圖片內翻譯按鈕。</sys:String>
+    <sys:String x:Key="General_ScreenshotTranslateInImageButtonVisible">在主介面上顯示「螢幕擷取翻譯」|「啟用/停用圖片內翻譯」按鈕</sys:String>
+    <sys:String x:Key="General_ScreenshotTranslateButtonToolTip" xml:space="preserve">「滑鼠點擊」螢幕擷取翻譯&#10;「Ctrl+滑鼠點擊」開啟/關閉圖片內翻譯</sys:String>
     <sys:String x:Key="General_ShowScreenshotAuxiliaryLines">截圖輔助線</sys:String>
     <sys:String x:Key="General_ShowScreenshotAuxiliaryLinesDescription">截圖時是否顯示輔助線，幫助更精確地選擇區域。</sys:String>
     <sys:String x:Key="General_HideNotifyIcon">隱藏托盤圖示</sys:String>

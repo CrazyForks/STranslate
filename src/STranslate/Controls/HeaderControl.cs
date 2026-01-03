@@ -124,6 +124,18 @@ public class HeaderControl : Control
                 true,
                 FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
+    public ICommand? ScreenshotTranslateCommand
+    {
+        get => (ICommand?)GetValue(ScreenshotTranslateCommandProperty);
+        set => SetValue(ScreenshotTranslateCommandProperty, value);
+    }
+
+    public static readonly DependencyProperty ScreenshotTranslateCommandProperty =
+        DependencyProperty.Register(
+            nameof(ScreenshotTranslateCommand),
+            typeof(ICommand),
+            typeof(HeaderControl));
+
     #endregion
 
     #region ColorScheme
