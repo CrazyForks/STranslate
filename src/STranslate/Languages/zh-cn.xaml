@@ -621,7 +621,7 @@
 
     <!--  // LLM Service Configurations for plugins //  -->
     <sys:String x:Key="Url">接口</sys:String>
-    <sys:String x:Key="Url_Description">/结尾忽略v1 版本，#结尾强制使用输入地址</sys:String>
+    <sys:String x:Key="Url_Description">以「#」结尾强制使用输入地址</sys:String>
     <sys:String x:Key="Url_ToolTip">最终请求的完整 URL</sys:String>
     <sys:String x:Key="ApiKey">密钥</sys:String>
     <sys:String x:Key="ApiKey_Suggestion">请输入密钥</sys:String>

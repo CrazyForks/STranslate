@@ -621,7 +621,7 @@
 
     <!--  // LLM Service Configurations for plugins //  -->
     <sys:String x:Key="Url">API 介面</sys:String>
-    <sys:String x:Key="Url_Description">以 / 結尾忽略 v1 版本，以 # 結尾強制使用輸入地址</sys:String>
+    <sys:String x:Key="Url_Description">以「#」結尾強制使用輸入位址</sys:String>
     <sys:String x:Key="Url_ToolTip">最終請求的完整 URL</sys:String>
     <sys:String x:Key="ApiKey">API 金鑰</sys:String>
     <sys:String x:Key="ApiKey_Suggestion">請輸入 API 金鑰</sys:String>

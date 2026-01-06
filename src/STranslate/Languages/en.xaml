@@ -620,7 +620,7 @@
 
     <!--  // LLM Service Configurations for plugins //  -->
     <sys:String x:Key="Url">API Endpoint</sys:String>
-    <sys:String x:Key="Url_Description">Ignore v1 version if ends with /, force use of entered address if ends with #</sys:String>
+    <sys:String x:Key="Url_Description">Using '#' at the end forces the use of the entered address.</sys:String>
     <sys:String x:Key="Url_ToolTip">Complete URL for final request</sys:String>
     <sys:String x:Key="ApiKey">API Key</sys:String>
     <sys:String x:Key="ApiKey_Suggestion">Please enter API Key</sys:String>
