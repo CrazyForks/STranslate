@@ -54,6 +54,10 @@
     <sys:String x:Key="General_HttpTimeoutDescription">網路請求的逾時時間，單位：秒。</sys:String>
     <sys:String x:Key="General_TranslateOnPaste">貼上立即翻譯</sys:String>
     <sys:String x:Key="General_TranslateOnPasteDescription">輸入框內貼上文字立即執行翻譯。</sys:String>
+    <sys:String x:Key="General_AutoTranslate">自動翻譯</sys:String>
+    <sys:String x:Key="General_AutoTranslateDescription">輸入內容等待一定時間後自動執行翻譯。</sys:String>
+    <sys:String x:Key="General_AutoTranslateDelay">自動翻譯延時</sys:String>
+    <sys:String x:Key="General_AutoTranslateDelayDescription">輸入內容等待時間，單位：毫秒。</sys:String>
     <sys:String x:Key="General_LineBreakHandleType">取詞換行處理</sys:String>
     <sys:String x:Key="General_LineBreakHandleTypeDescription" xml:space="preserve">包括劃詞、截圖翻譯、剪貼簿、靜默 OCR 取詞場景的換行處理。&#10;「移除多餘換行」主要針對 PDF 取詞場景，移除多餘的換行與斷句，但對非 PDF 取詞可能會有影響。</sys:String>
     <sys:String x:Key="General_ImageQuality">圖片品質</sys:String>

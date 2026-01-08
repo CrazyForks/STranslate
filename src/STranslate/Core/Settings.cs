@@ -108,6 +108,16 @@ public partial class Settings : ObservableObject
     /// </summary>
     [ObservableProperty] public partial bool TranslateOnPaste { get; set; } = true;
 
+    /// <summary>
+    /// 自动翻译
+    /// </summary>
+    [ObservableProperty] public partial bool AutoTranslate { get; set; } = false;
+
+    /// <summary>
+    /// 自动翻译延时（毫秒）
+    /// </summary>
+    [ObservableProperty] public partial int AutoTranslateDelayMs { get; set; } = 500;
+
     public double PreviousScreenWidth { get; set; }
     public double PreviousScreenHeight { get; set; }
     [ObservableProperty] public partial int CustomScreenNumber { get; set; } = 1;
@@ -312,7 +322,8 @@ public partial class Settings : ObservableObject
 
             if (e.PropertyName == nameof(MainWindowTop) ||
                 e.PropertyName == nameof(MainWindowLeft) ||
-                e.PropertyName == nameof(MainWindowWidth))
+                e.PropertyName == nameof(MainWindowWidth) ||
+                e.PropertyName == nameof(AutoTranslateDelayMs))
                 SaveWithDebounce();
             else
                 Save();
@@ -366,6 +377,7 @@ public partial class Settings : ObservableObject
 
     #region Private Methods
 
+    // TODO: 使用 DebounceExecutor 替换此防抖实现
     private Timer? _saveTimer;
     private readonly Lock _timerLock = new();
     private const int DebounceTimeMs = 500; // 防抖时间

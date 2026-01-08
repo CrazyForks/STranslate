@@ -54,6 +54,10 @@
     <sys:String x:Key="General_HttpTimeoutDescription">Network request timeout in seconds.</sys:String>
     <sys:String x:Key="General_TranslateOnPaste">Translate on Paste</sys:String>
     <sys:String x:Key="General_TranslateOnPasteDescription">Execute translation immediately when text is pasted into the input box.</sys:String>
+    <sys:String x:Key="General_AutoTranslate">Auto-Translate</sys:String>
+    <sys:String x:Key="General_AutoTranslateDescription">Automatically executes translation after a certain waiting time when inputting content.</sys:String>
+    <sys:String x:Key="General_AutoTranslateDelay">Auto-Translate Delay</sys:String>
+    <sys:String x:Key="General_AutoTranslateDelayDescription">Waiting time after inputting content, unit: milliseconds.</sys:String>
     <sys:String x:Key="General_LineBreakHandleType">Line Break Handling</sys:String>
     <sys:String x:Key="General_LineBreakHandleTypeDescription" xml:space="preserve">Includes line break handling for word selection, screenshot translation, clipboard, and silent OCR scenarios.&#10;"Remove extra line breaks" is mainly for PDF text extraction, removing redundant line breaks and sentence breaks, but it may affect non-PDF extraction.</sys:String>
     <sys:String x:Key="General_ImageQuality">Image Quality</sys:String>

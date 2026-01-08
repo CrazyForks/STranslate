@@ -38,6 +38,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     public VocabularyService VocabularyService { get; }
 
     private readonly SqlService _sqlService;
+    private readonly DebounceExecutor _debounceExecutor;
 
     public Settings Settings { get; }
     public HotkeySettings HotkeySettings { get; }
@@ -73,6 +74,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         Settings = settings;
         HotkeySettings = hotkeySettings;
 
+        _debounceExecutor = new();
         _i18n.OnLanguageChanged += OnLanguageChanged;
     }
 
@@ -1522,6 +1524,19 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     {
         if (!string.IsNullOrWhiteSpace(IdentifiedLanguage))
             IdentifiedLanguage = string.Empty;
+
+        if (!Settings.AutoTranslate || string.IsNullOrWhiteSpace(value))
+            return;
+
+        void Execute()
+        {
+            CancelAllOperations();
+            App.Current.Dispatcher.Invoke(() => TranslateCommand.Execute(null));
+            Show();
+            UpdateCaret();
+        }
+
+        _debounceExecutor.Execute(Execute, TimeSpan.FromMilliseconds(Settings.AutoTranslateDelayMs));
     }
 
     partial void OnIsMouseHookChanged(bool value) => _ = ToggleMouseHookAsync(value);

@@ -54,6 +54,10 @@
     <sys:String x:Key="General_HttpTimeoutDescription">请求网络请求的超时时间，单位：秒。</sys:String>
     <sys:String x:Key="General_TranslateOnPaste">粘贴立即翻译</sys:String>
     <sys:String x:Key="General_TranslateOnPasteDescription">输入框内粘贴文本立即执行翻译。</sys:String>
+    <sys:String x:Key="General_AutoTranslate">自动翻译</sys:String>
+    <sys:String x:Key="General_AutoTranslateDescription">输入内容等待一定时间后自动执行翻译。</sys:String>
+    <sys:String x:Key="General_AutoTranslateDelay">自动翻译延时</sys:String>
+    <sys:String x:Key="General_AutoTranslateDelayDescription">输入内容等待时间，单位：毫秒。</sys:String>
     <sys:String x:Key="General_LineBreakHandleType">取词换行处理</sys:String>
     <sys:String x:Key="General_LineBreakHandleTypeDescription" xml:space="preserve">包括划词、截图翻译、剪贴板、静默OCR取词场景的换行处理&#10;「移除多余换行」主要针对PDF取词场景，移除多余换行和断句，但是对非PDF取词可能有影响</sys:String>
     <sys:String x:Key="General_ImageQuality">图片质量</sys:String>

@@ -21,6 +21,9 @@ public partial class GeneralViewModel : SearchViewModelBase
     private void ResetFontFamily() => Settings.FontFamily = Win32Helper.GetSystemDefaultFont();
 
     [RelayCommand]
+    private void ResetAutoTransDelay() => Settings.AutoTranslateDelayMs = 500;
+
+    [RelayCommand]
     private void ResetFontSize() => Settings.FontSize = 14;
 
     public List<int> ScreenNumbers
