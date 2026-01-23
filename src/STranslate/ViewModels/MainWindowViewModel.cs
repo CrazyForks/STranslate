@@ -31,6 +31,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     private readonly INotification _notification;
     private double _cacheLeft;
     private double _cacheTop;
+    private CancellationTokenSource? _altKeyDelayCts;
 
     public TranslateService TranslateService { get; }
     public OcrService OcrService { get; }
@@ -82,11 +83,25 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         GlobalKeyboardHelper.Start();
     }
 
-    private void OnGlobalKeyboardKeyDown(Key key)
+    private async void OnGlobalKeyboardKeyDown(Key key)
     {
         if (key == Key.LeftAlt)
         {
-            IsIncreamentalTranslate = true;
+            // 取消之前的延迟任务（如果有）
+            _altKeyDelayCts?.Cancel();
+            _altKeyDelayCts?.Dispose();
+            _altKeyDelayCts = new CancellationTokenSource();
+
+            try
+            {
+                // 延迟 1 秒后才开启功能
+                await Task.Delay(1000, _altKeyDelayCts.Token);
+                IsIncreamentalTranslate = true;
+            }
+            catch (OperationCanceledException)
+            {
+                // 延迟被取消（短按），不开启功能
+            }
         }
     }
 
@@ -94,6 +109,12 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     {
         if (key == Key.LeftAlt)
         {
+            // 取消延迟任务
+            _altKeyDelayCts?.Cancel();
+            _altKeyDelayCts?.Dispose();
+            _altKeyDelayCts = null;
+
+            // 关闭功能
             IsIncreamentalTranslate = false;
         }
     }
