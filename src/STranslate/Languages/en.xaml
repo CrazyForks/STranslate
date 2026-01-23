@@ -67,6 +67,11 @@
     <sys:String x:Key="General_ImageQualityDescription">Adjust the quality when processing images. Online OCR services may limit image size.</sys:String>
     <sys:String x:Key="General_DoubleClickTrayFunction">Double-Click Tray Function</sys:String>
     <sys:String x:Key="General_DoubleClickTrayFunctionDescription">Selecting any action other than "None" will disable the tray single-click toggle main window display function.</sys:String>
+    <sys:String x:Key="General_IncreamentalTranslate">Incremental Translation</sys:String>
+    <sys:String x:Key="General_IncreamentalTranslateDescription">Hold down the hotkey and select text to continuously append content. Release the mouse to translate immediately.</sys:String>
+    <sys:String x:Key="General_IncreamentalTranslateVisible">Show enable/disable incremental translation button on main interface</sys:String>
+    <sys:String x:Key="General_IncreamentalTranslateKey">Incremental Translation Key</sys:String>
+    <sys:String x:Key="General_IncreamentalTranslateKeyDescription">Configurable after disabling the incremental translation feature</sys:String>
     <sys:String x:Key="General_Language">Language</sys:String>
     <sys:String x:Key="General_ScreenshotTranslateInImage">In-Image Translation</sys:String>
     <sys:String x:Key="General_ScreenshotTranslateInImageDescription">Whether to enable in-image translation during screenshot translation.</sys:String>

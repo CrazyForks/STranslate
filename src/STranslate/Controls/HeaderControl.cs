@@ -311,6 +311,40 @@ public class HeaderControl : Control
 
     #endregion
 
+    #region IncreamentalTranslate
+
+    public bool IsEnableIncreamentalTranslate
+    {
+        get => (bool)GetValue(IsEnableIncreamentalTranslateProperty);
+        set => SetValue(IsEnableIncreamentalTranslateProperty, value);
+    }
+
+    public static readonly DependencyProperty IsEnableIncreamentalTranslateProperty =
+        DependencyProperty.Register(
+            nameof(IsEnableIncreamentalTranslate),
+            typeof(bool),
+            typeof(HeaderControl),
+            new FrameworkPropertyMetadata(
+                false,
+                FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+    public bool IsEnableIncreamentalTranslateVisible
+    {
+        get => (bool)GetValue(IsEnableIncreamentalTranslateVisibleProperty);
+        set => SetValue(IsEnableIncreamentalTranslateVisibleProperty, value);
+    }
+
+    public static readonly DependencyProperty IsEnableIncreamentalTranslateVisibleProperty =
+        DependencyProperty.Register(
+            nameof(IsEnableIncreamentalTranslateVisible),
+            typeof(bool),
+            typeof(HeaderControl),
+            new FrameworkPropertyMetadata(
+                true,
+                FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+    #endregion
+
     public override void OnApplyTemplate()
     {
         base.OnApplyTemplate();

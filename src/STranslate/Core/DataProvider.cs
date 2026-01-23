@@ -2,6 +2,7 @@ using iNKORE.UI.WPF.Modern;
 using Serilog.Events;
 using STranslate.Plugin;
 using STranslate.ViewModels.Pages;
+using System.Windows.Input;
 
 namespace STranslate.Core;
 
@@ -174,6 +175,18 @@ public class DataProvider
     public class DoubleClickTrayFunctionData : DropdownDataGeneric<DoubleClickTrayFunction> { }
     public List<DoubleClickTrayFunctionData> DoubleClickTrayFunctions { get; } =
         DropdownDataGeneric<DoubleClickTrayFunction>.GetValues<DoubleClickTrayFunctionData>("DoubleClickTrayFunction");
+
+    #endregion
+
+    #region IncrementalTranslateKeys
+
+    public List<Key> IncrementalTranslateKeys { get; } =
+    [
+        Key.LeftAlt,
+        Key.RightAlt,
+        Key.LeftCtrl,
+        Key.RightCtrl
+    ];
 
     #endregion
 }

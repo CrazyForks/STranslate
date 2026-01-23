@@ -113,9 +113,6 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     public partial bool IsIncreamentalTranslate { get; set; } = false;
 
     [ObservableProperty]
-    public partial bool IsEnableIncreamentalTranslate { get; set; } = false;
-
-    [ObservableProperty]
     public partial bool IsIdentifyProcessing { get; set; } = false;
 
     [ObservableProperty]
@@ -1026,7 +1023,10 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
 
     #region Increatemental Translate
 
-    partial void OnIsEnableIncreamentalTranslateChanged(bool value)
+    [RelayCommand]
+    private void ToggleIncreamentalTranslate() => Settings.IsEnableIncreamentalTranslate = !Settings.IsEnableIncreamentalTranslate;
+
+    public void OnIsEnableIncreamentalTranslateChanged(bool value)
     {
         if (value)
         {
@@ -1042,8 +1042,41 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         }
     }
 
-    [RelayCommand]
-    private void ToggleIncreamentalTranslate() => IsEnableIncreamentalTranslate = !IsEnableIncreamentalTranslate;
+    private async void OnGlobalKeyboardKeyDown(Key key)
+    {
+        if (key != Settings.IncreamentalTranslateKey)
+            return;
+
+        // 取消之前的延迟任务（如果有）
+        _altKeyDelayCts?.Cancel();
+        _altKeyDelayCts?.Dispose();
+        _altKeyDelayCts = new CancellationTokenSource();
+
+        try
+        {
+            // 延迟 1 秒后才开启功能
+            await Task.Delay(1000, _altKeyDelayCts.Token);
+            IsIncreamentalTranslate = true;
+        }
+        catch (OperationCanceledException)
+        {
+            // 延迟被取消（短按），不开启功能
+        }
+    }
+
+    private void OnGlobalKeyboardKeyUp(Key key)
+    {
+        if (key != Settings.IncreamentalTranslateKey)
+            return;
+
+        // 取消延迟任务
+        _altKeyDelayCts?.Cancel();
+        _altKeyDelayCts?.Dispose();
+        _altKeyDelayCts = null;
+
+        // 关闭功能
+        IsIncreamentalTranslate = false;
+    }
 
     partial void OnIsIncreamentalTranslateChanged(bool enable)
     {
@@ -1051,6 +1084,8 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         {
             Show();
             IsTopmost = true;
+            UpdateCacheText();
+
             _ = MouseKeyHelper.StartMouseTextSelectionAsync();
             MouseKeyHelper.MouseTextSelected += OnMouseTextSelectedIncreatemental;
         }
@@ -1060,13 +1095,22 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
             MouseKeyHelper.StopMouseTextSelection();
             MouseKeyHelper.MouseTextSelected -= OnMouseTextSelectedIncreatemental;
 
-            // 执行翻译
-            if (string.IsNullOrWhiteSpace(InputText))
+            if (string.IsNullOrWhiteSpace(InputText) || _oldText == InputText)
                 return;
 
             Show();
+            // 执行翻译
             TranslateCommand.Execute(null);
+
+            UpdateCacheText();
         }
+    }
+
+    private string _oldText = string.Empty;
+
+    private void UpdateCacheText()
+    {
+        _oldText = InputText;
     }
 
     private void OnMouseTextSelectedIncreatemental(string text)
@@ -1075,42 +1119,6 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         {
             InputText += Utilities.LinebreakHandler(text, Settings.LineBreakHandleType);
         });
-    }
-
-    private async void OnGlobalKeyboardKeyDown(Key key)
-    {
-        if (key == Key.LeftAlt)
-        {
-            // 取消之前的延迟任务（如果有）
-            _altKeyDelayCts?.Cancel();
-            _altKeyDelayCts?.Dispose();
-            _altKeyDelayCts = new CancellationTokenSource();
-
-            try
-            {
-                // 延迟 1 秒后才开启功能
-                await Task.Delay(1000, _altKeyDelayCts.Token);
-                IsIncreamentalTranslate = true;
-            }
-            catch (OperationCanceledException)
-            {
-                // 延迟被取消（短按），不开启功能
-            }
-        }
-    }
-
-    private void OnGlobalKeyboardKeyUp(Key key)
-    {
-        if (key == Key.LeftAlt)
-        {
-            // 取消延迟任务
-            _altKeyDelayCts?.Cancel();
-            _altKeyDelayCts?.Dispose();
-            _altKeyDelayCts = null;
-
-            // 关闭功能
-            IsIncreamentalTranslate = false;
-        }
     }
 
     #endregion

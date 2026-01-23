@@ -98,6 +98,8 @@
             IsAutoTranslate="{Binding Settings.AutoTranslate}"
             IsAutoTranslateVisible="{Binding Settings.IsAutoTranslateVisible}"
             IsColorSchemeVisible="{Binding Settings.IsColorSchemeVisible}"
+            IsEnableIncreamentalTranslate="{Binding Settings.IsEnableIncreamentalTranslate}"
+            IsEnableIncreamentalTranslateVisible="{Binding Settings.IsEnableIncreamentalTranslateVisible}"
             IsHideInput="{Binding Settings.HideInput}"
             IsHideInputVisible="{Binding Settings.IsHideInputVisible}"
             IsHistoryNavigationVisible="{Binding Settings.IsHistoryNavigationVisible}"

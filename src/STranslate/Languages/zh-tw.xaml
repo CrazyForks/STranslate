@@ -67,6 +67,11 @@
     <sys:String x:Key="General_ImageQualityDescription">處理圖片時調整品質，線上OCR服務可能會限制圖片大小。</sys:String>
     <sys:String x:Key="General_DoubleClickTrayFunction">雙擊托盤功能</sys:String>
     <sys:String x:Key="General_DoubleClickTrayFunctionDescription">選擇除「無操作」的其他操作會停用托盤單擊切換主視窗顯示功能。</sys:String>
+    <sys:String x:Key="General_IncreamentalTranslate">增量翻譯</sys:String>
+    <sys:String x:Key="General_IncreamentalTranslateDescription">按住快速鍵劃詞可持續追加內容，鬆開滑鼠即刻翻譯。</sys:String>
+    <sys:String x:Key="General_IncreamentalTranslateVisible">在主介面上顯示開啟/停用增量翻譯按鈕</sys:String>
+    <sys:String x:Key="General_IncreamentalTranslateKey">增量翻譯按鍵</sys:String>
+    <sys:String x:Key="General_IncreamentalTranslateKeyDescription">關閉增量翻譯功能後可配置</sys:String>
     <sys:String x:Key="General_Language">語言</sys:String>
     <sys:String x:Key="General_ScreenshotTranslateInImage">圖片內翻譯</sys:String>
     <sys:String x:Key="General_ScreenshotTranslateInImageDescription">截圖翻譯時是否啟用圖片內翻譯。</sys:String>

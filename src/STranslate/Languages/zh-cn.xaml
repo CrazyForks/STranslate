@@ -67,6 +67,11 @@
     <sys:String x:Key="General_ImageQualityDescription">处理图片时质量调整，在线OCR服务可能会限制图片大小</sys:String>
     <sys:String x:Key="General_DoubleClickTrayFunction">双击托盘程序功能</sys:String>
     <sys:String x:Key="General_DoubleClickTrayFunctionDescription">选择除「无操作」的其他操作会禁用托盘单击切换主窗口显示功能</sys:String>
+    <sys:String x:Key="General_IncreamentalTranslate">增量翻译</sys:String>
+    <sys:String x:Key="General_IncreamentalTranslateDescription">按住快捷键划词可持续追加内容，松开鼠标即刻翻译。</sys:String>
+    <sys:String x:Key="General_IncreamentalTranslateVisible">在主界面上显示开启/禁用增量翻译按钮</sys:String>
+    <sys:String x:Key="General_IncreamentalTranslateKey">增量翻译按键</sys:String>
+    <sys:String x:Key="General_IncreamentalTranslateKeyDescription">关闭增量翻译功能后可配置</sys:String>
     <sys:String x:Key="General_Language">语言</sys:String>
     <sys:String x:Key="General_ScreenshotTranslateInImage">图片内翻译</sys:String>
     <sys:String x:Key="General_ScreenshotTranslateInImageDescription">截图翻译时是否启用图片内翻译</sys:String>

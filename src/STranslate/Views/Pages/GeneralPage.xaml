@@ -335,6 +335,32 @@
                         SelectedValuePath="Value" />
                 </ui:SettingsCard>
 
+                <ui:SettingsExpander Description="{DynamicResource General_IncreamentalTranslateDescription}" Header="{DynamicResource General_IncreamentalTranslate}">
+                    <ui:SettingsExpander.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.TextIndentIncrease_20_Regular}" />
+                    </ui:SettingsExpander.HeaderIcon>
+                    <ui:ToggleSwitch
+                        IsOn="{Binding Settings.IsEnableIncreamentalTranslate}"
+                        OffContent="{DynamicResource Disable}"
+                        OnContent="{DynamicResource Enable}" />
+
+                    <ui:SettingsExpander.Items>
+                        <ui:SettingsCard Header="{DynamicResource General_IncreamentalTranslateVisible}">
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.IsEnableIncreamentalTranslateVisible}"
+                                OffContent="{DynamicResource Hide}"
+                                OnContent="{DynamicResource Show}" />
+                        </ui:SettingsCard>
+
+                        <ui:SettingsCard
+                            Description="{DynamicResource General_IncreamentalTranslateKeyDescription}"
+                            Header="{DynamicResource General_IncreamentalTranslateKey}"
+                            IsEnabled="{Binding Settings.IsEnableIncreamentalTranslate, Converter={cnvt:BoolInverseConverter}}">
+                            <ComboBox ItemsSource="{Binding DataProvider.IncrementalTranslateKeys}" SelectedValue="{Binding Settings.IncreamentalTranslateKey}" />
+                        </ui:SettingsCard>
+                    </ui:SettingsExpander.Items>
+                </ui:SettingsExpander>
+
                 <!--#endregion-->
 
                 <!--#region Appearance-->

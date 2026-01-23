@@ -99,6 +99,12 @@
                                     ToolTip="{DynamicResource General_AutoTranslate}"
                                     Type="Toggle"
                                     Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsAutoTranslateVisible, Converter={cnvt:BoolToVisibilityConverter}}" />
+                                <control:IconButton
+                                    Icon="{x:Static ui:FluentSystemIcons.TextIndentIncrease_20_Regular}"
+                                    IsOn="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsEnableIncreamentalTranslate}"
+                                    ToolTip="{DynamicResource General_IncreamentalTranslate}"
+                                    Type="Toggle"
+                                    Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsEnableIncreamentalTranslateVisible, Converter={cnvt:BoolToVisibilityConverter}}" />
                             </ikw:SimpleStackPanel>
                         </DockPanel>
                     </Border>

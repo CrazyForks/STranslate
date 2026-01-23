@@ -5,9 +5,11 @@ using Serilog.Core;
 using Serilog.Events;
 using STranslate.Helpers;
 using STranslate.Plugin;
+using STranslate.ViewModels;
 using STranslate.Views;
 using System.ComponentModel;
 using System.Drawing.Imaging;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -163,6 +165,10 @@ public partial class Settings : ObservableObject
     /// </summary>
     [ObservableProperty] public partial LineBreakHandleType LineBreakHandleType { get; set; } = LineBreakHandleType.RemoveExtraLineBreak;
     [ObservableProperty] public partial ImageQuality ImageQuality { get; set; } = ImageQuality.Medium;
+
+    [ObservableProperty] public partial bool IsEnableIncreamentalTranslate { get; set; } = false;
+    [ObservableProperty] public partial bool IsEnableIncreamentalTranslateVisible { get; set; } = true;
+    [ObservableProperty] public partial Key IncreamentalTranslateKey { get; set; } = Key.LeftAlt;
 
     #region Layout Analysis
     /* 版面分析参数配置
@@ -353,6 +359,7 @@ public partial class Settings : ObservableObject
         ApplyTheme();
         ApplyDeactived();
         ApplyExternalCall();
+        ApplyEnableIncreamentalTranslate();
     }
 
     internal ImageFormat GetImageFormat() =>
@@ -417,6 +424,9 @@ public partial class Settings : ObservableObject
             case nameof(EnableExternalCall):
             case nameof(ExternalCallPort):
                 ApplyExternalCall();
+                break;
+            case nameof(IsEnableIncreamentalTranslate):
+                ApplyEnableIncreamentalTranslate();
                 break;
             case nameof(DisableGlobalHotkeys):
                 Ioc.Default.GetRequiredService<HotkeySettings>().ApplyGlobalHotkeys();
@@ -569,6 +579,12 @@ public partial class Settings : ObservableObject
         {
             externalCallService.StopService();
         }
+    }
+
+    private void ApplyEnableIncreamentalTranslate()
+    {
+        Ioc.Default.GetRequiredService<MainWindowViewModel>()
+            .OnIsEnableIncreamentalTranslateChanged(IsEnableIncreamentalTranslate);
     }
 
     #endregion
