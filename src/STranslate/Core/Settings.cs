@@ -168,7 +168,7 @@ public partial class Settings : ObservableObject
 
     [ObservableProperty] public partial bool IsEnableIncreamentalTranslate { get; set; } = false;
     [ObservableProperty] public partial bool IsEnableIncreamentalTranslateVisible { get; set; } = true;
-    [ObservableProperty] public partial Key IncreamentalTranslateKey { get; set; } = Key.LeftAlt;
+    [ObservableProperty] public partial Key IncreamentalTranslateKey { get; set; } = Key.F7;
 
     #region Layout Analysis
     /* 版面分析参数配置

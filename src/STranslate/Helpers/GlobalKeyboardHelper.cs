@@ -1,19 +1,20 @@
 using Gma.System.MouseKeyHook;
-using System.Collections.Concurrent;
 using System.Windows.Input;
 
 namespace STranslate.Helpers;
 
+/// <summary>
+/// 全局键盘钩子助手类，支持阻止按键传递
+/// </summary>
 public static class GlobalKeyboardHelper
 {
     private static IKeyboardMouseEvents? _hook;
-    private static bool _started;
+    private static readonly HashSet<Key> _suppressedKeys = [];
 
     /// <summary>
-    /// 当前按下的按键状态表
+    /// 记录当前正在按下的键，防止重复触发 KeyDown
     /// </summary>
-    private static readonly ConcurrentDictionary<Key, bool> _keyStates = new();
-    private static readonly HashSet<Key> _ignoredKeyUps = [];
+    private static readonly HashSet<Key> _pressedKeys = [];
 
     public static event Action<Key>? KeyDown;
     public static event Action<Key>? KeyUp;
@@ -23,14 +24,11 @@ public static class GlobalKeyboardHelper
     /// </summary>
     public static void Start()
     {
-        if (_started)
-            return;
+        if (_hook != null) return;
 
         _hook = Hook.GlobalEvents();
         _hook.KeyDown += OnKeyDown;
         _hook.KeyUp += OnKeyUp;
-
-        _started = true;
     }
 
     /// <summary>
@@ -38,79 +36,89 @@ public static class GlobalKeyboardHelper
     /// </summary>
     public static void Stop()
     {
-        if (!_started)
-            return;
+        if (_hook == null) return;
 
-        if (_hook != null)
-        {
-            _hook.KeyDown -= OnKeyDown;
-            _hook.KeyUp -= OnKeyUp;
-            _hook.Dispose();
-            _hook = null;
-        }
-
-        _keyStates.Clear();
-        _started = false;
+        _hook.KeyDown -= OnKeyDown;
+        _hook.KeyUp -= OnKeyUp;
+        _hook.Dispose();
+        _hook = null;
+        _suppressedKeys.Clear();
+        _pressedKeys.Clear();
+        _ignoreNextKeyUp.Clear();
     }
 
     /// <summary>
-    /// 某个按键是否处于按下状态
+    /// 添加需要拦截的按键（该按键将不会传递到其他应用）
     /// </summary>
-    public static bool IsKeyPressed(Key key)
+    public static void SuppressKey(Key key)
     {
-        return _keyStates.TryGetValue(key, out var pressed) && pressed;
+        _suppressedKeys.Add(key);
     }
 
     /// <summary>
-    /// 是否同时按下多个按键
+    /// 移除拦截的按键
     /// </summary>
-    public static bool IsPressed(params Key[] keys)
+    public static void UnsuppressKey(Key key)
     {
-        foreach (var key in keys)
-        {
-            if (!IsKeyPressed(key))
-                return false;
-        }
-        return true;
+        _suppressedKeys.Remove(key);
     }
 
+    /// <summary>
+    /// 清除所有拦截的按键
+    /// </summary>
+    public static void ClearSuppressedKeys()
+    {
+        _suppressedKeys.Clear();
+    }
+
+    /// <summary>
+    /// 忽略下一次指定按键的 KeyUp 事件
+    /// </summary>
+    private static readonly HashSet<Key> _ignoreNextKeyUp = [];
     public static void IgnoreNextKeyUp(Key key)
     {
-        _ignoredKeyUps.Add(key);
+        _ignoreNextKeyUp.Add(key);
     }
 
     private static void OnKeyDown(object? sender, System.Windows.Forms.KeyEventArgs e)
     {
-        var key = ConvertKey(e.KeyCode);
+        var key = KeyInterop.KeyFromVirtualKey((int)e.KeyCode);
 
-        // 如果这个键已经处于按下状态,则忽略重复的KeyDown事件
-        if (_keyStates.TryGetValue(key, out var pressed) && pressed)
+        // 如果该键已经在按下状态，忽略重复的 KeyDown 事件
+        if (!_pressedKeys.Add(key))
             return;
 
-        _keyStates[key] = true;
+        // 如果该键在拦截列表中，阻止其传递
+        if (_suppressedKeys.Contains(key))
+        {
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
 
         KeyDown?.Invoke(key);
     }
 
     private static void OnKeyUp(object? sender, System.Windows.Forms.KeyEventArgs e)
     {
-        var key = ConvertKey(e.KeyCode);
+        var key = KeyInterop.KeyFromVirtualKey((int)e.KeyCode);
+
+        // 从按下状态集合中移除
+        _pressedKeys.Remove(key);
 
         // 检查是否需要忽略此次 KeyUp
-        if (_ignoredKeyUps.Remove(key))
+        if (_ignoreNextKeyUp.Remove(key))
+        {
+            System.Diagnostics.Debug.WriteLine($"忽略按键{key}");
             return;
+        }
 
-        // 如果这个键已经处于松开状态,则忽略重复的KeyUp事件
-        if (_keyStates.TryGetValue(key, out var pressed) && !pressed)
-            return;
-
-        _keyStates[key] = false;
+        // 如果该键在拦截列表中，阻止其传递
+        if (_suppressedKeys.Contains(key))
+        {
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
 
         KeyUp?.Invoke(key);
-    }
-
-    private static Key ConvertKey(System.Windows.Forms.Keys winFormsKey)
-    {
-        return KeyInterop.KeyFromVirtualKey((int)winFormsKey);
     }
 }

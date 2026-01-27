@@ -33,7 +33,6 @@ public partial class GeneralViewModel : SearchViewModelBase
     {
         var dialog = new HotkeyControlDialog(HotkeyType.Global, Settings.IncreamentalTranslateKey.ToString(), "LeftAlt");
         await dialog.ShowAsync();
-        // TODO: 注册全局快捷键 啥也不干
         if (dialog.ReturnType == HotkeyControlDialog.HkReturnType.Save)
         {
             Settings.IncreamentalTranslateKey = Enum.Parse<Key>(dialog.ResultValue);
