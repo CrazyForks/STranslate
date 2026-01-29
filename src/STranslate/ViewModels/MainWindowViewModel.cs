@@ -109,9 +109,6 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     public partial bool IsMouseHook { get; set; } = false;
 
     [ObservableProperty]
-    public partial bool IsIncrementalTranslate { get; set; } = false;
-
-    [ObservableProperty]
     public partial bool IsIdentifyProcessing { get; set; } = false;
 
     [ObservableProperty]
@@ -1021,75 +1018,31 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     #endregion
 
     #region Incretemental Translate
-    public bool IsIncremented { get; set; } = false;
 
-    public void OnIncrementalTranslateChanged(bool value)
+    public void OnIncKeyPressed()
     {
-        if (value)
-        {
-            GlobalKeyboardHelper.KeyDown += OnGlobalKeyboardKeyDown;
-            GlobalKeyboardHelper.KeyUp += OnGlobalKeyboardKeyUp;
-            GlobalKeyboardHelper.Start();
-            IsIncremented = true;
-        }
-        else
-        {
-            GlobalKeyboardHelper.KeyDown -= OnGlobalKeyboardKeyDown;
-            GlobalKeyboardHelper.KeyUp -= OnGlobalKeyboardKeyUp;
-            GlobalKeyboardHelper.Stop();
-            IsIncremented = false;
-        }
+        Show();
+        IsTopmost = true;
+        UpdateCacheText();
+
+        _ = MouseKeyHelper.StartMouseTextSelectionAsync();
+        MouseKeyHelper.MouseTextSelected += OnMouseTextSelectedIncretemental;
     }
 
-    private async void OnGlobalKeyboardKeyDown(Key key)
+    public void OnIncKeyReleased()
     {
-        if (key != HotkeySettings.IncrementalTranslateKey)
+        IsTopmost = false;
+        MouseKeyHelper.StopMouseTextSelection();
+        MouseKeyHelper.MouseTextSelected -= OnMouseTextSelectedIncretemental;
+
+        if (string.IsNullOrWhiteSpace(InputText) || _oldText == InputText)
             return;
 
-        // 开启功能后拦截该键（避免影响其他应用）
-        GlobalKeyboardHelper.SuppressKey(HotkeySettings.IncrementalTranslateKey);
-
-        IsIncrementalTranslate = true;
-    }
-
-    private void OnGlobalKeyboardKeyUp(Key key)
-    {
-        if (key != HotkeySettings.IncrementalTranslateKey)
-            return;
-
-        // 取消拦截
-        GlobalKeyboardHelper.UnsuppressKey(HotkeySettings.IncrementalTranslateKey);
-
-        // 关闭功能
-        IsIncrementalTranslate = false;
-    }
-
-    partial void OnIsIncrementalTranslateChanged(bool enable)
-    {
-        if (enable)
-        {
-            Show();
-            IsTopmost = true;
-            UpdateCacheText();
-
-            _ = MouseKeyHelper.StartMouseTextSelectionAsync();
-            MouseKeyHelper.MouseTextSelected += OnMouseTextSelectedIncretemental;
-        }
-        else
-        {
-            IsTopmost = false;
-            MouseKeyHelper.StopMouseTextSelection();
-            MouseKeyHelper.MouseTextSelected -= OnMouseTextSelectedIncretemental;
-
-            if (string.IsNullOrWhiteSpace(InputText) || _oldText == InputText)
-                return;
-
-            Show();
-            // 执行翻译
-            TranslateCommand.Execute(null);
-            UpdateCaret();
-            UpdateCacheText();
-        }
+        Show();
+        // 执行翻译
+        TranslateCommand.Execute(null);
+        UpdateCaret();
+        UpdateCacheText();
     }
 
     private string _oldText = string.Empty;
@@ -1753,9 +1706,6 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
 
         MouseKeyHelper.MouseTextSelected -= OnMouseTextSelected;
         MouseKeyHelper.MouseTextSelected -= OnMouseTextSelectedIncretemental;
-
-        GlobalKeyboardHelper.KeyDown -= OnGlobalKeyboardKeyDown;
-        GlobalKeyboardHelper.KeyUp -= OnGlobalKeyboardKeyUp;
 
         // 如果窗口一直没打开过，恢复位置后再退出
         if (Settings.MainWindowLeft <= -18000 && Settings.MainWindowTop <= -18000)

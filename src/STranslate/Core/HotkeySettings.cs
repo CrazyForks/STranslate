@@ -216,16 +216,18 @@ public partial class HotkeySettings : ObservableObject
 
     private void ApplyIncrementalTranslate()
     {
-        HotkeyMapper.SetExtraHotkey(IncrementalTranslateKey.ToString());
         var vm = Ioc.Default.GetRequiredService<MainWindowViewModel>();
-
-        if (vm.IsIncremented && IncrementalTranslateKey == Key.None)
+        if (IncrementalTranslateKey == Key.None)
         {
-            vm.OnIncrementalTranslateChanged(false);
+            HotkeyMapper.StopGlobalKeyboardMonitoring();
         }
-        else if (!vm.IsIncremented && IncrementalTranslateKey != Key.None)
+        else
         {
-            vm.OnIncrementalTranslateChanged(true);
+            HotkeyMapper.RegisterHoldKey(
+                IncrementalTranslateKey,
+                vm.OnIncKeyPressed,
+                vm.OnIncKeyReleased);
+            HotkeyMapper.StartGlobalKeyboardMonitoring();
         }
     }
 
