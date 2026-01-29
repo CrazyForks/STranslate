@@ -206,10 +206,10 @@ public partial class HotkeySettings : ObservableObject
     {
         MainWindowViewModel = Ioc.Default.GetRequiredService<MainWindowViewModel>();
 
+        ApplyIncrementalTranslate();
+
         if (!Ioc.Default.GetRequiredService<Settings>().DisableGlobalHotkeys)
             RegisterHotkeys();
-
-        ApplyIncrementalTranslate();
 
         UpdateTrayIconWithPriority();
     }
