@@ -149,6 +149,15 @@ public class ExternalCallService(
                         await viewModel.ScreenshotTranslateHandlerAsync(bitmap);
                     }
                     break;
+                case ExternalCallAction.translate_ocr_image:
+                    if (string.IsNullOrWhiteSpace(content))
+                        viewModel.ImageTranslateCommand.Execute(null);
+                    else
+                    {
+                        using var bitmap = Utilities.ToBitmap(content);
+                        await viewModel.ImageTranslateHandlerAsync(bitmap);
+                    }
+                    break;
                 case ExternalCallAction.translate_crossword:
                     viewModel.CrosswordTranslateCommand.Execute(null);
                     break;
@@ -273,6 +282,7 @@ public enum ExternalCallAction
     translate_force,
     translate_input,
     translate_ocr,
+    translate_ocr_image,
     translate_crossword,
     translate_mousehook,
     translate_replace,

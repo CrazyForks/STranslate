@@ -669,7 +669,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         await ScreenshotTranslateHandlerAsync(bitmap, ocrPlugin, cancellationToken);
     }
 
-    public async Task ScreenshotTranslateHandlerAsync(System.Drawing.Bitmap? bitmap, IOcrPlugin? ocrPlugin = default, CancellationToken cancellationToken = default)
+    public async Task ScreenshotTranslateHandlerAsync(Bitmap? bitmap, IOcrPlugin? ocrPlugin = default, CancellationToken cancellationToken = default)
     {
         if (bitmap == null) return;
 
@@ -741,7 +741,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         await ImageTranslateHandlerAsync(bitmap, ocrPlugin);
     }
 
-    private async Task ImageTranslateHandlerAsync(Bitmap? bitmap, IOcrPlugin? ocrPlugin)
+    public async Task ImageTranslateHandlerAsync(Bitmap? bitmap, IOcrPlugin? ocrPlugin = default)
     {
         if (bitmap == null) return;
 
