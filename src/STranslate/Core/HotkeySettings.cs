@@ -15,7 +15,7 @@ public partial class HotkeySettings : ObservableObject
     private AppStorage<HotkeySettings> Storage { get; set; } = null!;
     private MainWindowViewModel MainWindowViewModel { get; set; } = null!;
 
-    [ObservableProperty] public partial Key IncrementalTranslateKey { get; set; } = Key.F7;
+    [ObservableProperty] public partial Key IncrementalTranslateKey { get; set; } = Key.None;
 
     #region Setting Items
 
