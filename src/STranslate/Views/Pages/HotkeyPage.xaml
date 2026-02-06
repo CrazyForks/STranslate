@@ -99,36 +99,6 @@
                     </Button>
                 </ui:SettingsCard>
 
-                <ui:SettingsExpander
-                    Description="{DynamicResource Hotkey_CrosswordTranslateIsUseCtrlSameC}"
-                    Header="{DynamicResource Hotkey_CrosswordTranslate}"
-                    IsExpanded="True">
-                    <ui:SettingsExpander.HeaderIcon>
-                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Keyboard_24_Regular}" />
-                    </ui:SettingsExpander.HeaderIcon>
-                    <ui:ToggleSwitch
-                        IsOn="{Binding HotkeySettings.CrosswordTranslateByCtrlSameC}"
-                        OffContent="{DynamicResource Off}"
-                        OnContent="{DynamicResource On}" />
-                    <ui:SettingsExpander.Items>
-                        <ui:SettingsCard
-                            Description="{DynamicResource Hotkey_CrosswordTranslateDescription}"
-                            Header="{DynamicResource Hotkey_CrosswordTranslateTraditional}">
-                            <control:HotkeyControl
-                                DefaultHotkey="{Binding HotkeySettings.CrosswordTranslateHotkey.Default}"
-                                Hotkey="{Binding HotkeySettings.CrosswordTranslateHotkey.Key}"
-                                IsRegistered="{Binding HotkeySettings.CrosswordTranslateHotkey.IsConflict}"
-                                WindowTitle="{DynamicResource Hotkey_CrosswordTranslate}" />
-                        </ui:SettingsCard>
-
-                        <ui:SettingsCard
-                            Description="{DynamicResource Hotkey_CrosswordTranslateByCtrlSameCDescription}"
-                            Header="Ctrl+C+C">
-                            <control:HotkeyDisplay Keys="Ctr+C+C" />
-                        </ui:SettingsCard>
-                    </ui:SettingsExpander.Items>
-                </ui:SettingsExpander>
-
                 <control:CardGroup>
                     <ui:SettingsCard Description="{DynamicResource Hotkey_OpenSTranslateDescription}" Header="{DynamicResource Hotkey_OpenSTranslate}">
                         <ui:SettingsCard.HeaderIcon>
@@ -150,6 +120,31 @@
                             Hotkey="{Binding HotkeySettings.InputTranslateHotkey.Key}"
                             IsRegistered="{Binding HotkeySettings.InputTranslateHotkey.IsConflict}"
                             WindowTitle="{DynamicResource Hotkey_InputTranslate}" />
+                    </ui:SettingsCard>
+
+                    <ui:SettingsCard
+                        Description="{DynamicResource Hotkey_CrosswordTranslateDescription}"
+                        Header="{DynamicResource Hotkey_CrosswordTranslate}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Keyboard_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <control:HotkeyControl
+                            DefaultHotkey="{Binding HotkeySettings.CrosswordTranslateHotkey.Default}"
+                            Hotkey="{Binding HotkeySettings.CrosswordTranslateHotkey.Key}"
+                            IsRegistered="{Binding HotkeySettings.CrosswordTranslateHotkey.IsConflict}"
+                            WindowTitle="{DynamicResource Hotkey_CrosswordTranslate}" />
+                    </ui:SettingsCard>
+
+                    <ui:SettingsCard
+                        Description="{DynamicResource Hotkey_CrosswordTranslateByCtrlSameCDescription}"
+                        Header="Ctrl+C+C">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Copy_24_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch
+                            IsOn="{Binding HotkeySettings.CrosswordTranslateByCtrlSameC}"
+                            OffContent="{DynamicResource Off}"
+                            OnContent="{DynamicResource On}" />
                     </ui:SettingsCard>
 
                     <ui:SettingsCard Description="{DynamicResource Hotkey_ReplaceTranslateDescription}" Header="{DynamicResource Hotkey_ReplaceTranslate}">
