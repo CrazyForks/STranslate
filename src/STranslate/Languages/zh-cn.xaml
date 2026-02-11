@@ -367,8 +367,9 @@
     <sys:String x:Key="CopyAsPascalCase">复制成大驼峰</sys:String>
     <sys:String x:Key="CopyAsCamelCase">复制成小驼峰</sys:String>
     <sys:String x:Key="CopyAsSnakeCase">复制成蛇形</sys:String>
-    <sys:String x:Key="InsertText">插入文本</sys:String>
+    <sys:String x:Key="InsertText">插入文本 (按住 Shift 以小写插入)</sys:String>
     <sys:String x:Key="BackTranslation">回译</sys:String>
+    <sys:String x:Key="CloseTransBack">关闭回译结果</sys:String>
     <sys:String x:Key="SaveToVocabularyWithNote">添加到生词本(含笔记)</sys:String>
 
     <sys:String x:Key="ExecuteTranslation">执行翻译</sys:String>

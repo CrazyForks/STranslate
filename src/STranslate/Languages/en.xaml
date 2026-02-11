@@ -367,8 +367,9 @@
     <sys:String x:Key="CopyAsPascalCase">Copy as PascalCase</sys:String>
     <sys:String x:Key="CopyAsCamelCase">Copy as camelCase</sys:String>
     <sys:String x:Key="CopyAsSnakeCase">Copy as snake_case</sys:String>
-    <sys:String x:Key="InsertText">Insert Text</sys:String>
+    <sys:String x:Key="InsertText">Insert Text (hold Shift for lowercase)</sys:String>
     <sys:String x:Key="BackTranslation">Back Translation</sys:String>
+    <sys:String x:Key="CloseTransBack">Close back translation result</sys:String>
     <sys:String x:Key="SaveToVocabularyWithNote">Save to Vocabulary with Note</sys:String>
 
     <sys:String x:Key="ExecuteTranslation">Execute Translation</sys:String>

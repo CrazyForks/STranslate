@@ -353,8 +353,9 @@
     <sys:String x:Key="CopyAsPascalCase">パスカルケースでコピー</sys:String>
     <sys:String x:Key="CopyAsCamelCase">キャメルケースでコピー</sys:String>
     <sys:String x:Key="CopyAsSnakeCase">スネークケースでコピー</sys:String>
-    <sys:String x:Key="InsertText">テキストを挿入</sys:String>
+    <sys:String x:Key="InsertText">テキストを挿入 (Shift を押しながら小文字で)</sys:String>
     <sys:String x:Key="BackTranslation">再翻訳 (逆翻訳)</sys:String>
+    <sys:String x:Key="CloseTransBack">再翻訳結果を閉じる</sys:String>
     <sys:String x:Key="SaveToVocabularyWithNote">単語帳に追加 (メモ付)</sys:String>
 
     <sys:String x:Key="ExecuteTranslation">翻訳を実行</sys:String>

@@ -777,10 +777,19 @@
                                             </Style.Triggers>
                                         </Style>
                                     </ikw:SimpleStackPanel.Style>
-                                    <control:IconButton
-                                        Command="{Binding RelativeSource={RelativeSource AncestorType=control:OutputControl}, Path=PlayAudioCommand}"
-                                        CommandParameter="{Binding Plugin.TransBackResult.Text}"
-                                        Icon="{x:Static ui:FluentSystemIcons.Speaker2_20_Regular}" />
+                                    <Grid>
+                                        <control:IconButton
+                                            Command="{Binding RelativeSource={RelativeSource AncestorType=control:OutputControl}, Path=PlayAudioCommand}"
+                                            CommandParameter="{Binding Plugin.TransBackResult.Text}"
+                                            Icon="{x:Static ui:FluentSystemIcons.Speaker2_20_Regular}"
+                                            ToolTip="{DynamicResource Tts}"
+                                            Visibility="{Binding RelativeSource={RelativeSource AncestorType=control:OutputControl}, Path=PlayAudioCommand.IsRunning, Converter={cnvt:BoolToVisibilityInverseConverter}}" />
+                                        <control:IconButton
+                                            Command="{Binding RelativeSource={RelativeSource AncestorType=control:OutputControl}, Path=PlayAudioCancelCommand}"
+                                            Icon="{x:Static ui:FluentSystemIcons.Stop_20_Regular}"
+                                            ToolTip="{DynamicResource Cancel}"
+                                            Visibility="{Binding RelativeSource={RelativeSource AncestorType=control:OutputControl}, Path=PlayAudioCommand.IsRunning, Converter={cnvt:BoolToVisibilityConverter}}" />
+                                    </Grid>
                                     <control:IconButton
                                         Command="{Binding RelativeSource={RelativeSource AncestorType=control:OutputControl}, Path=CopyCommand}"
                                         CommandParameter="{Binding Plugin.TransBackResult.Text}"
@@ -806,11 +815,13 @@
                                     <control:IconButton
                                         Command="{Binding RelativeSource={RelativeSource AncestorType=control:OutputControl}, Path=InsertCommand}"
                                         CommandParameter="{Binding Plugin.TransBackResult.Text}"
-                                        Icon="{x:Static ui:FluentSystemIcons.TextHanging_20_Regular}" />
+                                        Icon="{x:Static ui:FluentSystemIcons.TextHanging_20_Regular}"
+                                        ToolTip="{DynamicResource InsertText}" />
                                     <control:IconButton
                                         Command="{Binding RelativeSource={RelativeSource AncestorType=control:OutputControl}, Path=CleanTransBackCommand}"
                                         CommandParameter="{Binding Plugin}"
-                                        Icon="{x:Static ui:FluentSystemIcons.DeleteLines_20_Regular}" />
+                                        Icon="{x:Static ui:FluentSystemIcons.DeleteLines_20_Regular}"
+                                        ToolTip="{DynamicResource CloseTransBack}" />
                                 </ikw:SimpleStackPanel>
                             </Grid>
                         </ikw:SimpleStackPanel>

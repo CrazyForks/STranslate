@@ -1496,6 +1496,10 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     {
         if (string.IsNullOrEmpty(text)) return;
 
+        // 如果按住Shift则使用小写
+        if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
+            text = text.ToLower();
+
         if (IsTopmost) IsTopmost = false;
         MainWindow.Visibility = Visibility.Collapsed;
         await Task.Delay(150);
