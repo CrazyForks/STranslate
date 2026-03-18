@@ -11,6 +11,7 @@ using STranslate.Services;
 using STranslate.ViewModels.Pages;
 using STranslate.Views;
 using STranslate.Views.Pages;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
@@ -81,6 +82,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
 
         _debounceExecutor = new();
         _i18n.OnLanguageChanged += OnLanguageChanged;
+        Settings.PropertyChanged += OnSettingsPropertyChanged;
     }
 
     private void OnLanguageChanged()
@@ -118,6 +120,9 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
 
     [ObservableProperty]
     public partial bool IsClipboardMonitoring { get; set; } = false;
+
+    [ObservableProperty]
+    public partial double MainWindowEffectiveMaxHeight { get; set; } = 800;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SingleTranslateCommand))]
@@ -1359,6 +1364,11 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         Show();
     }
 
+    /// <summary>
+    /// 初始化主窗口布局约束，避免窗口首次显示时沿用过期的高度上限。
+    /// </summary>
+    public void InitializeWindowLayoutConstraints() => UpdateMainWindowMaxHeightConstraint();
+
     public void Show()
     {
         if (Settings.MainWindowLeft <= -18000 && Settings.MainWindowTop <= -18000)
@@ -1367,7 +1377,9 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
             Settings.MainWindowTop = _cacheTop;
         }
         MainWindow.Visibility = Visibility.Visible;
+        UpdateMainWindowMaxHeightConstraint();
         UpdatePosition();
+        UpdateMainWindowMaxHeightConstraint();
 
         Win32Helper.SetForegroundWindow(MainWindow);
 
@@ -1601,6 +1613,75 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
 
     #region Window Position
 
+    private void OnSettingsPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(Settings.MainWindowMaxHeightRatio) &&
+            e.PropertyName != nameof(Settings.WindowScreen) &&
+            e.PropertyName != nameof(Settings.CustomScreenNumber))
+            return;
+
+        var dispatcher = Application.Current?.Dispatcher;
+        if (dispatcher == null)
+            return;
+
+        void RefreshWindowHeightConstraint()
+        {
+            UpdateMainWindowMaxHeightConstraint();
+            if (IsMainWindowVisible)
+                AdjustPositionForContentSizeChanged();
+        }
+
+        if (dispatcher.CheckAccess())
+        {
+            RefreshWindowHeightConstraint();
+            return;
+        }
+
+        dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(RefreshWindowHeightConstraint));
+    }
+
+    /// <summary>
+    /// 根据当前屏幕工作区和用户配置比例刷新主窗口最大高度约束。
+    /// </summary>
+    /// <param name="monitor">可选。指定目标显示器，避免跟随鼠标场景下读取到旧屏幕。</param>
+    private void UpdateMainWindowMaxHeightConstraint(MonitorInfo? monitor = null)
+    {
+        if (Application.Current?.MainWindow is not MainWindow window)
+            return;
+
+        var ratio = Math.Clamp(Settings.MainWindowMaxHeightRatio, 0.6, 1.0);
+        if (Math.Abs(ratio - Settings.MainWindowMaxHeightRatio) > double.Epsilon)
+        {
+            // 统一写回归一化后的比例，确保各入口读取到一致约束。
+            Settings.MainWindowMaxHeightRatio = ratio;
+        }
+
+        var targetMonitor = monitor ?? GetWindowMonitor();
+        var workAreaTopLeft = Win32Helper.TransformPixelsToDIP(window, targetMonitor.WorkingArea.X, targetMonitor.WorkingArea.Y);
+        var workAreaBottomRight = Win32Helper.TransformPixelsToDIP(
+            window,
+            targetMonitor.WorkingArea.X + targetMonitor.WorkingArea.Width,
+            targetMonitor.WorkingArea.Y + targetMonitor.WorkingArea.Height);
+
+        var workAreaHeight = Math.Max(0, workAreaBottomRight.Y - workAreaTopLeft.Y - 8 * 2);
+        var effectiveMaxHeight = Math.Max(window.MinHeight, workAreaHeight * ratio);
+        MainWindowEffectiveMaxHeight = Math.Max(window.MinHeight, effectiveMaxHeight);
+    }
+
+    private MonitorInfo GetWindowMonitor()
+    {
+        try
+        {
+            var windowHelper = new WindowInteropHelper(MainWindow);
+            windowHelper.EnsureHandle();
+            return MonitorInfo.GetNearestDisplayMonitor(windowHelper.Handle);
+        }
+        catch
+        {
+            return SelectedScreen();
+        }
+    }
+
     public void UpdatePosition(bool hideOnStartup = false)
     {
         if (IsTopmost) return;
@@ -1699,6 +1780,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         var cursorDip = Win32Helper.TransformPixelsToDIP(MainWindow, cursorPosition.X, cursorPosition.Y);
 
         var screen = MonitorInfo.GetCursorDisplayMonitor();
+        UpdateMainWindowMaxHeightConstraint(screen);
         var workAreaTopLeft = Win32Helper.TransformPixelsToDIP(MainWindow, screen.WorkingArea.X, screen.WorkingArea.Y);
         var workAreaBottomRight = Win32Helper.TransformPixelsToDIP(
             MainWindow,
@@ -1772,6 +1854,8 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         {
             screen = SelectedScreen();
         }
+
+        UpdateMainWindowMaxHeightConstraint(screen);
 
         var workAreaTopLeft = Win32Helper.TransformPixelsToDIP(MainWindow, screen.WorkingArea.X, screen.WorkingArea.Y);
         var workAreaBottomRight = Win32Helper.TransformPixelsToDIP(
@@ -2024,6 +2108,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         MouseKeyHelper.MouseTextSelected -= OnMouseTextSelected;
         MouseKeyHelper.MouseTextSelected -= OnMouseTextSelectedIncretemental;
         _clipboardMonitor?.OnClipboardTextChanged -= OnClipboardTextChanged;
+        Settings.PropertyChanged -= OnSettingsPropertyChanged;
 
         _debounceExecutor.Dispose();
         _clipboardMonitor?.Dispose();

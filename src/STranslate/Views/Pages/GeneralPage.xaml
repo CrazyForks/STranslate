@@ -570,6 +570,24 @@
                     </ui:SettingsCard>
                 </control:CardGroup>
 
+                <ui:SettingsCard Description="{DynamicResource General_MainWindowMaxHeightRatioDescription}" Header="{DynamicResource General_MainWindowMaxHeightRatio}">
+                    <ui:SettingsCard.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.DesktopPulse_20_Regular}" />
+                    </ui:SettingsCard.HeaderIcon>
+                    <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="12">
+                        <Button Command="{Binding ResetMainWindowMaxHeightRatioCommand}" Content="{DynamicResource Reset}" />
+                        <Slider
+                            x:Name="PART_MainWindowMaxHeightRatio"
+                            IsSnapToTickEnabled="True"
+                            Maximum="1"
+                            Minimum="0.6"
+                            TickFrequency="0.05"
+                            TickPlacement="BottomRight"
+                            Value="{Binding Settings.MainWindowMaxHeightRatio, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock VerticalAlignment="Center" Text="{Binding ElementName=PART_MainWindowMaxHeightRatio, Path=Value, StringFormat={}{0:P0}}" />
+                    </ikw:SimpleStackPanel>
+                </ui:SettingsCard>
+
                 <ui:SettingsExpander Header="{DynamicResource General_HideNotifyIcon}">
                     <ui:SettingsExpander.HeaderIcon>
                         <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.AlertOff_20_Regular}" />

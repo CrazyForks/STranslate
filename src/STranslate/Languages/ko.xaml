@@ -37,6 +37,8 @@
     <sys:String x:Key="General_HideWhenDeactivated">포커스 해제 시 자동 숨김</sys:String>
     <sys:String x:Key="General_WindowPosition">메인 창 위치</sys:String>
     <sys:String x:Key="General_WindowAlign">모니터상 위치</sys:String>
+    <sys:String x:Key="General_MainWindowMaxHeightRatio">메인 창 최대 높이(화면 비율)</sys:String>
+    <sys:String x:Key="General_MainWindowMaxHeightRatioDescription">메인 창의 최대 높이를 현재 모니터 작업 영역 대비 비율(60%~100%)로 설정합니다.</sys:String>
     <sys:String x:Key="General_DisableGlobalHotkeys">전역 단축키 비활성화</sys:String>
     <sys:String x:Key="General_IgnoreHotkeysOnFullscreen">전체 화면 모드에서 단축키 무시</sys:String>
     <sys:String x:Key="General_IgnoreHotkeysOnFullscreenDescription">「전역 단축키 비활성화」보다 우선순위가 낮으며, 주로 게임 환경에서 사용됩니다.</sys:String>

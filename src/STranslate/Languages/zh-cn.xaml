@@ -40,6 +40,8 @@
     <sys:String x:Key="General_HideWhenDeactivated">失去焦点时自动隐藏主窗口</sys:String>
     <sys:String x:Key="General_WindowPosition">主窗口位置</sys:String>
     <sys:String x:Key="General_WindowAlign">主窗口在显示器上的位置</sys:String>
+    <sys:String x:Key="General_MainWindowMaxHeightRatio">主窗口最大高度（屏幕比例）</sys:String>
+    <sys:String x:Key="General_MainWindowMaxHeightRatioDescription">控制主窗口最大高度占当前显示器工作区的比例（60%~100%）。</sys:String>
     <sys:String x:Key="General_DisableGlobalHotkeys">禁用全局热键</sys:String>
     <sys:String x:Key="General_IgnoreHotkeysOnFullscreen">全屏模式下忽略热键</sys:String>
     <sys:String x:Key="General_IgnoreHotkeysOnFullscreenDescription">优先级低于「禁用全局热键」一般用于游戏场景</sys:String>

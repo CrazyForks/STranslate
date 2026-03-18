@@ -29,6 +29,7 @@ public partial class MainWindow : IDisposable
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        _viewModel.InitializeWindowLayoutConstraints();
         _viewModel.UpdatePosition(_settings.HideOnStartup);
 
         _hwndSource = Win32Helper.AddWndProcHook(this, WndProc);

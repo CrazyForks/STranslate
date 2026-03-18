@@ -152,6 +152,7 @@ public partial class Settings : ObservableObject
     [ObservableProperty] public partial double MainWindowTop { get; set; }
     [ObservableProperty] public partial double CustomWindowLeft { get; set; }
     [ObservableProperty] public partial double CustomWindowTop { get; set; }
+    [ObservableProperty] public partial double MainWindowMaxHeightRatio { get; set; } = 0.85;
 
     private double _mainWindowWidth = 470;
     public double MainWindowWidth
@@ -357,6 +358,15 @@ public partial class Settings : ObservableObject
         }
     }
 
+    partial void OnMainWindowMaxHeightRatioChanged(double value)
+    {
+        var normalized = Math.Clamp(Math.Round(value, 2), 0.6, 1.0);
+        if (Math.Abs(normalized - value) > double.Epsilon)
+        {
+            MainWindowMaxHeightRatio = normalized;
+        }
+    }
+
     #endregion
 
     #region Public Methods
@@ -373,6 +383,7 @@ public partial class Settings : ObservableObject
             if (e.PropertyName == nameof(MainWindowTop) ||
                 e.PropertyName == nameof(MainWindowLeft) ||
                 e.PropertyName == nameof(MainWindowWidth) ||
+                e.PropertyName == nameof(MainWindowMaxHeightRatio) ||
                 e.PropertyName == nameof(AutoTranslateDelayMs))
                 SaveWithDebounce();
             else

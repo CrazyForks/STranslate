@@ -17,7 +17,7 @@
     Width="{Binding Settings.MainWindowWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
     MinWidth="400"
     MinHeight="200"
-    MaxHeight="{Binding Settings.MainWindowMaxHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+    MaxHeight="{Binding MainWindowEffectiveMaxHeight, Mode=OneWay}"
     control:SizeToContentBehavior.PersistentSizeToContent="Height"
     control:SnackbarBehavior.EnableSnackbar="True"
     d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"

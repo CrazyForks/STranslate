@@ -40,6 +40,8 @@
     <sys:String x:Key="General_HideWhenDeactivated">失去焦點時自動隱藏主視窗</sys:String>
     <sys:String x:Key="General_WindowPosition">主視窗位置</sys:String>
     <sys:String x:Key="General_WindowAlign">主視窗在顯示器上的位置</sys:String>
+    <sys:String x:Key="General_MainWindowMaxHeightRatio">主視窗最大高度（螢幕比例）</sys:String>
+    <sys:String x:Key="General_MainWindowMaxHeightRatioDescription">控制主視窗最大高度占目前顯示器工作區的比例（60%~100%）。</sys:String>
     <sys:String x:Key="General_DisableGlobalHotkeys">停用全域快捷鍵</sys:String>
     <sys:String x:Key="General_IgnoreHotkeysOnFullscreen">全螢幕模式下忽略快捷鍵</sys:String>
     <sys:String x:Key="General_IgnoreHotkeysOnFullscreenDescription">優先順序低於「停用全域快捷鍵」，一般用於遊戲場景。</sys:String>
