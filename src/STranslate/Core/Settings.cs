@@ -186,6 +186,12 @@ public partial class Settings : ObservableObject
     /// 取词时换行处理
     /// </summary>
     [ObservableProperty] public partial LineBreakHandleType LineBreakHandleType { get; set; } = LineBreakHandleType.RemoveExtraLineBreak;
+
+    /// <summary>
+    /// 划词取词失败时的回退目标。
+    /// </summary>
+    [ObservableProperty] public partial CrosswordFetchFailedFallbackTarget CrosswordFetchFailedFallbackTarget { get; set; } = CrosswordFetchFailedFallbackTarget.InputTranslate;
+
     [ObservableProperty] public partial ImageQuality ImageQuality { get; set; } = ImageQuality.Medium;
 
     #region Layout Analysis
@@ -717,6 +723,22 @@ public enum LineBreakHandleType
     RemoveExtraLineBreak,
     RemoveAllLineBreak,
     RemoveAllLineBreakWithoutSpace,
+}
+
+/// <summary>
+/// 划词取词失败时，主窗口的回退行为。
+/// </summary>
+public enum CrosswordFetchFailedFallbackTarget
+{
+    /// <summary>
+    /// 回退到输入翻译（清空输入并显示主窗口）。
+    /// </summary>
+    InputTranslate,
+
+    /// <summary>
+    /// 仅显示主窗口，保留当前输入与输出内容。
+    /// </summary>
+    ShowWindow,
 }
 
 public enum LayoutAnalysisMode

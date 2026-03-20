@@ -27,6 +27,7 @@ public class DataProvider
         DropdownDataGeneric<LanguageDetectorType>.UpdateLabels(LanguageDetectors);
         DropdownDataGeneric<ElementTheme>.UpdateLabels(ColorSchemes);
         DropdownDataGeneric<LineBreakHandleType>.UpdateLabels(LineBreakHandleTypes);
+        DropdownDataGeneric<CrosswordFetchFailedFallbackTarget>.UpdateLabels(CrosswordFetchFailedFallbackTargets);
         DropdownDataGeneric<PluginType>.UpdateLabels(PluginTypes);
         DropdownDataGeneric<LayoutAnalysisMode>.UpdateLabels(LayoutAnalysisModes);
         DropdownDataGeneric<WindowScreenType>.UpdateLabels(WindowScreenTypes);
@@ -81,6 +82,14 @@ public class DataProvider
     public class LineBreakHandleData : DropdownDataGeneric<LineBreakHandleType> { }
     public List<LineBreakHandleData> LineBreakHandleTypes { get; } =
         DropdownDataGeneric<LineBreakHandleType>.GetValues<LineBreakHandleData>("LineBreakHandleType");
+
+    #endregion
+
+    #region CrosswordFetchFailedFallbackTargets
+
+    public class CrosswordFetchFailedFallbackTargetData : DropdownDataGeneric<CrosswordFetchFailedFallbackTarget> { }
+    public List<CrosswordFetchFailedFallbackTargetData> CrosswordFetchFailedFallbackTargets { get; } =
+        DropdownDataGeneric<CrosswordFetchFailedFallbackTarget>.GetValues<CrosswordFetchFailedFallbackTargetData>("CrosswordFetchFailedFallbackTarget");
 
     #endregion
 

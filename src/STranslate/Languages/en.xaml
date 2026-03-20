@@ -71,6 +71,8 @@
     <sys:String x:Key="General_AutoTranslateDelayDescription">Waiting time after inputting content, unit: milliseconds.</sys:String>
     <sys:String x:Key="General_LineBreakHandleType">Line Break Handling</sys:String>
     <sys:String x:Key="General_LineBreakHandleTypeDescription" xml:space="preserve">Includes line break handling for word selection, screenshot translation, clipboard, and silent OCR scenarios.&#10;"Remove extra line breaks" is mainly for PDF text extraction, removing redundant line breaks and sentence breaks, but it may affect non-PDF extraction.</sys:String>
+    <sys:String x:Key="General_CrosswordFetchFailedFallbackTarget">Word Selection Failure Fallback</sys:String>
+    <sys:String x:Key="General_CrosswordFetchFailedFallbackTargetDescription">When selected text capture fails, choose whether to switch to input translation or only show the main window.</sys:String>
     <sys:String x:Key="General_ImageQuality">Image Quality</sys:String>
     <sys:String x:Key="General_ImageQualityDescription">Adjust the quality when processing images. Online OCR services may limit image size.</sys:String>
     <sys:String x:Key="General_DoubleClickTrayFunction">Double-Click Tray Function</sys:String>
@@ -156,6 +158,7 @@
     <sys:String x:Key="Hotkey_CrosswordTranslateTraditional">Traditional Hotkey</sys:String>
     <sys:String x:Key="Hotkey_CrosswordTranslateByCtrlSameCDescription">Quickly press Ctrl+C+C after selecting text with the mouse for text translation.</sys:String>
     <sys:String x:Key="CrosswordTranslateFetchFailed">Failed to capture selected text, switched to input translation.</sys:String>
+    <sys:String x:Key="CrosswordTranslateFetchFailedShowWindow">Failed to capture selected text, switched to main window display.</sys:String>
     <sys:String x:Key="Hotkey_MouseHookTranslate">Mouse Hook Translate</sys:String>
     <sys:String x:Key="Hotkey_MouseHookTranslateDescription">Shortcut key to enable/disable listening for mouse text selection to trigger translation.</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">Replace Translation</sys:String>
@@ -535,6 +538,8 @@
     <sys:String x:Key="LineBreakHandleTypeRemoveExtraLineBreak">Remove extra line breaks</sys:String>
     <sys:String x:Key="LineBreakHandleTypeRemoveAllLineBreak">Remove all line breaks</sys:String>
     <sys:String x:Key="LineBreakHandleTypeRemoveAllLineBreakWithoutSpace">Remove all line breaks (without space filling)</sys:String>
+    <sys:String x:Key="CrosswordFetchFailedFallbackTargetInputTranslate">Input Translate</sys:String>
+    <sys:String x:Key="CrosswordFetchFailedFallbackTargetShowWindow">Show Main Window</sys:String>
 
     <sys:String x:Key="PluginTypeAll">All Plugins</sys:String>
     <sys:String x:Key="PluginTypeTranslate">Translate</sys:String>

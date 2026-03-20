@@ -68,6 +68,8 @@
     <sys:String x:Key="General_AutoTranslateDelayDescription">입력 후 대기 시간, 단위: 밀리초.</sys:String>
     <sys:String x:Key="General_LineBreakHandleType">단어 선택 줄 바꿈 처리</sys:String>
     <sys:String x:Key="General_LineBreakHandleTypeDescription" xml:space="preserve">드래그 번역, 스크린샷 번역, 클립보드, 정적 OCR 단어 선택 시 줄 바꿈 처리를 포함합니다.&#10;「불필요한 줄 바꿈 제거」는 주로 PDF 단어 선택 시 사용되며, 불필요한 줄 바꿈을 제거하지만 PDF가 아닌 경우 영향을 줄 수 있습니다.</sys:String>
+    <sys:String x:Key="General_CrosswordFetchFailedFallbackTarget">드래그 번역 실패 시 복귀 대상</sys:String>
+    <sys:String x:Key="General_CrosswordFetchFailedFallbackTargetDescription">선택 텍스트 가져오기에 실패했을 때 입력 번역으로 전환할지, 메인 창만 표시할지 선택합니다.</sys:String>
     <sys:String x:Key="General_ImageQuality">이미지 품질</sys:String>
     <sys:String x:Key="General_ImageQualityDescription">이미지 처리 시 품질을 조정합니다. 온라인 OCR 서비스는 이미지 크기를 제한할 수 있습니다.</sys:String>
     <sys:String x:Key="General_DoubleClickTrayFunction">트레이 아이콘 더블 클릭 기능</sys:String>
@@ -152,6 +154,7 @@
     <sys:String x:Key="Hotkey_CrosswordTranslateTraditional">기존 단축키</sys:String>
     <sys:String x:Key="Hotkey_CrosswordTranslateByCtrlSameCDescription">마우스로 텍스트를 선택하고 빠르게 Ctrl+C+C를 눌러 번역합니다.</sys:String>
     <sys:String x:Key="CrosswordTranslateFetchFailed">선택 텍스트를 가져오지 못했습니다. 입력 번역을 열었습니다.</sys:String>
+    <sys:String x:Key="CrosswordTranslateFetchFailedShowWindow">선택 텍스트를 가져오지 못했습니다. 메인 창을 표시했습니다.</sys:String>
     <sys:String x:Key="Hotkey_MouseHookTranslate">마우스 감지</sys:String>
     <sys:String x:Key="Hotkey_MouseHookTranslateDescription">마우스 드래그 텍스트 선택 번역 감지를 켜고 끄는 단축키입니다.</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">치환 번역</sys:String>
@@ -521,6 +524,8 @@
     <sys:String x:Key="LineBreakHandleTypeRemoveExtraLineBreak">불필요한 줄 바꿈 제거</sys:String>
     <sys:String x:Key="LineBreakHandleTypeRemoveAllLineBreak">모든 줄 바꿈 제거</sys:String>
     <sys:String x:Key="LineBreakHandleTypeRemoveAllLineBreakWithoutSpace">모든 줄 바꿈 제거 (공백 없음)</sys:String>
+    <sys:String x:Key="CrosswordFetchFailedFallbackTargetInputTranslate">입력 번역</sys:String>
+    <sys:String x:Key="CrosswordFetchFailedFallbackTargetShowWindow">메인 창 표시</sys:String>
 
     <sys:String x:Key="PluginTypeAll">모든 플러그인</sys:String>
     <sys:String x:Key="PluginTypeTranslate">텍스트 번역</sys:String>

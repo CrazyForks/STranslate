@@ -2083,8 +2083,18 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
 
     private void HandleCrosswordFetchFailed()
     {
-        InputClear();
-        _snackbar.ShowWarning(_i18n.GetTranslation("CrosswordTranslateFetchFailed"), 3000);
+        switch (Settings.CrosswordFetchFailedFallbackTarget)
+        {
+            case CrosswordFetchFailedFallbackTarget.ShowWindow:
+                Show();
+                _snackbar.ShowWarning(_i18n.GetTranslation("CrosswordTranslateFetchFailedShowWindow"), 3000);
+                break;
+            case CrosswordFetchFailedFallbackTarget.InputTranslate:
+            default:
+                InputClear();
+                _snackbar.ShowWarning(_i18n.GetTranslation("CrosswordTranslateFetchFailed"), 3000);
+                break;
+        }
     }
 
     private void StartProcess()
