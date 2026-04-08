@@ -85,6 +85,7 @@
     <sys:String x:Key="General_ShowScreenshotAuxiliaryLinesDescription">캡처 시 보조선을 표시하여 영역을 더 정확하게 선택할 수 있도록 돕습니다.</sys:String>
     <sys:String x:Key="General_HideNotifyIcon">트레이 아이콘 숨기기</sys:String>
     <sys:String x:Key="General_ShowScreenshotItemInNotifyIconMenu">트레이 메뉴에 스크린샷 번역 표시</sys:String>
+    <sys:String x:Key="General_ShowImageTranslateItemInNotifyIconMenu">트레이 메뉴에 이미지 번역 표시</sys:String>
     <sys:String x:Key="General_ShowOcrItemInNotifyIconMenu">트레이 메뉴에 텍스트 인식 표시</sys:String>
     <sys:String x:Key="General_ShowQrCodeItemInNotifyIconMenu">트레이 메뉴에 QR 코드 표시</sys:String>
     <sys:String x:Key="General_ColorTheme">색상 테마</sys:String>

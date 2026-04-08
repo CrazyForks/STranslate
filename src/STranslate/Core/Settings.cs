@@ -179,6 +179,7 @@ public partial class Settings : ObservableObject
     [ObservableProperty] public partial bool ShowPromptButton { get; set; } = true;
 
     [ObservableProperty] public partial bool ShowScreenshotItemInNotifyIconMenu { get; set; } = false;
+    [ObservableProperty] public partial bool ShowImageTranslateItemInNotifyIconMenu { get; set; } = false;
     [ObservableProperty] public partial bool ShowOcrItemInNotifyIconMenu { get; set; } = false;
     [ObservableProperty] public partial bool ShowQrCodeItemInNotifyIconMenu { get; set; } = false;
 

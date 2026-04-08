@@ -618,6 +618,15 @@
                                 OffContent="{DynamicResource Hide}"
                                 OnContent="{DynamicResource Show}" />
                         </ui:SettingsCard>
+                        <ui:SettingsCard Header="{DynamicResource General_ShowImageTranslateItemInNotifyIconMenu}" IsEnabled="{Binding Settings.HideNotifyIcon, Converter={cnvt:BoolInverseConverter}}">
+                            <ui:SettingsCard.HeaderIcon>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.DrawImage_20_Regular}" />
+                            </ui:SettingsCard.HeaderIcon>
+                            <ui:ToggleSwitch
+                                IsOn="{Binding Settings.ShowImageTranslateItemInNotifyIconMenu}"
+                                OffContent="{DynamicResource Hide}"
+                                OnContent="{DynamicResource Show}" />
+                        </ui:SettingsCard>
                         <ui:SettingsCard Header="{DynamicResource General_ShowOcrItemInNotifyIconMenu}" IsEnabled="{Binding Settings.HideNotifyIcon, Converter={cnvt:BoolInverseConverter}}">
                             <ui:SettingsCard.HeaderIcon>
                                 <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ScanType_20_Regular}" />

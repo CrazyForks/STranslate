@@ -88,6 +88,7 @@
     <sys:String x:Key="General_ShowScreenshotAuxiliaryLinesDescription">Whether to show auxiliary lines during screenshot to help select area more accurately.</sys:String>
     <sys:String x:Key="General_HideNotifyIcon">Hide NotifyIcon</sys:String>
     <sys:String x:Key="General_ShowScreenshotItemInNotifyIconMenu">Show Screenshot Translation in Tray Menu</sys:String>
+    <sys:String x:Key="General_ShowImageTranslateItemInNotifyIconMenu">Show Image Translation in Tray Menu</sys:String>
     <sys:String x:Key="General_ShowOcrItemInNotifyIconMenu">Show Text Recognition in Tray Menu</sys:String>
     <sys:String x:Key="General_ShowQrCodeItemInNotifyIconMenu">Show QR Code in Tray Menu</sys:String>
     <sys:String x:Key="General_ColorTheme">Color Theme</sys:String>

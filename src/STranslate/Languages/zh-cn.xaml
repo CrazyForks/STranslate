@@ -88,6 +88,7 @@
     <sys:String x:Key="General_ShowScreenshotAuxiliaryLinesDescription">截图时是否显示辅助线，帮助更精确地选择区域。</sys:String>
     <sys:String x:Key="General_HideNotifyIcon">隐藏托盘图标</sys:String>
     <sys:String x:Key="General_ShowScreenshotItemInNotifyIconMenu">托盘显示截图翻译选项</sys:String>
+    <sys:String x:Key="General_ShowImageTranslateItemInNotifyIconMenu">托盘显示图片翻译选项</sys:String>
     <sys:String x:Key="General_ShowOcrItemInNotifyIconMenu">托盘显示文本识别选项</sys:String>
     <sys:String x:Key="General_ShowQrCodeItemInNotifyIconMenu">托盘显示二维码选项</sys:String>
     <sys:String x:Key="General_ColorTheme">颜色主题</sys:String>

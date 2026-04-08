@@ -85,6 +85,7 @@
     <sys:String x:Key="General_ShowScreenshotAuxiliaryLinesDescription">スクリーンショット時に補助線を表示し、領域選択を正確に行えるようにします。</sys:String>
     <sys:String x:Key="General_HideNotifyIcon">トレイアイコンを隠す</sys:String>
     <sys:String x:Key="General_ShowScreenshotItemInNotifyIconMenu">トレイメニューにスクショ翻訳を表示</sys:String>
+    <sys:String x:Key="General_ShowImageTranslateItemInNotifyIconMenu">トレイメニューに画像翻訳を表示</sys:String>
     <sys:String x:Key="General_ShowOcrItemInNotifyIconMenu">トレイメニューに文字認識を表示</sys:String>
     <sys:String x:Key="General_ShowQrCodeItemInNotifyIconMenu">トレイメニューにQRコードを表示</sys:String>
     <sys:String x:Key="General_ColorTheme">カラーテーマ</sys:String>

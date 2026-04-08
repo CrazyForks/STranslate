@@ -327,6 +327,14 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem
+                        Command="{Binding Source={StaticResource ViewModel}, Path=Data.ImageTranslateCommand}"
+                        Header="{DynamicResource ImageTranslate}"
+                        Visibility="{Binding Source={StaticResource ViewModel}, Path=Data.Settings.ShowImageTranslateItemInNotifyIconMenu, Converter={cnvt:BoolToVisibilityConverter}}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.DrawImage_20_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
                         Command="{Binding Source={StaticResource ViewModel}, Path=Data.OcrCommand}"
                         Header="{DynamicResource Ocr}"
                         Visibility="{Binding Source={StaticResource ViewModel}, Path=Data.Settings.ShowOcrItemInNotifyIconMenu, Converter={cnvt:BoolToVisibilityConverter}}">
