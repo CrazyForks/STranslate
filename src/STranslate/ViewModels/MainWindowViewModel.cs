@@ -1220,7 +1220,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         IsTopmost = true;
         UpdateCacheText();
 
-        _ = MouseKeyHelper.StartMouseTextSelectionAsync();
+        _ = MouseKeyHelper.StartMouseTextSelectionAsync(() => Settings.SelectedTextFetchTimeoutMs);
         MouseKeyHelper.MouseTextSelected += OnMouseTextSelectedIncretemental;
     }
 
@@ -1270,7 +1270,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         {
             Show();
             IsTopmost = true;
-            await MouseKeyHelper.StartMouseTextSelectionAsync();
+            await MouseKeyHelper.StartMouseTextSelectionAsync(() => Settings.SelectedTextFetchTimeoutMs);
             MouseKeyHelper.MouseTextSelected += OnMouseTextSelected;
         }
         else
@@ -2221,7 +2221,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     {
         try
         {
-            var text = await ClipboardHelper.GetSelectedTextAsync();
+            var text = await ClipboardHelper.GetSelectedTextAsync(Settings.SelectedTextFetchTimeoutMs);
             if (string.IsNullOrEmpty(text))
             {
                 _logger.LogWarning("取词失败，可能：未选中文本、文本禁止复制、取词间隔过短、文本所属软件权限高于本软件");

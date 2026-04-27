@@ -189,6 +189,11 @@ public partial class Settings : ObservableObject
     [ObservableProperty] public partial LineBreakHandleType LineBreakHandleType { get; set; } = LineBreakHandleType.RemoveExtraLineBreak;
 
     /// <summary>
+    /// 划词后等待剪贴板写入文本的最长时间（毫秒）。
+    /// </summary>
+    [ObservableProperty] public partial int SelectedTextFetchTimeoutMs { get; set; } = 500;
+
+    /// <summary>
     /// 划词取词失败时的回退目标。
     /// </summary>
     [ObservableProperty] public partial CrosswordFetchFailedFallbackTarget CrosswordFetchFailedFallbackTarget { get; set; } = CrosswordFetchFailedFallbackTarget.InputTranslate;
@@ -374,6 +379,15 @@ public partial class Settings : ObservableObject
         }
     }
 
+    partial void OnSelectedTextFetchTimeoutMsChanged(int value)
+    {
+        var normalized = Math.Clamp(value, 50, 5000);
+        if (normalized != value)
+        {
+            SelectedTextFetchTimeoutMs = normalized;
+        }
+    }
+
     #endregion
 
     #region Public Methods
@@ -391,7 +405,8 @@ public partial class Settings : ObservableObject
                 e.PropertyName == nameof(MainWindowLeft) ||
                 e.PropertyName == nameof(MainWindowWidth) ||
                 e.PropertyName == nameof(MainWindowMaxHeightRatio) ||
-                e.PropertyName == nameof(AutoTranslateDelayMs))
+                e.PropertyName == nameof(AutoTranslateDelayMs) ||
+                e.PropertyName == nameof(SelectedTextFetchTimeoutMs))
                 SaveWithDebounce();
             else
                 Save();

@@ -460,6 +460,22 @@
                         SelectedValuePath="Value" />
                 </ui:SettingsCard>
 
+                <ui:SettingsCard Description="{DynamicResource General_SelectedTextFetchTimeoutDescription}" Header="{DynamicResource General_SelectedTextFetchTimeout}">
+                    <ui:SettingsCard.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Timer_24_Regular}" />
+                    </ui:SettingsCard.HeaderIcon>
+                    <ui:NumberBox
+                        MinWidth="120"
+                        ui:ControlHelper.PlaceholderText="{DynamicResource General_SelectedTextFetchTimeoutPlaceholder}"
+                        LargeChange="500"
+                        Maximum="5000"
+                        Minimum="50"
+                        SmallChange="50"
+                        SpinButtonPlacementMode="Inline"
+                        ValidationMode="InvalidInputOverwritten"
+                        Value="{Binding Settings.SelectedTextFetchTimeoutMs}" />
+                </ui:SettingsCard>
+
                 <ui:SettingsCard Description="{DynamicResource General_CrosswordFetchFailedFallbackTargetDescription}" Header="{DynamicResource General_CrosswordFetchFailedFallbackTarget}">
                     <ui:SettingsCard.HeaderIcon>
                         <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.CursorClick_20_Regular}" />
