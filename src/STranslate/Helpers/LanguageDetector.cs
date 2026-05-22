@@ -142,6 +142,7 @@ public class LanguageDetector
                 "nno" => LangEnum.NorwegianNynorsk,
                 "per" => LangEnum.Persian,
                 "ukr" => LangEnum.Ukrainian,
+                "uz" => LangEnum.Uzbek,
                 _ => LangEnum.Auto
             };
         }
@@ -280,6 +281,7 @@ public class LanguageDetector
                 "nn" => LangEnum.NorwegianNynorsk,
                 "fa" => LangEnum.Persian,
                 "uk" => LangEnum.Ukrainian,
+                "uz" => LangEnum.Uzbek,
                 _ => LangEnum.Auto
             };
         }
@@ -379,6 +381,7 @@ public class LanguageDetector
                 "nb" => LangEnum.NorwegianBokmal,
                 "fa" => LangEnum.Persian,
                 "uk" => LangEnum.Ukrainian,
+                "uz" => LangEnum.Uzbek,
                 _ => LangEnum.Auto
             };
         }
@@ -444,6 +447,7 @@ public class LanguageDetector
                 "no" => LangEnum.NorwegianBokmal,
                 "fa" => LangEnum.Persian,
                 "uk" => LangEnum.Ukrainian,
+                "uz" => LangEnum.Uzbek,
                 _ => LangEnum.Auto
             };
         }
@@ -524,6 +528,7 @@ public class LanguageDetector
                 "fa" => LangEnum.Persian,
                 "no" => LangEnum.NorwegianBokmal,
                 "uk" => LangEnum.Ukrainian,
+                "uz" => LangEnum.Uzbek,
                 _ => LangEnum.Auto
             };
         }
@@ -599,6 +604,7 @@ public class LanguageDetector
                 "pl" => LangEnum.Polish,
                 "nl" => LangEnum.Dutch,
                 "uk" => LangEnum.Ukrainian,
+                "uz" => LangEnum.Uzbek,
                 _ => LangEnum.Auto
             };
         }

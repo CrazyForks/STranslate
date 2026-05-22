@@ -158,6 +158,10 @@ public enum LangEnum
     /// <summary>
     /// 乌克兰语
     /// </summary>
-    Ukrainian
-}
+    Ukrainian,
 
+    /// <summary>
+    /// 乌兹别克语
+    /// </summary>
+    Uzbek
+}

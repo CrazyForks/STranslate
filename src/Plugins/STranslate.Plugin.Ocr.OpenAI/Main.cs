@@ -193,6 +193,7 @@ public class Main : ObservableObject, IOcrPlugin, ILlm
         LangEnum.Polish => "Polish",
         LangEnum.Dutch => "Dutch",
         LangEnum.Ukrainian => "Ukrainian",
+        LangEnum.Uzbek => "Uzbek",
         _ => "Requires you to identify automatically"
     };
 }

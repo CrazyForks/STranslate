@@ -8,7 +8,9 @@ namespace STranslate.Plugin.Translate.ICibaBuiltIn;
 
 public class Main : DictionaryPluginBase
 {
-    private const string URL = "http://dict-co.iciba.com/api/dictionary.php";
+    private const string WordPageUrl = "https://www.iciba.com/word";
+    private const string NextDataStartTag = "<script id=\"__NEXT_DATA__\" type=\"application/json\">";
+    private const string ScriptEndTag = "</script>";
 
     private Control? _settingUi;
     private SettingsViewModel? _viewModel;
@@ -32,26 +34,40 @@ public class Main : DictionaryPluginBase
 
     public override async Task TranslateAsync(string content, DictionaryResult result, CancellationToken cancellationToken = default)
     {
+        content = content.Trim();
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            result.ResultType = DictionaryResultType.NoResult;
+            return;
+        }
+
         var option = new Options
         {
             QueryParams = new Dictionary<string, string>
             {
-                { "type", "json" },
-                { "w", content.ToLower() },
-                { "key", "54A9DE969E911BC5294B70DA8ED5C9C4" }
+                { "w", content.ToLowerInvariant() }
             }
         };
 
-        var response = await Context.HttpService.GetAsync(URL, option, cancellationToken);
+        var response = await Context.HttpService.GetAsync(WordPageUrl, option, cancellationToken);
+        var nextDataJson = ExtractNextDataJson(response);
+        if (string.IsNullOrWhiteSpace(nextDataJson))
+        {
+            result.ResultType = DictionaryResultType.NoResult;
+            return;
+        }
 
-        var jsonDoc = JsonDocument.Parse(response);
-        var root = jsonDoc.RootElement;
+        using var jsonDoc = JsonDocument.Parse(nextDataJson);
+        if (!TryGetWordInfo(jsonDoc.RootElement, out var wordInfo) ||
+            !wordInfo.TryGetProperty("baesInfo", out var root))
+        {
+            result.ResultType = DictionaryResultType.NoResult;
+            return;
+        }
 
-        // 检查 word_name 字段是否存在且不为空
-        if (
-            !root.TryGetProperty("word_name", out var wordName) ||
+        if (!root.TryGetProperty("word_name", out var wordName) ||
             wordName.GetString() is not string word ||
-            string.IsNullOrEmpty(word))
+            string.IsNullOrWhiteSpace(word))
         {
             result.ResultType = DictionaryResultType.NoResult;
             return;
@@ -60,25 +76,67 @@ public class Main : DictionaryPluginBase
         result.Text = word;
         result.ResultType = DictionaryResultType.Success;
 
-        // 检查 symbols 数组是否存在且不为空
-        if (!root.TryGetProperty("symbols", out var symbols) || symbols.GetArrayLength() == 0)
+        if (!root.TryGetProperty("symbols", out var symbols) ||
+            symbols.ValueKind != JsonValueKind.Array ||
+            symbols.GetArrayLength() == 0)
+        {
             return;
+        }
 
         var firstSymbol = symbols[0];
-        bool isChinese = Util.IsChinese(content);
-
-        if (isChinese)
+        if (Util.IsChinese(content))
         {
-            // 处理中文内容
             ProcessChineseContent(firstSymbol, result);
+            return;
         }
-        else
+
+        ProcessEnglishContent(firstSymbol, result);
+        ProcessWordExchange(root, result);
+    }
+
+    private static string? ExtractNextDataJson(string response)
+    {
+        var trimmedResponse = response.TrimStart();
+        if (trimmedResponse.StartsWith('{'))
+            return trimmedResponse;
+
+        var startIndex = response.IndexOf(NextDataStartTag, StringComparison.OrdinalIgnoreCase);
+        if (startIndex < 0)
+            return null;
+
+        startIndex += NextDataStartTag.Length;
+        var endIndex = response.IndexOf(ScriptEndTag, startIndex, StringComparison.OrdinalIgnoreCase);
+        if (endIndex <= startIndex)
+            return null;
+
+        return response[startIndex..endIndex];
+    }
+
+    private static bool TryGetWordInfo(JsonElement root, out JsonElement wordInfo)
+    {
+        wordInfo = default;
+
+        if (root.TryGetProperty("props", out var props) &&
+            props.TryGetProperty("pageProps", out var pagePropsFromProps))
         {
-            // 处理英文内容
-            ProcessEnglishContent(firstSymbol, result);
-            // 只有英文才处理词汇变形
-            ProcessWordExchange(root, result);
+            return TryGetWordInfoFromPageProps(pagePropsFromProps, out wordInfo);
         }
+
+        if (root.TryGetProperty("pageProps", out var pageProps))
+        {
+            return TryGetWordInfoFromPageProps(pageProps, out wordInfo);
+        }
+
+        return false;
+    }
+
+    private static bool TryGetWordInfoFromPageProps(JsonElement pageProps, out JsonElement wordInfo)
+    {
+        wordInfo = default;
+
+        return pageProps.TryGetProperty("initialReduxState", out var initialReduxState) &&
+               initialReduxState.TryGetProperty("word", out var wordState) &&
+               wordState.TryGetProperty("wordInfo", out wordInfo);
     }
 
     /// <summary>
@@ -104,72 +162,164 @@ public class Main : DictionaryPluginBase
         }
 
         // 处理中文释义（结构与英文不同）
-        if (!firstSymbol.TryGetProperty("parts", out var parts))
+        if (!firstSymbol.TryGetProperty("parts", out var parts) ||
+            parts.ValueKind != JsonValueKind.Array)
             return;
+
         foreach (var part in parts.EnumerateArray())
         {
             if (!part.TryGetProperty("means", out var means))
                 continue;
 
-            // 分别收集有效释义和无效释义
-            var validMeans = new List<string>();
-            var invalidMeans = new List<string>();
+            if (TryAddClassifiedChineseMeans(means, result))
+                continue;
 
-            foreach (var mean in means.EnumerateArray())
+            var partOfSpeech = GetStringProperty(part, "part") ??
+                               GetStringProperty(part, "part_name") ??
+                               Context.GetTranslation("Paraphrase");
+            var meanValues = ExtractMeanStrings(means);
+            if (meanValues.Count == 0)
+                continue;
+
+            result.DictMeans.Add(new DictMean
             {
-                if (!mean.TryGetProperty("word_mean", out var wordMean))
-                    continue;
+                PartOfSpeech = string.IsNullOrWhiteSpace(partOfSpeech)
+                    ? Context.GetTranslation("Paraphrase")
+                    : partOfSpeech,
+                Means = new ObservableCollection<string>(meanValues)
+            });
+        }
+    }
 
-                var meaning = wordMean.GetString();
-                if (string.IsNullOrEmpty(meaning))
-                    continue;
+    private bool TryAddClassifiedChineseMeans(JsonElement means, DictionaryResult result)
+    {
+        if (means.ValueKind != JsonValueKind.Array)
+            return false;
 
-                // 根据 has_mean 字段判断分类
-                if (mean.TryGetProperty("has_mean", out var hasMean))
+        var hasClassifiedMeans = false;
+        var validMeans = new List<string>();
+        var invalidMeans = new List<string>();
+
+        foreach (var mean in means.EnumerateArray())
+        {
+            if (mean.ValueKind != JsonValueKind.Object ||
+                !mean.TryGetProperty("word_mean", out var wordMean))
+            {
+                continue;
+            }
+
+            var meaning = wordMean.GetString();
+            if (string.IsNullOrEmpty(meaning))
+                continue;
+
+            hasClassifiedMeans = true;
+
+            // 根据 has_mean 字段判断分类
+            if (mean.TryGetProperty("has_mean", out var hasMean))
+            {
+                var isValid = GetHasMeanValue(hasMean);
+                if (isValid.HasValue)
                 {
-                    var isValid = GetHasMeanValue(hasMean);
-                    if (isValid.HasValue)
+                    if (isValid.Value)
                     {
-                        if (isValid.Value)
-                        {
-                            validMeans.Add(meaning);
-                        }
-                        else
-                        {
-                            invalidMeans.Add(meaning);
-                        }
+                        validMeans.Add(meaning);
                     }
-                    // 如果 has_mean 存在但值无效，跳过该条目
+                    else
+                    {
+                        invalidMeans.Add(meaning);
+                    }
                 }
-                else
-                {
-                    // 如果没有 has_mean 字段，默认归为有效释义
-                    validMeans.Add(meaning);
-                }
+                // 如果 has_mean 存在但值无效，跳过该条目
             }
-
-            // 添加有效释义
-            if (validMeans.Count > 0)
+            else
             {
-                var validDictMean = new DictMean
-                {
-                    PartOfSpeech = Context.GetTranslation("Paraphrase"),
-                    Means = new ObservableCollection<string>(validMeans)
-                };
-                result.DictMeans.Add(validDictMean);
-            }
-
-            // 添加扩展释义（如电影名等）
-            if (invalidMeans.Count > 0)
-            {
-                var invalidDictMean = new DictMean
-                {
-                    PartOfSpeech = Context.GetTranslation("Expand"),
-                    Means = new ObservableCollection<string>(invalidMeans)
-                };
-                result.DictMeans.Add(invalidDictMean);
+                // 如果没有 has_mean 字段，默认归为有效释义
+                validMeans.Add(meaning);
             }
         }
+
+        if (!hasClassifiedMeans)
+            return false;
+
+        // 添加有效释义
+        if (validMeans.Count > 0)
+        {
+            var validDictMean = new DictMean
+            {
+                PartOfSpeech = Context.GetTranslation("Paraphrase"),
+                Means = new ObservableCollection<string>(validMeans)
+            };
+            result.DictMeans.Add(validDictMean);
+        }
+
+        // 添加扩展释义（如电影名等）
+        if (invalidMeans.Count > 0)
+        {
+            var invalidDictMean = new DictMean
+            {
+                PartOfSpeech = Context.GetTranslation("Expand"),
+                Means = new ObservableCollection<string>(invalidMeans)
+            };
+            result.DictMeans.Add(invalidDictMean);
+        }
+
+        return true;
+    }
+
+    private static List<string> ExtractMeanStrings(JsonElement element)
+    {
+        var values = new List<string>();
+        AddMeanStrings(element, values);
+        return values;
+    }
+
+    private static void AddMeanStrings(JsonElement element, ICollection<string> values)
+    {
+        switch (element.ValueKind)
+        {
+            case JsonValueKind.String:
+                AddIfNotEmpty(element.GetString(), values);
+                break;
+
+            case JsonValueKind.Array:
+                foreach (var item in element.EnumerateArray())
+                {
+                    AddMeanStrings(item, values);
+                }
+                break;
+
+            case JsonValueKind.Object:
+                if (element.TryGetProperty("word_mean", out var wordMean))
+                {
+                    AddMeanStrings(wordMean, values);
+                }
+                else if (element.TryGetProperty("means", out var means))
+                {
+                    AddMeanStrings(means, values);
+                }
+                else if (element.TryGetProperty("mean", out var mean))
+                {
+                    AddMeanStrings(mean, values);
+                }
+                break;
+        }
+    }
+
+    private static void AddIfNotEmpty(string? value, ICollection<string> values)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            values.Add(value);
+        }
+    }
+
+    private static string? GetStringProperty(JsonElement element, string propertyName)
+    {
+        return element.ValueKind == JsonValueKind.Object &&
+               element.TryGetProperty(propertyName, out var property) &&
+               property.ValueKind == JsonValueKind.String
+            ? property.GetString()
+            : null;
     }
 
     /// <summary>
@@ -179,21 +329,6 @@ public class Main : DictionaryPluginBase
     /// <param name="result">字典结果</param>
     private void ProcessEnglishContent(JsonElement firstSymbol, DictionaryResult result)
     {
-        // 英式发音
-        if (firstSymbol.TryGetProperty("ph_en", out var phEn) &&
-            !string.IsNullOrEmpty(phEn.GetString()))
-        {
-            var symbolEn = new Symbol
-            {
-                Label = "uk",
-                Phonetic = phEn.GetString() ?? string.Empty,
-                AudioUrl = firstSymbol.TryGetProperty("ph_en_mp3", out var phEnMp3)
-                    ? phEnMp3.GetString() ?? string.Empty
-                    : string.Empty
-            };
-            result.Symbols.Add(symbolEn);
-        }
-
         // 美式发音
         if (firstSymbol.TryGetProperty("ph_am", out var phAm) &&
             !string.IsNullOrEmpty(phAm.GetString()))
@@ -202,15 +337,14 @@ public class Main : DictionaryPluginBase
             {
                 Label = "us",
                 Phonetic = phAm.GetString() ?? string.Empty,
-                AudioUrl = firstSymbol.TryGetProperty("ph_am_mp3", out var phAmMp3)
-                    ? phAmMp3.GetString() ?? string.Empty
-                    : string.Empty
+                AudioUrl = GetFirstStringProperty(firstSymbol, "ph_am_mp3", "ph_tts_mp3")
             };
             result.Symbols.Add(symbolAm);
         }
 
         // 英文词性和释义
-        if (firstSymbol.TryGetProperty("parts", out var parts))
+        if (firstSymbol.TryGetProperty("parts", out var parts) &&
+            parts.ValueKind == JsonValueKind.Array)
         {
             foreach (var part in parts.EnumerateArray())
             {
@@ -218,20 +352,31 @@ public class Main : DictionaryPluginBase
                     !part.TryGetProperty("means", out var means))
                     continue;
 
+                var meanValues = ExtractMeanStrings(means);
+                if (meanValues.Count == 0)
+                    continue;
+
                 var dictMean = new DictMean
                 {
                     PartOfSpeech = partOfSpeech.GetString() ?? string.Empty,
-                    Means = new ObservableCollection<string>(
-                        means.EnumerateArray()
-                            .Select(m => m.GetString())
-                            .Where(m => !string.IsNullOrEmpty(m))
-                            .Cast<string>()
-                    )
+                    Means = new ObservableCollection<string>(meanValues)
                 };
 
                 result.DictMeans.Add(dictMean);
             }
         }
+    }
+
+    private static string GetFirstStringProperty(JsonElement element, params string[] propertyNames)
+    {
+        foreach (var propertyName in propertyNames)
+        {
+            var value = GetStringProperty(element, propertyName);
+            if (!string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        return string.Empty;
     }
 
     /// <summary>

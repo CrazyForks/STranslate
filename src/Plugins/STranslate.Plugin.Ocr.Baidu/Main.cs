@@ -204,6 +204,7 @@ public class Main : ObservableObject, IOcrPlugin
             LangEnum.Polish => "POL",
             LangEnum.Dutch => "DUT",
             LangEnum.Ukrainian => null,
+            LangEnum.Uzbek => null,
             _ => "auto_detect"
         };
     }
@@ -248,6 +249,7 @@ public class Main : ObservableObject, IOcrPlugin
             LangEnum.Polish => null,
             LangEnum.Dutch => null,
             LangEnum.Ukrainian => null,
+            LangEnum.Uzbek => null,
             _ => "CHN_ENG"
         };
     }

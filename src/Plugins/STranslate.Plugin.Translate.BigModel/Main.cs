@@ -65,6 +65,7 @@ public class Main : LlmTranslatePluginBase
         LangEnum.Polish => "Polish",
         LangEnum.Dutch => "Dutch",
         LangEnum.Ukrainian => "Ukrainian",
+        LangEnum.Uzbek => "Uzbek",
         _ => "Requires you to identify automatically"
     };
 
@@ -101,6 +102,7 @@ public class Main : LlmTranslatePluginBase
         LangEnum.Polish => "Polish",
         LangEnum.Dutch => "Dutch",
         LangEnum.Ukrainian => "Ukrainian",
+        LangEnum.Uzbek => "Uzbek",
         _ => "Requires you to identify automatically"
     };
 

@@ -13,6 +13,7 @@ public class AudioPlayer : IAudioPlayer
     private MemoryStream? _audioStream;
     private Mp3FileReader? _mp3Reader;
     private CancellationTokenSource? _cancellationTokenSource;
+    private int _stopping;
     private bool _disposed;
 
     public AudioPlayer(ILogger<AudioPlayer> logger, IHttpService httpService)
@@ -69,8 +70,11 @@ public class AudioPlayer : IAudioPlayer
         catch (Exception ex)
         {
             _logger.LogError(ex, "播放音频时发生错误");
-            await StopAsync();
             throw;
+        }
+        finally
+        {
+            await StopAsync();
         }
     }
 
@@ -108,26 +112,39 @@ public class AudioPlayer : IAudioPlayer
     /// </summary>
     public async Task StopAsync()
     {
+        if (Interlocked.CompareExchange(ref _stopping, 1, 0) != 0)
+        {
+            return;
+        }
+
         try
         {
-            _cancellationTokenSource?.Cancel();
+            var cancellationTokenSource = _cancellationTokenSource;
+            _cancellationTokenSource = null;
+            cancellationTokenSource?.Cancel();
 
-            if (_waveOut != null)
+            var waveOut = _waveOut;
+            _waveOut = null;
+
+            if (waveOut != null)
             {
-                _waveOut.PlaybackStopped -= OnPlaybackStopped;
-                _waveOut.Stop();
-                _waveOut.Dispose();
-                _waveOut = null;
+                await Task.Run(() =>
+                {
+                    waveOut.PlaybackStopped -= OnPlaybackStopped;
+                    waveOut.Stop();
+                    waveOut.Dispose();
+                });
             }
 
-            _mp3Reader?.Dispose();
+            var mp3Reader = _mp3Reader;
             _mp3Reader = null;
+            mp3Reader?.Dispose();
 
-            _audioStream?.Dispose();
+            var audioStream = _audioStream;
             _audioStream = null;
+            audioStream?.Dispose();
 
-            _cancellationTokenSource?.Dispose();
-            _cancellationTokenSource = null;
+            cancellationTokenSource?.Dispose();
 
             OnPlaybackStateChanged(PlaybackState.Stopped);
         }
@@ -135,8 +152,10 @@ public class AudioPlayer : IAudioPlayer
         {
             _logger.LogError(ex, "停止音频播放时发生错误");
         }
-
-        await Task.CompletedTask;
+        finally
+        {
+            Interlocked.Exchange(ref _stopping, 0);
+        }
     }
 
     /// <summary>
@@ -185,7 +204,6 @@ public class AudioPlayer : IAudioPlayer
         catch (OperationCanceledException)
         {
             _logger.LogTrace("音频播放被取消(Monitor)");
-            await StopAsync();
         }
         catch (Exception ex)
         {
@@ -209,8 +227,13 @@ public class AudioPlayer : IAudioPlayer
             _logger.LogTrace("音频播放正常结束");
         }
 
-        // 清理资源
-        _ = Task.Run(async () => await StopAsync());
+        try
+        {
+            _cancellationTokenSource?.Cancel();
+        }
+        catch (ObjectDisposedException)
+        {
+        }
     }
 
     /// <summary>
