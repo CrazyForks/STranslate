@@ -475,6 +475,7 @@
     <sys:String x:Key="HotkeyOverwriteFailed">ホットキー上書き時の解除に失敗しました。復元されました。</sys:String>
     <sys:String x:Key="HotkeyUnavailableUneditable">このホットキーは「{0}」用に予約されており、使用できません。他のキーを選択してください。</sys:String>
     <sys:String x:Key="HotkeyUnavailableEditable">このホットキーは既に「{0}」で使用されています。「上書き」を押すと「{0}」から削除されます。</sys:String>
+    <sys:String x:Key="HotkeyReservedClipboardCopy">Ctrl+C はシステムコピーと選択テキスト取得の予約済みホットキーのため、グローバルホットキーには設定できません。他のホットキーを選択してください。</sys:String>
 
     <sys:String x:Key="StartModeNormal">通常起動</sys:String>
     <sys:String x:Key="StartModeAdmin">管理者起動</sys:String>

@@ -489,6 +489,7 @@
     <sys:String x:Key="HotkeyOverwriteFailed">热键覆盖时解绑失败，已恢复。</sys:String>
     <sys:String x:Key="HotkeyUnavailableUneditable">此热键为「{0}」保留，无法使用。请选择其他热键。</sys:String>
     <sys:String x:Key="HotkeyUnavailableEditable">此热键已被「{0}」使用。如果按「覆盖」，则会将其从「{0}」中删除。</sys:String>
+    <sys:String x:Key="HotkeyReservedClipboardCopy">Ctrl+C 是系统复制和划词取词的保留热键，无法绑定为全局热键。请选择其他热键。</sys:String>
 
     <!--  // Enum //  -->
     <sys:String x:Key="StartModeNormal">正常启动</sys:String>

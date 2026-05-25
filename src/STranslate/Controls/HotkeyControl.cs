@@ -126,8 +126,10 @@ public class HotkeyControl : Button
         CurrentHotkey = new HotkeyModel(hotkey);
     }
 
-    private static bool CheckHotkeyAvailability(HotkeyModel hotkey, bool validateKeyGesture) =>
-            hotkey.Validate(validateKeyGesture) && HotkeyMapper.CheckAvailability(hotkey);
+    private bool CheckHotkeyAvailability(HotkeyModel hotkey, bool validateKeyGesture) =>
+        (!Type.HasFlag(HotkeyType.Global) || !HotkeyMapper.IsReservedGlobalHotkey(hotkey)) &&
+        hotkey.Validate(validateKeyGesture) &&
+        HotkeyMapper.CheckAvailability(hotkey);
 
     public string EmptyHotkey => _i18n.GetTranslation("None");
 

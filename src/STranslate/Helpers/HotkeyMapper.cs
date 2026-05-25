@@ -20,6 +20,11 @@ public class HotkeyMapper
     private static readonly Internationalization _i18n;
     private const string LWin = "LWin";
     private const string RWin = "RWin";
+    private static readonly IReadOnlyDictionary<string, string> ReservedGlobalHotkeyResourceKeys =
+        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Ctrl + C"] = "HotkeyReservedClipboardCopy"
+        };
 
     #region Global Keyboard Hook
 
@@ -65,6 +70,12 @@ public class HotkeyMapper
             return true;
         //_logger.LogInformation("Registering hotkey: {HotkeyStr}", hotkeyStr);
 
+        if (IsReservedGlobalHotkey(hotkey))
+        {
+            _logger.LogWarning("Skipped reserved global hotkey: {HotkeyStr}", hotkeyStr);
+            return false;
+        }
+
         try
         {
             // Win 键必须用 ChefKeys
@@ -86,11 +97,16 @@ public class HotkeyMapper
     {
         try
         {
+            if (string.IsNullOrEmpty(hotkeyStr))
+                return true;
+
+            if (IsReservedGlobalHotkey(new HotkeyModel(hotkeyStr)))
+                return true;
+
             if (hotkeyStr == LWin || hotkeyStr == RWin)
                 return RemoveWithChefKeys(hotkeyStr);
 
-            if (!string.IsNullOrEmpty(hotkeyStr))
-                HotkeyManager.Current.Remove(hotkeyStr);
+            HotkeyManager.Current.Remove(hotkeyStr);
 
             return true;
         }
@@ -313,6 +329,32 @@ public class HotkeyMapper
         }
 
         return state;
+    }
+
+    /// <summary>
+    /// 判断热键是否为应用内部保留的全局热键。
+    /// </summary>
+    /// <param name="hotkey">待检查的热键。</param>
+    /// <returns>保留热键返回 true，否则返回 false。</returns>
+    internal static bool IsReservedGlobalHotkey(HotkeyModel hotkey)
+        => TryGetReservedGlobalHotkeyMessageKey(hotkey, out _);
+
+    /// <summary>
+    /// 尝试获取保留全局热键对应的本地化提示资源键。
+    /// </summary>
+    /// <param name="hotkey">待检查的热键。</param>
+    /// <param name="resourceKey">保留热键对应的本地化资源键。</param>
+    /// <returns>保留热键返回 true，否则返回 false。</returns>
+    internal static bool TryGetReservedGlobalHotkeyMessageKey(HotkeyModel hotkey, out string resourceKey)
+    {
+        if (ReservedGlobalHotkeyResourceKeys.TryGetValue(hotkey.ToString(), out var foundResourceKey))
+        {
+            resourceKey = foundResourceKey;
+            return true;
+        }
+
+        resourceKey = string.Empty;
+        return false;
     }
 
     #endregion

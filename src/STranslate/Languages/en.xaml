@@ -489,6 +489,7 @@
     <sys:String x:Key="HotkeyOverwriteFailed">Failed to unbind hotkey during overwrite, restored.</sys:String>
     <sys:String x:Key="HotkeyUnavailableUneditable">This hotkey is reserved for "{0}" and can't be used. Please choose another hotkey.</sys:String>
     <sys:String x:Key="HotkeyUnavailableEditable">This hotkey is already in use by "{0}". If you press "Overwrite", it will be removed from "{0}".</sys:String>
+    <sys:String x:Key="HotkeyReservedClipboardCopy">Ctrl+C is reserved for system copy and selected-text capture, so it can't be bound as a global hotkey. Please choose another hotkey.</sys:String>
     <!--  // Enum //  -->
     <sys:String x:Key="StartModeNormal">Normal</sys:String>
     <sys:String x:Key="StartModeAdmin">Admin</sys:String>

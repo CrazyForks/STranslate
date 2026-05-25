@@ -162,6 +162,15 @@ public partial class HotkeyControlDialog : ContentDialog
     {
         ResetUI();
 
+        if (_type.HasFlag(HotkeyType.Global) &&
+            HotkeyMapper.TryGetReservedGlobalHotkeyMessageKey(hotkey, out var resourceKey))
+        {
+            PART_InfoBar.Message = _i18n.GetTranslation(resourceKey);
+            PART_InfoBar.Visibility = Visibility.Visible;
+            SaveBtn.IsEnabled = false;
+            return;
+        }
+
         var registeredHotkey = _hotkeySettings.RegisteredHotkeys
             .Where(x => x.Type.HasFlag(_type) || _type.HasFlag(x.Type))
             .Where(x => x.Hotkey != _cacheHotkey.ToString())
@@ -202,5 +211,11 @@ public partial class HotkeyControlDialog : ContentDialog
     }
 
     private bool CheckHotkeyAvailability(HotkeyModel hotkey, bool validateKeyGesture)
-        => hotkey.ToString() is "LWin" or "RWin" || (hotkey.Validate(validateKeyGesture) && HotkeyMapper.CheckAvailability(hotkey));
+    {
+        if (_type.HasFlag(HotkeyType.Global) && HotkeyMapper.IsReservedGlobalHotkey(hotkey))
+            return false;
+
+        return hotkey.ToString() is "LWin" or "RWin" ||
+               (hotkey.Validate(validateKeyGesture) && HotkeyMapper.CheckAvailability(hotkey));
+    }
 }
