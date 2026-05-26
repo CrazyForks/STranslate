@@ -448,7 +448,7 @@
 
                 <!--  功能按钮  -->
                 <Button Command="{Binding AddPluginCommand}" Visibility="{Binding IsMarketView, Converter={cnvt:BoolInverseToVisibilityConverter}}">
-                    <ui:IconAndText Content="{DynamicResource AddPlugin}" Icon="{x:Static ui:FluentSystemIcons.AppsAddIn_20_Regular}" />
+                    <ui:IconAndText Content="{DynamicResource AddPlugin}" Icon="{x:Static ui:FluentSystemIcons.FolderZip_20_Regular}" />
                 </Button>
                 <Button
                     Command="{Binding LoadPluginsCommand}"
@@ -456,9 +456,7 @@
                     Visibility="{Binding IsMarketView, Converter={cnvt:BoolToVisibilityConverter}}">
                     <ui:IconAndText Content="{DynamicResource PluginMarketRefresh}" Icon="{x:Static ui:FluentSystemIcons.ArrowClockwise_20_Regular}" />
                 </Button>
-                <Button
-                    Command="{Binding OpenMarketSettingsCommand}"
-                    Visibility="{Binding IsMarketView, Converter={cnvt:BoolToVisibilityConverter}}">
+                <Button Command="{Binding OpenMarketSettingsCommand}" Visibility="{Binding IsMarketView, Converter={cnvt:BoolToVisibilityConverter}}">
                     <ui:IconAndText Content="{DynamicResource PluginMarketSettings}" Icon="{x:Static ui:FluentSystemIcons.Settings_20_Regular}" />
                 </Button>
 
