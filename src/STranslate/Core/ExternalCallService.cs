@@ -233,7 +233,7 @@ public class ExternalCallService(
                     viewModel.ToggleAppCommand.Execute(WindowActivationMode.ForceForeground);
                     break;
                 case ExternalCallAction.open_preference:
-                    await viewModel.OpenSettingsInternalAsync(null, WindowActivationMode.ForceForeground);
+                    await viewModel.OpenSettingsAndNavigateAsync(null, WindowActivationMode.ForceForeground);
                     break;
                 case ExternalCallAction.open_history:
                     await viewModel.OpenHistoryInternalAsync(WindowActivationMode.ForceForeground);

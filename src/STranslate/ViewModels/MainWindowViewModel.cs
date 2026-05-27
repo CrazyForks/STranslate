@@ -1537,7 +1537,18 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     [RelayCommand]
     private async Task OpenSettingsAsync(object? parameter)
     {
-        await OpenSettingsInternalAsync(parameter);
+        await OpenSettingsAndNavigateAsync(parameter);
+    }
+
+    internal async Task OpenSettingsAndNavigateAsync(
+        object? parameter,
+        WindowActivationMode activationMode = WindowActivationMode.Normal)
+    {
+        var isAlreadyOpen = Application.Current.Windows.OfType<SettingsWindow>().Any();
+        var window = await OpenSettingsInternalAsync(parameter, activationMode);
+
+        if (!isAlreadyOpen)
+            window.Navigate(nameof(GeneralPage));
     }
 
     internal async Task<SettingsWindow> OpenSettingsInternalAsync(
