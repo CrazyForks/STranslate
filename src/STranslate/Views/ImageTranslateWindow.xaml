@@ -419,19 +419,29 @@
                     </Separator>
 
 
-                    <TextBlock VerticalAlignment="Center" Text="{DynamicResource TranslateLanguage}" />
+                    <ikw:SimpleStackPanel
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal"
+                        Spacing="4">
+                        <TextBlock VerticalAlignment="Center" Text="{DynamicResource TranslateLanguage}" />
+                        <ui:FontIcon
+                            FontSize="14"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Icon="{x:Static ui:FluentSystemIcons.Info_24_Regular}"
+                            ToolTip="{DynamicResource ImageTranslateLanguageIndependentToolTip}" />
+                    </ikw:SimpleStackPanel>
                     <ComboBox
                         HorizontalContentAlignment="Center"
                         DisplayMemberPath="Display"
                         ItemsSource="{Binding DataProvider.LangEnums}"
-                        SelectedValue="{Binding Settings.SourceLang}"
+                        SelectedValue="{Binding Settings.ImageTranslateSourceLang}"
                         SelectedValuePath="Value" />
                     <TextBlock VerticalAlignment="Center" Text="&gt;&gt;" />
                     <ComboBox
                         HorizontalContentAlignment="Center"
                         DisplayMemberPath="Display"
                         ItemsSource="{Binding DataProvider.LangEnums}"
-                        SelectedValue="{Binding Settings.TargetLang}"
+                        SelectedValue="{Binding Settings.ImageTranslateTargetLang}"
                         SelectedValuePath="Value" />
                 </ikw:SimpleStackPanel>
             </Grid>

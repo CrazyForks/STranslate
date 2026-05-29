@@ -16,16 +16,53 @@ public class LanguageDetector
     private static readonly Internationalization _i18n = Ioc.Default.GetRequiredService<Internationalization>();
     private static readonly Settings _settings = Ioc.Default.GetRequiredService<Settings>();
 
+    /// <summary>
+    ///     使用全局语言配置解析本次翻译实际使用的语种。
+    /// </summary>
+    /// <param name="content">用于自动识别源语种的文本。</param>
+    /// <param name="cancellationToken">取消当前识别任务的令牌。</param>
+    /// <param name="onStarted">开始自动识别时触发的回调。</param>
+    /// <param name="onCompleted">自动识别完成时触发的回调。</param>
+    /// <param name="onFinished">自动识别结束时触发的回调。</param>
+    /// <returns>是否识别成功、实际源语种和实际目标语种。</returns>
+    public static Task<(bool isSuccess, LangEnum source, LangEnum target)> GetLanguageAsync(
+        string content,
+        CancellationToken cancellationToken = default,
+        Action? onStarted = default,
+        Action<bool, LangEnum>? onCompleted = default,
+        Action? onFinished = default)
+        => GetLanguageAsync(
+            content,
+            _settings.SourceLang,
+            _settings.TargetLang,
+            cancellationToken,
+            onStarted,
+            onCompleted,
+            onFinished);
+
+    /// <summary>
+    ///     根据指定的源/目标语种配置解析本次翻译实际使用的语种。
+    /// </summary>
+    /// <param name="content">用于自动识别源语种的文本。</param>
+    /// <param name="configuredSource">调用方配置的源语种。</param>
+    /// <param name="configuredTarget">调用方配置的目标语种。</param>
+    /// <param name="cancellationToken">取消当前识别任务的令牌。</param>
+    /// <param name="onStarted">开始自动识别时触发的回调。</param>
+    /// <param name="onCompleted">自动识别完成时触发的回调。</param>
+    /// <param name="onFinished">自动识别结束时触发的回调。</param>
+    /// <returns>是否识别成功、实际源语种和实际目标语种。</returns>
     public static async Task<(bool isSuccess, LangEnum source, LangEnum target)> GetLanguageAsync(
         string content,
+        LangEnum configuredSource,
+        LangEnum configuredTarget,
         CancellationToken cancellationToken = default,
         Action? onStarted = default,
         Action<bool, LangEnum>? onCompleted = default,
         Action? onFinished = default)
     {
         bool isSuccess = true;
-        var source = _settings.SourceLang;
-        if (_settings.SourceLang == LangEnum.Auto)
+        var source = configuredSource;
+        if (configuredSource == LangEnum.Auto)
         {
             onStarted?.Invoke();
             try
@@ -41,7 +78,7 @@ public class LanguageDetector
                 onFinished?.Invoke();
             }
         }
-        return (isSuccess, source, GetTargetLanguage(source));
+        return (isSuccess, source, GetTargetLanguage(source, configuredTarget));
     }
 
     /// <summary>
@@ -50,9 +87,18 @@ public class LanguageDetector
     /// <param name="source">实际参与翻译的源语种。</param>
     /// <returns>当前翻译链路应使用的目标语种。</returns>
     public static LangEnum GetTargetLanguage(LangEnum source)
+        => GetTargetLanguage(source, _settings.TargetLang);
+
+    /// <summary>
+    /// 根据最终源语种与调用方目标语种配置解析应使用的目标语种。
+    /// </summary>
+    /// <param name="source">实际参与翻译的源语种。</param>
+    /// <param name="configuredTarget">调用方配置的目标语种。</param>
+    /// <returns>当前翻译链路应使用的目标语种。</returns>
+    public static LangEnum GetTargetLanguage(LangEnum source, LangEnum configuredTarget)
     {
-        if (_settings.TargetLang != LangEnum.Auto)
-            return _settings.TargetLang;
+        if (configuredTarget != LangEnum.Auto)
+            return configuredTarget;
 
         return (source == _settings.FirstLanguage || source == LangEnum.ChineseSimplified || source == LangEnum.ChineseTraditional)
             ? _settings.SecondLanguage

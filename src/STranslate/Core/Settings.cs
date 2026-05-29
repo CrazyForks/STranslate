@@ -333,6 +333,8 @@ public partial class Settings : ObservableObject
 
     [ObservableProperty] public partial bool IsImTranShowingAnnotated { get; set; } = false;
     [ObservableProperty] public partial bool IsImTranShowingTextControl { get; set; } = false;
+    [ObservableProperty] public partial LangEnum ImageTranslateSourceLang { get; set; } = LangEnum.Auto;
+    [ObservableProperty] public partial LangEnum ImageTranslateTargetLang { get; set; } = LangEnum.Auto;
     [ObservableProperty] public partial double ImTranWindowWidth { get; set; } = 600;
     [ObservableProperty] public partial double ImTranWindowHeight { get; set; } = 600;
 

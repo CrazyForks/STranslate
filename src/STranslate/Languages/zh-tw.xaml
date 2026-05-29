@@ -51,9 +51,9 @@
     <sys:String x:Key="General_DefaultSourceLanguage">預設來源語言</sys:String>
     <sys:String x:Key="General_DefaultSourceLanguageDescription">當自動檢測失敗時使用此語言。</sys:String>
     <sys:String x:Key="General_FirstLanguage">第一語言</sys:String>
-    <sys:String x:Key="General_FirstLanguageDescription">當目標語言設為自動且來源語言為其他語言（包含第二語言）時，目標語言使用第一語言。</sys:String>
+    <sys:String x:Key="General_FirstLanguageDescription">當任一翻譯場景（包含圖片翻譯）的目標語言設為自動，且來源語言為其他語言（包含第二語言）時，目標語言使用第一語言。</sys:String>
     <sys:String x:Key="General_SecondLanguage">第二語言</sys:String>
-    <sys:String x:Key="General_SecondLanguageDescription">當目標語言設為自動且來源語言為第一語言時，目標語言使用第二語言。</sys:String>
+    <sys:String x:Key="General_SecondLanguageDescription">當任一翻譯場景（包含圖片翻譯）的目標語言設為自動，且來源語言為第一語言時，目標語言使用第二語言。</sys:String>
     <sys:String x:Key="General_HttpTimeout">逾時時間</sys:String>
     <sys:String x:Key="General_HttpTimeoutDescription">網路請求的逾時時間，單位：秒。</sys:String>
     <sys:String x:Key="General_UseClipboardOutput">文字輸出使用剪貼簿</sys:String>
@@ -728,6 +728,7 @@
 
     <sys:String x:Key="RecognizeLanguage">辨識語言</sys:String>
     <sys:String x:Key="TranslateLanguage">翻譯語言</sys:String>
+    <sys:String x:Key="ImageTranslateLanguageIndependentToolTip">圖片翻譯視窗的翻譯語言與主視窗相互獨立，修改這裡不會影響主視窗。</sys:String>
     <sys:String x:Key="ImTranSettingsToolTip" xml:space="preserve">直接滑鼠左擊-&gt;獨立視窗設定&#10;Ctrl+滑鼠左擊-&gt;文字辨識設定&#10;Alt+滑鼠左擊-&gt;文字翻譯配置</sys:String>
 
     <!--  // Snackbar Messages //  -->

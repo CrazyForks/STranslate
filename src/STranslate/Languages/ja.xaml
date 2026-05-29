@@ -48,9 +48,9 @@
     <sys:String x:Key="General_DefaultSourceLanguage">デフォルトの翻訳元言語</sys:String>
     <sys:String x:Key="General_DefaultSourceLanguageDescription">自動検出に失敗した場合、この言語を使用します。</sys:String>
     <sys:String x:Key="General_FirstLanguage">第一言語</sys:String>
-    <sys:String x:Key="General_FirstLanguageDescription">翻訳先が自動で、かつ翻訳元が他の言語（第二言語を含む）の場合、翻訳先に第一言語を使用します。</sys:String>
+    <sys:String x:Key="General_FirstLanguageDescription">任意の翻訳シーン（画像翻訳を含む）で翻訳先が自動、かつ翻訳元が他の言語（第二言語を含む）の場合、翻訳先に第一言語を使用します。</sys:String>
     <sys:String x:Key="General_SecondLanguage">第二言語</sys:String>
-    <sys:String x:Key="General_SecondLanguageDescription">翻訳先が自動で、かつ翻訳元が第一言語の場合、翻訳先に第二言語を使用します。</sys:String>
+    <sys:String x:Key="General_SecondLanguageDescription">任意の翻訳シーン（画像翻訳を含む）で翻訳先が自動、かつ翻訳元が第一言語の場合、翻訳先に第二言語を使用します。</sys:String>
     <sys:String x:Key="General_HttpTimeout">タイムアウト</sys:String>
     <sys:String x:Key="General_HttpTimeoutDescription">ネットワークリクエストのタイムアウト時間。単位：秒。</sys:String>
     <sys:String x:Key="General_UseClipboardOutput">テキスト出力にクリップボードを使用</sys:String>
@@ -706,6 +706,7 @@
 
     <sys:String x:Key="RecognizeLanguage">認識言語</sys:String>
     <sys:String x:Key="TranslateLanguage">翻訳言語</sys:String>
+    <sys:String x:Key="ImageTranslateLanguageIndependentToolTip">画像翻訳ウィンドウの翻訳言語はメインウィンドウとは独立しています。ここで変更してもメインウィンドウには影響しません。</sys:String>
     <sys:String x:Key="ImTranSettingsToolTip" xml:space="preserve">左クリック -> 独立設定画面&#10;Ctrl+左クリック -> 文字認識設定&#10;Alt+左クリック -> テキスト翻訳設定</sys:String>
 
     <sys:String x:Key="CopySuccess">コピー成功</sys:String>

@@ -51,9 +51,9 @@
     <sys:String x:Key="General_DefaultSourceLanguage">Default Source Language</sys:String>
     <sys:String x:Key="General_DefaultSourceLanguageDescription">Use this language when auto detection fails.</sys:String>
     <sys:String x:Key="General_FirstLanguage">First Language</sys:String>
-    <sys:String x:Key="General_FirstLanguageDescription">When the target language is set to Auto and the source language is another language (including the second language), the target language will use the first language.</sys:String>
+    <sys:String x:Key="General_FirstLanguageDescription">When the target language is set to Auto in any translation scenario (including image translation), and the source language is another language (including the second language), the target language uses the first language.</sys:String>
     <sys:String x:Key="General_SecondLanguage">Second Language</sys:String>
-    <sys:String x:Key="General_SecondLanguageDescription">When the target language is set to Auto and the source language is the first language, the target language will use the second language.</sys:String>
+    <sys:String x:Key="General_SecondLanguageDescription">When the target language is set to Auto in any translation scenario (including image translation), and the source language is the first language, the target language uses the second language.</sys:String>
     <sys:String x:Key="General_HttpTimeout">Timeout</sys:String>
     <sys:String x:Key="General_HttpTimeoutDescription">Network request timeout in seconds.</sys:String>
     <sys:String x:Key="General_UseClipboardOutput">Use Clipboard for Text Output</sys:String>
@@ -725,6 +725,7 @@
 
     <sys:String x:Key="RecognizeLanguage">Recognize Language</sys:String>
     <sys:String x:Key="TranslateLanguage">Translate Language</sys:String>
+    <sys:String x:Key="ImageTranslateLanguageIndependentToolTip">The translation language in the image translation window is independent from the main window. Changes here will not affect the main window.</sys:String>
     <sys:String x:Key="ImTranSettingsToolTip" xml:space="preserve">Left Click -> Standalone Window Settings&#10;Ctrl+Left Click -> Text Recognition Settings&#10;Alt+Left Click -> Text Translation Settings</sys:String>
 
     <!--  // Snackbar Messages //  -->

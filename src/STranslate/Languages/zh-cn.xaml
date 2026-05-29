@@ -51,9 +51,9 @@
     <sys:String x:Key="General_DefaultSourceLanguage">默认源语言</sys:String>
     <sys:String x:Key="General_DefaultSourceLanguageDescription">当自动检测失败时使用此语言。</sys:String>
     <sys:String x:Key="General_FirstLanguage">第一语言</sys:String>
-    <sys:String x:Key="General_FirstLanguageDescription">当目标语言设为自动且源语言为其他语言（包含第二语言）时目标语言使用第一语言。</sys:String>
+    <sys:String x:Key="General_FirstLanguageDescription">当任意翻译场景（包括图片翻译）的目标语言设为自动，且源语言为其他语言（包含第二语言）时，目标语言使用第一语言。</sys:String>
     <sys:String x:Key="General_SecondLanguage">第二语言</sys:String>
-    <sys:String x:Key="General_SecondLanguageDescription">当目标语言设为自动且源语言为第一语言时目标语言使用第二语言。</sys:String>
+    <sys:String x:Key="General_SecondLanguageDescription">当任意翻译场景（包括图片翻译）的目标语言设为自动，且源语言为第一语言时，目标语言使用第二语言。</sys:String>
     <sys:String x:Key="General_HttpTimeout">超时时间</sys:String>
     <sys:String x:Key="General_HttpTimeoutDescription">请求网络请求的超时时间，单位：秒。</sys:String>
     <sys:String x:Key="General_UseClipboardOutput">文本输出使用剪贴板</sys:String>
@@ -726,6 +726,7 @@
 
     <sys:String x:Key="RecognizeLanguage">识别语言</sys:String>
     <sys:String x:Key="TranslateLanguage">翻译语言</sys:String>
+    <sys:String x:Key="ImageTranslateLanguageIndependentToolTip">图片翻译窗口的翻译语言与主窗口相互独立，修改这里不会影响主窗口。</sys:String>
     <sys:String x:Key="ImTranSettingsToolTip" xml:space="preserve">直接鼠标左击-&gt;独立窗口配置&#10;Ctrl+鼠标左击-&gt;文本识别配置&#10;Alt+鼠标左击-&gt;文本翻译配置</sys:String>
 
     <!--  // Snackbar Messages //  -->

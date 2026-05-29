@@ -200,7 +200,13 @@ public partial class ImageTranslateWindowViewModel : ObservableObject, IDisposab
 
             await Parallel.ForEachAsync(_lastOcrResult.OcrContents, cancellationToken, async (content, cancellationToken) =>
             {
-                var (isSuccess, source, target) = await LanguageDetector.GetLanguageAsync(content.Text, cancellationToken).ConfigureAwait(false);
+                var (isSuccess, source, target) = await LanguageDetector
+                    .GetLanguageAsync(
+                        content.Text,
+                        Settings.ImageTranslateSourceLang,
+                        Settings.ImageTranslateTargetLang,
+                        cancellationToken)
+                    .ConfigureAwait(false);
                 if (!isSuccess)
                 {
                     _logger.LogWarning($"Language detection failed for text: {content.Text}");
