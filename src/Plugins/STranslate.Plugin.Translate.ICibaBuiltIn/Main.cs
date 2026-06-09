@@ -338,6 +338,19 @@ public class Main : DictionaryPluginBase
     /// <param name="result">字典结果</param>
     private void ProcessEnglishContent(JsonElement firstSymbol, DictionaryResult result)
     {
+        // 英式发音
+        if (firstSymbol.TryGetProperty("ph_en", out var phEn) &&
+            !string.IsNullOrEmpty(phEn.GetString()))
+        {
+            var symbolEn = new Symbol
+            {
+                Label = "uk",
+                Phonetic = phEn.GetString() ?? string.Empty,
+                AudioUrl = GetFirstStringProperty(firstSymbol, "ph_en_mp3", "ph_tts_mp3")
+            };
+            result.Symbols.Add(symbolEn);
+        }
+
         // 美式发音
         if (firstSymbol.TryGetProperty("ph_am", out var phAm) &&
             !string.IsNullOrEmpty(phAm.GetString()))
