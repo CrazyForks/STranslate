@@ -65,10 +65,13 @@
 3. 若服务需要自动回译但缓存无回译结果，只补做回译，不重做主翻译。
 
 ### 从入口到结果：手动单服务执行（词典/翻译）
-1. `SingleTranslateAsync(service)` 先查当前输入历史。
-2. 若是 `IDictionaryPlugin`：执行 `ExecuteDictAsync()`，失败即返回。
-3. 若是 `ITranslatePlugin`：识别语种后执行 `ExecuteAsync()`，按配置追加 `ExecuteBackAsync()`。
-4. `Settings.CopyAfterTranslationNotAutomatic` 为真时，手动执行完成立即复制结果。
+1. `TemporaryTranslate(service)` / 输出区重试先走服务级 `CanExecute`：不同服务可并发，同一服务已有手动任务时继续提示等待。
+2. `SingleTranslateAsync(service)` / `SingleTransBackAsync(service)` 启动时快照当前输入文本与源/目标语种，并用 `PluginID + ServiceID` 登记本次任务的取消令牌。
+3. 若是 `IDictionaryPlugin`：用快照文本执行 `ExecuteDictAsync()`，失败即返回；词典手动执行仍保持现有历史语义，不额外落盘。
+4. 若是 `ITranslatePlugin`：用快照文本和语种配置识别实际语种后执行 `ExecuteAsync()`，按配置追加 `ExecuteBackAsync()`。
+5. 翻译服务成功后通过串行历史合并重新读取最新历史，只更新当前服务的 `HistoryData`，避免多个手动服务并发完成时互相覆盖。
+6. `Settings.CopyAfterTranslationNotAutomatic` 为真时，手动执行完成立即复制结果；多个并发服务仍按完成顺序更新剪贴板。
+7. ESC / 关闭窗口 / 清空输入 / 新翻译入口会通过 `CancelAllOperations()` 取消所有已登记的手动单服务任务。
 
 ### 复制与历史策略
 - 自动复制：`Settings.CopyAfterTranslation` 支持第 N 个自动服务或最后一个自动服务。
