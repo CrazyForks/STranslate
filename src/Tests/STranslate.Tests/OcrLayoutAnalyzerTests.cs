@@ -514,87 +514,7 @@ public class OcrLayoutAnalyzerTests
     }
 
     [Fact]
-    public void NormalizeCoordinatesConvertsNormalizedBoxesToPixels()
-    {
-        var result = new OcrResult
-        {
-            OcrContents =
-            [
-                new()
-                {
-                    Text = "Flat",
-                    CoordinateUnit = OcrCoordinateUnit.Normalized,
-                    BoxPoints =
-                    [
-                        new(0.1f, 0.2f),
-                        new(0.3f, 0.2f),
-                        new(0.3f, 0.4f),
-                        new(0.1f, 0.4f)
-                    ]
-                }
-            ],
-            Regions =
-            [
-                new()
-                {
-                    CoordinateUnit = OcrCoordinateUnit.Normalized,
-                    BoxPoints = [new(0.05f, 0.1f), new(0.35f, 0.1f)],
-                    Paragraphs =
-                    [
-                        new()
-                        {
-                            CoordinateUnit = OcrCoordinateUnit.Normalized,
-                            BoxPoints = [new(0.1f, 0.2f), new(0.3f, 0.4f)],
-                            Lines =
-                            [
-                                new()
-                                {
-                                    Text = "Line",
-                                    CoordinateUnit = OcrCoordinateUnit.Normalized,
-                                    BoxPoints = [new(0.2f, 0.25f), new(0.4f, 0.5f)]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        };
-
-        Utilities.NormalizeOcrCoordinates(result, 200, 100);
-
-        Assert.Equal(OcrCoordinateUnit.Pixel, result.OcrContents[0].CoordinateUnit);
-        Assert.Equal(20, result.OcrContents[0].BoxPoints[0].X, precision: 3);
-        Assert.Equal(20, result.OcrContents[0].BoxPoints[0].Y, precision: 3);
-        Assert.Equal(60, result.OcrContents[0].BoxPoints[1].X, precision: 3);
-        Assert.Equal(10, result.Regions[0].BoxPoints[0].Y, precision: 3);
-        Assert.Equal(60, result.Regions[0].Paragraphs[0].BoxPoints[1].X, precision: 3);
-        Assert.Equal(50, result.Regions[0].Paragraphs[0].Lines[0].BoxPoints[1].Y, precision: 3);
-    }
-
-    [Fact]
-    public void NormalizeCoordinatesClearsNormalizedBoxesWithoutImageSize()
-    {
-        var result = new OcrResult
-        {
-            OcrContents =
-            [
-                new()
-                {
-                    Text = "Flat",
-                    CoordinateUnit = OcrCoordinateUnit.Normalized,
-                    BoxPoints = [new(0.1f, 0.2f)]
-                }
-            ]
-        };
-
-        Utilities.NormalizeOcrCoordinates(result, 0, 0);
-
-        Assert.Empty(result.OcrContents[0].BoxPoints);
-        Assert.Equal(OcrCoordinateUnit.Pixel, result.OcrContents[0].CoordinateUnit);
-    }
-
-    [Fact]
-    public void NormalizeCoordinatesProjectsStructuredLayoutToFlatContents()
+    public void PrepareOcrResultProjectsStructuredLayoutToFlatContents()
     {
         var result = new OcrResult
         {
@@ -617,7 +537,7 @@ public class OcrLayoutAnalyzerTests
             ]
         };
 
-        Utilities.NormalizeOcrCoordinates(result, 200, 100);
+        Utilities.PrepareOcrResult(result);
 
         Assert.Single(result.OcrContents);
         Assert.Equal("Projected first line", result.OcrContents[0].Text);
@@ -625,17 +545,13 @@ public class OcrLayoutAnalyzerTests
     }
 
     [Fact]
-    public void OcrCapabilityProviderControlsImageTranslationEligibility()
+    public void OcrPluginSupportBoxPointsControlsImageTranslationEligibility()
     {
         IOcrPlugin oldPlugin = new PlainOcrPlugin();
-        IOcrPlugin boundingBoxOnly = new CapabilityOcrPlugin(OcrCapabilities.BoundingBox);
-        IOcrPlugin imageTranslationOnly = new CapabilityOcrPlugin(OcrCapabilities.ImageTranslation);
-        IOcrPlugin eligible = new CapabilityOcrPlugin(OcrCapabilities.BoundingBox | OcrCapabilities.ImageTranslation);
+        IOcrPlugin eligible = new BoxPointOcrPlugin();
 
-        Assert.False(oldPlugin.SupportsImageTranslation());
-        Assert.False(boundingBoxOnly.SupportsImageTranslation());
-        Assert.False(imageTranslationOnly.SupportsImageTranslation());
-        Assert.True(eligible.SupportsImageTranslation());
+        Assert.False(oldPlugin.SupportBoxPoints());
+        Assert.True(eligible.SupportBoxPoints());
     }
 
     private static List<OcrContent> AnalyzeSmart(params OcrContent[] contents) =>
@@ -672,8 +588,23 @@ public class OcrLayoutAnalyzerTests
         }
     }
 
-    private sealed class CapabilityOcrPlugin(OcrCapabilities capabilities) : PlainOcrPlugin, IOcrCapabilityProvider
+    private sealed class BoxPointOcrPlugin : IOcrPlugin
     {
-        public OcrCapabilities Capabilities { get; } = capabilities;
+        public IEnumerable<LangEnum> SupportedLanguages => [LangEnum.Auto];
+
+        public bool SupportBoxPoints() => true;
+
+        public void Init(IPluginContext context)
+        {
+        }
+
+        public Control GetSettingUI() => new();
+
+        public Task<OcrResult> RecognizeAsync(OcrRequest request, CancellationToken cancellationToken = default) =>
+            Task.FromResult(new OcrResult());
+
+        public void Dispose()
+        {
+        }
     }
 }

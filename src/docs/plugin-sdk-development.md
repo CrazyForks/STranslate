@@ -55,20 +55,17 @@
   - `OcrRequest.PixelWidth` / `PixelHeight` 由宿主在截图 OCR、OCR 窗口和图片翻译中传入真实图片尺寸，旧插件可忽略。
   - `OcrResult.OcrContents` 是兼容旧插件的扁平文本块列表。
   - `OcrResult.Regions` 可返回结构化布局，层级为 `OcrRegion -> OcrParagraph -> OcrContent`。
-  - `OcrContent.CoordinateUnit` 支持 `Pixel` 和 `Normalized`，宿主在 OCR 返回后统一换算为像素坐标。
-- OCR 能力声明：
-  - `IOcrCapabilityProvider` 是可选接口，旧插件不实现时默认无额外能力声明。
-  - 图片翻译 OCR 服务必须声明 `OcrCapabilities.ImageTranslation | OcrCapabilities.BoundingBox`，否则不会出现在图片翻译 OCR 选择列表。
-  - 服务商能返回段落/区域结构时应声明 `OcrCapabilities.StructuredLayout` 并填充 `OcrResult.Regions`。
+  - `OcrContent.BoxPoints`、`OcrRegion.BoxPoints`、`OcrParagraph.BoxPoints` 均使用图片像素坐标；宿主不再接收归一化坐标单位声明。
+- OCR 坐标能力：
+  - `IOcrPlugin.SupportBoxPoints()` 默认返回 `false`，普通 OCR 不要求插件支持文本坐标框。
+  - 图片翻译 OCR 服务必须 override `SupportBoxPoints()` 并返回 `true`，否则不会出现在图片翻译 OCR 选择列表。
+  - 服务商能返回段落/区域结构时直接填充 `OcrResult.Regions`；`Auto` / `Provider` 模式会按是否存在有效 `Regions` 判断结构化布局。
   - 图片翻译专用链路、`Auto` / `Provider` / `Smart` 分段策略和结构化布局影响见 [flow-image-translation.md](flow-image-translation.md)。
 - `LangEnum`：语言枚举，当前包含 `Uzbek`；新增语言时需要同步主程序语言检测、内置插件语言映射和本地化文本。
 
 ### 图片翻译 OCR 插件要求
-- 普通 OCR 插件仍只需要实现 `IOcrPlugin`；想进入图片翻译 OCR 下拉列表时，必须额外实现 `IOcrCapabilityProvider`。
-- `Capabilities` 至少包含：
-  - `OcrCapabilities.ImageTranslation`
-  - `OcrCapabilities.BoundingBox`
-- 如果返回 `OcrCapabilities.StructuredLayout`：
+- 普通 OCR 插件仍只需要实现 `IOcrPlugin`；想进入图片翻译 OCR 下拉列表时，必须实现 `SupportBoxPoints() => true`。
+- 如果返回结构化布局：
   - `OcrResult.Regions` 应按服务商真实区域、段落、行填充。
   - `OcrParagraph.Lines` 内的每个 `OcrContent` 应带文本和坐标。
   - `OcrParagraph.BoxPoints` 可直接返回服务商段落框；不返回时宿主会用行框求外接框。
@@ -76,7 +73,7 @@
 - 如果只返回扁平 `OcrContents`：
   - 每个 `OcrContent` 仍必须有坐标框，否则图片翻译无法稳定覆盖和选中。
   - 宿主会使用本地 `Smart` 分段推断段落、表格和网格项。
-- 坐标必须对应传入图片的像素空间；使用归一化坐标时设置 `CoordinateUnit = OcrCoordinateUnit.Normalized`，不要自行乘以屏幕缩放比例。
+- 坐标必须对应传入图片的像素空间；如服务商返回归一化坐标，插件需要用 `OcrRequest.PixelWidth` / `PixelHeight` 换算后再写入 `BoxPoints`。
 - 插件侧不要把整张表格、整列列表或整页正文合成单个 `OcrContent`；这会让宿主无法恢复准确翻译粒度。
 
 ### HTTP 与流式接口
@@ -93,7 +90,7 @@
 - 大模型翻译：优先继承 `LlmTranslatePluginBase`（内置 Prompt 选择机制）。
 - 词典类：继承 `DictionaryPluginBase`。
 - OCR/TTS/生词本：分别实现 `IOcrPlugin`、`ITtsPlugin`、`IVocabularyPlugin`。
-- OCR 插件如果希望参与图片翻译或返回结构化段落，额外实现 `IOcrCapabilityProvider` 并按真实能力声明 `OcrCapabilities`。
+- OCR 插件如果希望参与图片翻译，override `SupportBoxPoints()` 返回 `true` 并为 OCR 内容返回图片像素坐标 `BoxPoints`。
 
 ### 官方内置插件维护要点
 - Microsoft 内置翻译：

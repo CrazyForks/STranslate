@@ -85,7 +85,7 @@ public class ImTranOcrServiceDropHandler : IDropTarget
 {
     public void DragOver(IDropInfo dropInfo)
     {
-        if (dropInfo.Data is Service { Plugin: IOcrPlugin plugin } && plugin.SupportsImageTranslation())
+        if (dropInfo.Data is Service { Plugin: IOcrPlugin plugin } && plugin.SupportBoxPoints())
         {
             dropInfo.Effects = DragDropEffects.Copy;
             dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
@@ -99,7 +99,7 @@ public class ImTranOcrServiceDropHandler : IDropTarget
     public void Drop(IDropInfo dropInfo)
     {
         if (dropInfo.Data is Service { Plugin: IOcrPlugin plugin } service &&
-            plugin.SupportsImageTranslation())
+            plugin.SupportBoxPoints())
         {
             var target = dropInfo.VisualTarget as FrameworkElement;
             while (target != null)

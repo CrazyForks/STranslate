@@ -6,7 +6,7 @@ using WeChatOcr;
 
 namespace STranslate.Plugin.Ocr.WeChatBuiltIn;
 
-public class Main : IOcrPlugin, IOcrCapabilityProvider
+public class Main : IOcrPlugin
 {
     private Control? _settingUi;
     private SettingsViewModel? _viewModel;
@@ -21,8 +21,7 @@ public class Main : IOcrPlugin, IOcrCapabilityProvider
         LangEnum.English,
     ];
 
-    public OcrCapabilities Capabilities =>
-        OcrCapabilities.BoundingBox | OcrCapabilities.ImageTranslation;
+    public bool SupportBoxPoints() => true;
 
     public Control GetSettingUI()
     {

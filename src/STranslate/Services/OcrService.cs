@@ -71,7 +71,7 @@ public partial class OcrService : BaseService
         => GetImageTranslateOcrServiceOrDefault()?.Plugin as IOcrPlugin;
 
     internal bool IsImageTranslateOcrService(Service? service) =>
-        service?.Plugin is IOcrPlugin plugin && plugin.SupportsImageTranslation();
+        service?.Plugin is IOcrPlugin plugin && plugin.SupportBoxPoints();
 
     internal IEnumerable<Service> GetImageTranslateOcrServices() =>
         Services.Where(IsImageTranslateOcrService);

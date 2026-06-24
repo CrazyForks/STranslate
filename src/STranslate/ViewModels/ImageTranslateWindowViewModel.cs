@@ -182,7 +182,7 @@ public partial class ImageTranslateWindowViewModel : ObservableObject, IDisposab
             _lastOcrResult = await ocrSvc.RecognizeAsync(
                 new OcrRequest(data, Settings.OcrLanguage, bitmap.Width, bitmap.Height),
                 cancellationToken);
-            Utilities.NormalizeOcrCoordinates(_lastOcrResult, bitmap.Width, bitmap.Height);
+            Utilities.PrepareOcrResult(_lastOcrResult);
 
             if (!_lastOcrResult.IsSuccess || string.IsNullOrEmpty(_lastOcrResult.Text))
             {

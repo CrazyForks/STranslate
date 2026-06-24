@@ -2,7 +2,7 @@
 
 ## 模块职责
 - 提供截图翻译、静默 OCR 和 OCR 窗口三条图像文本识别链路。
-- 管理普通 OCR 服务选择、OCR 语言、坐标归一化、标注图和文本输出。
+- 管理普通 OCR 服务选择、OCR 语言、标注图和文本输出。
 - 将截图翻译和静默 OCR 结果接入统一取词文本后处理。
 - 图片翻译已拆到独立文档：[flow-image-translation.md](flow-image-translation.md)。
 
@@ -19,7 +19,7 @@
 - `STranslate/Core/OcrWordBuilder.cs`
   - 把带坐标的 `OcrContent` 转成图片文本选中所需的 `OcrWord`。
 - `STranslate/Core/Utilities.cs`
-  - `NormalizeOcrCoordinates()`：把 OCR 返回坐标统一换算为图片像素坐标。
+  - `PrepareOcrResult()`：当结构化 OCR 没有扁平内容时投影出 `OcrContents`。
 - `STranslate.Plugin/IOcrPlugin.cs`
   - `IOcrPlugin`、`OcrRequest`、`OcrResult`、`OcrContent`、`BoxPoint`。
 
@@ -43,18 +43,14 @@
 1. `OcrWindowViewModel.ExecuteAsync(bitmap)` 设置执行态并清理旧结果。
 2. 调用当前启用的 OCR 服务：
    `RecognizeAsync(new OcrRequest(data, Settings.OcrLanguage, bitmap.Width, bitmap.Height))`。
-3. OCR 返回后调用 `Utilities.NormalizeOcrCoordinates()`：
-   - `Pixel` 坐标保持不变。
-   - `Normalized` 坐标按图片宽高换算为像素坐标。
-   - 缺少图片尺寸时 normalized 坐标安全退化为无坐标。
+3. OCR 返回后调用 `Utilities.PrepareOcrResult()`；如果插件只填充结构化 `Regions`，宿主会投影出兼容的 `OcrContents`。
 4. 生成原图/标注图、`OcrWords` 和 `Result` 文本。
 5. `Settings.IsOcrShowingAnnotated` 决定显示原图还是标注图。
 
 ## OCR 结果模型
 - `OcrResult.OcrContents`：兼容旧插件的扁平 OCR 文本块列表。
 - `OcrResult.Regions`：结构化区域，层级为 `OcrRegion -> OcrParagraph -> OcrContent`。
-- `OcrContent.BoxPoints`：文本坐标框顶点，普通 OCR 可为空。
-- `OcrContent.CoordinateUnit`：`Pixel` 或 `Normalized`，宿主统一换算到图片像素坐标。
+- `OcrContent.BoxPoints`：文本坐标框顶点，使用图片像素坐标，普通 OCR 可为空。
 - `OcrResult.Text`：优先从 `OcrContents` 聚合；没有扁平内容时从 `Regions` 聚合段落文本。
 
 结构化 OCR 和图片翻译版面分析的细节见 [flow-image-translation.md](flow-image-translation.md)。
@@ -93,6 +89,6 @@
 ## 常见改动任务
 - 截图行为改造：在 `Screenshot.GetScreenshotAsync()` 处理窗口折叠、等待时机和截图工具调用。
 - OCR 结果进入翻译或剪贴板前的文本清洗：优先复用 `MainWindowViewModel.HandleCapturedText()`，避免截图翻译和静默 OCR 行为分叉。
-- OCR 坐标换算问题：优先检查插件返回的 `CoordinateUnit`、`OcrRequest.PixelWidth` / `PixelHeight` 和 `Utilities.NormalizeOcrCoordinates()`。
+- OCR 坐标问题：优先检查插件是否按图片像素坐标返回 `BoxPoints`；如果服务商返回归一化坐标，插件应使用 `OcrRequest.PixelWidth` / `PixelHeight` 自行换算。
 - OCR 窗口图片文本选中：检查 `OcrWordBuilder` 与 `ImageZoom`。
 - 图片翻译分段、覆盖和插件能力问题：看 [flow-image-translation.md](flow-image-translation.md)。

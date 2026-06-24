@@ -992,56 +992,10 @@ public class Utilities
                         paragraph.Lines.Any(line => line.BoxPoints.Count > 0))));
     }
 
-    public static void NormalizeOcrCoordinates(OcrResult ocrResult, int pixelWidth, int pixelHeight)
+    public static void PrepareOcrResult(OcrResult ocrResult)
     {
-        foreach (var content in ocrResult.OcrContents)
-        {
-            NormalizeBoxPoints(content.BoxPoints, content.CoordinateUnit, pixelWidth, pixelHeight);
-            content.CoordinateUnit = OcrCoordinateUnit.Pixel;
-        }
-
-        foreach (var region in ocrResult.Regions)
-        {
-            NormalizeBoxPoints(region.BoxPoints, region.CoordinateUnit, pixelWidth, pixelHeight);
-            region.CoordinateUnit = OcrCoordinateUnit.Pixel;
-
-            foreach (var paragraph in region.Paragraphs)
-            {
-                NormalizeBoxPoints(paragraph.BoxPoints, paragraph.CoordinateUnit, pixelWidth, pixelHeight);
-                paragraph.CoordinateUnit = OcrCoordinateUnit.Pixel;
-
-                foreach (var line in paragraph.Lines)
-                {
-                    NormalizeBoxPoints(line.BoxPoints, line.CoordinateUnit, pixelWidth, pixelHeight);
-                    line.CoordinateUnit = OcrCoordinateUnit.Pixel;
-                }
-            }
-        }
-
         if (ocrResult.OcrContents.Count == 0)
             ProjectStructuredLayoutToContents(ocrResult);
-    }
-
-    private static void NormalizeBoxPoints(
-        List<BoxPoint> boxPoints,
-        OcrCoordinateUnit coordinateUnit,
-        int pixelWidth,
-        int pixelHeight)
-    {
-        if (coordinateUnit == OcrCoordinateUnit.Pixel || boxPoints.Count == 0)
-            return;
-
-        if (pixelWidth <= 0 || pixelHeight <= 0)
-        {
-            boxPoints.Clear();
-            return;
-        }
-
-        foreach (var point in boxPoints)
-        {
-            point.X = Math.Clamp(point.X, 0, 1) * pixelWidth;
-            point.Y = Math.Clamp(point.Y, 0, 1) * pixelHeight;
-        }
     }
 
     private static void ProjectStructuredLayoutToContents(OcrResult ocrResult)

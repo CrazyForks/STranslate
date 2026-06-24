@@ -11,87 +11,18 @@ public interface IOcrPlugin : IPlugin
     IEnumerable<LangEnum> SupportedLanguages { get; }
 
     /// <summary>
+    /// 是否返回图片像素坐标的文本框。图片翻译需要该能力，普通 OCR 可不支持。
+    /// </summary>
+    /// <returns>支持返回文本坐标框则为 true。</returns>
+    bool SupportBoxPoints() => false;
+
+    /// <summary>
     /// 异步识别图片中的文本。
     /// </summary>
     /// <param name="request">OCR 请求参数。</param>
     /// <param name="cancellationToken">取消令牌。</param>
     /// <returns>识别结果。</returns>
     Task<OcrResult> RecognizeAsync(OcrRequest request, CancellationToken cancellationToken = default);
-}
-
-/// <summary>
-/// OCR 插件可选能力声明。
-/// </summary>
-public interface IOcrCapabilityProvider
-{
-    /// <summary>
-    /// 当前 OCR 插件声明支持的能力集合。
-    /// </summary>
-    OcrCapabilities Capabilities { get; }
-}
-
-/// <summary>
-/// OCR 插件能力标记。
-/// </summary>
-[Flags]
-public enum OcrCapabilities
-{
-    /// <summary>
-    /// 未声明任何额外能力。
-    /// </summary>
-    None = 0,
-
-    /// <summary>
-    /// 返回识别文本对应的坐标框。
-    /// </summary>
-    BoundingBox = 1,
-
-    /// <summary>
-    /// 返回区域、段落、行级结构化版面。
-    /// </summary>
-    StructuredLayout = 2,
-
-    /// <summary>
-    /// 可用于图片翻译专用 OCR 流程。
-    /// </summary>
-    ImageTranslation = 4
-}
-
-/// <summary>
-/// OCR 插件能力判断扩展。
-/// </summary>
-public static class OcrCapabilityExtensions
-{
-    /// <summary>
-    /// 获取 OCR 插件声明的能力；未实现 <see cref="IOcrCapabilityProvider"/> 的旧插件返回 <see cref="OcrCapabilities.None"/>。
-    /// </summary>
-    /// <param name="plugin">OCR 插件。</param>
-    /// <returns>插件能力集合。</returns>
-    public static OcrCapabilities GetOcrCapabilities(this IOcrPlugin plugin) =>
-        plugin is IOcrCapabilityProvider provider
-            ? provider.Capabilities
-            : OcrCapabilities.None;
-
-    /// <summary>
-    /// 判断 OCR 插件是否支持指定能力。
-    /// </summary>
-    /// <param name="plugin">OCR 插件。</param>
-    /// <param name="capability">要检查的能力。</param>
-    /// <returns>支持则为 true。</returns>
-    public static bool SupportsOcrCapability(this IOcrPlugin plugin, OcrCapabilities capability) =>
-        plugin.GetOcrCapabilities().HasFlag(capability);
-
-    /// <summary>
-    /// 判断 OCR 插件是否可用于图片翻译 OCR 流程。
-    /// </summary>
-    /// <param name="plugin">OCR 插件。</param>
-    /// <returns>同时支持图片翻译和坐标框时为 true。</returns>
-    public static bool SupportsImageTranslation(this IOcrPlugin plugin)
-    {
-        var capabilities = plugin.GetOcrCapabilities();
-        return capabilities.HasFlag(OcrCapabilities.ImageTranslation) &&
-               capabilities.HasFlag(OcrCapabilities.BoundingBox);
-    }
 }
 
 /// <summary>
@@ -222,11 +153,6 @@ public class OcrRegion
     /// 区域外接坐标框。
     /// </summary>
     public List<BoxPoint> BoxPoints { get; set; } = [];
-
-    /// <summary>
-    /// 区域坐标单位。
-    /// </summary>
-    public OcrCoordinateUnit CoordinateUnit { get; set; } = OcrCoordinateUnit.Pixel;
 }
 
 /// <summary>
@@ -243,11 +169,6 @@ public class OcrParagraph
     /// 段落外接坐标框。
     /// </summary>
     public List<BoxPoint> BoxPoints { get; set; } = [];
-
-    /// <summary>
-    /// 段落坐标单位。
-    /// </summary>
-    public OcrCoordinateUnit CoordinateUnit { get; set; } = OcrCoordinateUnit.Pixel;
 }
 
 /// <summary>
@@ -264,27 +185,6 @@ public class OcrContent
     /// 文本对应的包围盒坐标点集合。
     /// </summary>
     public List<BoxPoint> BoxPoints { get; set; } = [];
-
-    /// <summary>
-    /// 坐标单位。
-    /// </summary>
-    public OcrCoordinateUnit CoordinateUnit { get; set; } = OcrCoordinateUnit.Pixel;
-}
-
-/// <summary>
-/// OCR 坐标单位。
-/// </summary>
-public enum OcrCoordinateUnit
-{
-    /// <summary>
-    /// 图片像素坐标。
-    /// </summary>
-    Pixel,
-
-    /// <summary>
-    /// 归一化坐标，X/Y 均在 0 到 1 范围内。
-    /// </summary>
-    Normalized
 }
 
 /// <summary>

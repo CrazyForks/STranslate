@@ -3,8 +3,8 @@
 ## 模块职责
 - 管理图片翻译窗口的导入、截图、重试、标注图和结果图显示。
 - 维护图片翻译专用 OCR 服务与翻译服务绑定，避免普通 OCR 服务误入需要坐标的流程。
-- 对 OCR 结果执行坐标归一化、版面分析、翻译分发、文字覆盖回写和图片级文本选中。
-- 约束 OCR 插件能力声明、结构化布局返回方式和本地 `Smart` 分段回退策略。
+- 对 OCR 结果执行结构化投影、版面分析、翻译分发、文字覆盖回写和图片级文本选中。
+- 约束 OCR 插件坐标框支持声明、结构化布局返回方式和本地 `Smart` 分段回退策略。
 
 ## 关键入口
 - `STranslate/ViewModels/ImageTranslateWindowViewModel.cs`
@@ -24,14 +24,14 @@
 - `STranslate/Services/TranslateService.cs`
   - `ImageTranslateService`：图片翻译专用翻译服务。
 - `STranslate.Plugin/IOcrPlugin.cs`
-  - `IOcrCapabilityProvider`、`OcrCapabilities`、`OcrRequest`、`OcrResult`、`OcrContent.CoordinateUnit`。
+  - `IOcrPlugin.SupportBoxPoints()`、`OcrRequest`、`OcrResult`、`BoxPoint`。
 
 ## 从入口到结果
 1. 入口来自主窗口图片翻译命令、图片翻译窗口导入文件、剪贴板图片、重新执行或窗口内截图。
 2. `ImageTranslateWindowViewModel.ExecuteAsync(bitmap)` 清空旧状态，缓存 `_sourceImage` 并显示原图。
-3. 获取图片翻译专用 OCR：`OcrService.GetImageTranslateOcrSvcOrDefault()`。候选服务必须实现 `IOcrPlugin`，并声明 `OcrCapabilities.ImageTranslation | OcrCapabilities.BoundingBox`。
-4. 宿主用真实图片尺寸构造 `OcrRequest(data, Settings.OcrLanguage, bitmap.Width, bitmap.Height)`，让插件能返回像素坐标或归一化坐标。
-5. OCR 返回后调用 `Utilities.NormalizeOcrCoordinates()`，把 `Normalized` 坐标换算为图片像素坐标；缺少图片尺寸时 normalized 坐标会被清空，避免后续用错误坐标绘制。
+3. 获取图片翻译专用 OCR：`OcrService.GetImageTranslateOcrSvcOrDefault()`。候选服务必须实现 `IOcrPlugin`，并让 `SupportBoxPoints()` 返回 `true`。
+4. 宿主用真实图片尺寸构造 `OcrRequest(data, Settings.OcrLanguage, bitmap.Width, bitmap.Height)`，插件必须返回图片像素坐标 `BoxPoints`。
+5. OCR 返回后调用 `Utilities.PrepareOcrResult()`；如果插件只填充结构化 `Regions`，宿主会投影出兼容的 `OcrContents`。
 6. 原始 OCR 结果用于图片文本选中：`OcrWordBuilder.CreateFromOcrContents(_lastOcrResult.OcrContents)` 生成原文选中块。
 7. `ApplyLayoutAnalysis()` 生成 `OcrLayoutBlock`，并把分析后的块投影回 `OcrResult.OcrContents`，供标注图、复制和结果文本复用。
 8. 获取 `TranslateService.ImageTranslateService`，该服务必须是 `ITranslatePlugin`，词典类服务不会进入图片翻译翻译列表。
@@ -60,13 +60,13 @@
 ## 结构化 OCR 与插件契约
 图片翻译对 OCR 插件的要求比普通 OCR 更高：
 
-- 必须返回文本坐标框：`OcrCapabilities.BoundingBox`。
-- 必须声明可用于图片翻译：`OcrCapabilities.ImageTranslation`。
+- 必须 override `IOcrPlugin.SupportBoxPoints()` 并返回 `true`。
+- 必须为文本块返回图片像素坐标 `BoxPoints`。
 - 可以只返回扁平 `OcrResult.OcrContents`，宿主会用 `Smart` 分段。
-- 如果服务商能返回区域/段落/行，插件应声明 `OcrCapabilities.StructuredLayout` 并填充 `OcrResult.Regions`。
+- 如果服务商能返回区域/段落/行，插件应填充 `OcrResult.Regions`。
 - `OcrResult.OcrContents` 仍是兼容旧插件和旧调用链的扁平结果；结构化插件可以同时填充它，也可以只填充 `Regions`。
-- `OcrContent.CoordinateUnit`、`OcrRegion.CoordinateUnit`、`OcrParagraph.CoordinateUnit` 支持 `Pixel` 与 `Normalized`，宿主会统一换算。
-- 插件不要自行按屏幕缩放或窗口缩放改写坐标；图片翻译使用图片像素坐标。
+- 如服务商返回归一化坐标，插件需要使用 `OcrRequest.PixelWidth` / `PixelHeight` 换算成图片像素坐标后再写入 `BoxPoints`。
+- 插件不要按屏幕缩放或窗口缩放改写坐标；图片翻译使用图片自身的像素坐标。
 
 `Auto` 模式下，结构化 OCR 的 Provider 段落优先级高于本地 `Smart`，所以插件返回的 `Regions` 会直接影响翻译粒度。插件侧应尽量让 `Paragraphs` 表示真实语义段落或表格单元项，而不是把整列/整表合成一个 paragraph。
 
@@ -117,7 +117,7 @@
 ## 常见改动任务
 - 调整 OCR 分段或表格/网格误合并：优先改 `OcrLayoutAnalyzer`，并补 `OcrLayoutAnalyzerTests`。
 - 调整译文覆盖大小、裁剪、擦除范围或主题颜色：改 `ImageTranslateTextOverlayLayout`，并补 `ImageTranslateTextOverlayLayoutTests`。
-- 接入服务商结构化 OCR：插件声明 `StructuredLayout`，填充 `OcrResult.Regions`，并确保每个 `OcrContent` 有坐标和正确 `CoordinateUnit`。
+- 接入服务商结构化 OCR：插件填充 `OcrResult.Regions`，并确保每个 `OcrContent` 有图片像素坐标 `BoxPoints`。
 - 调整图片翻译 OCR 候选服务：改 `OcrService.IsImageTranslateOcrService()` / `GetImageTranslateOcrServices()`。
 - 调整图片翻译翻译服务候选：改 `ImageTranslateWindowViewModel.OnTransFilter()` 或 `TranslateService.ImageTranslateService` 相关逻辑。
 - 调整图片上选中文本行为：改 `RefreshSelectableOcrWords()`、`OcrWordBuilder` 或 `ImageZoom` 的选区逻辑。
