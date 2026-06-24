@@ -436,7 +436,7 @@
     <sys:String x:Key="WelcomeSetup_LanguageDescription">인터페이스 언어를 선택합니다. 변경 사항은 기존 언어 설정을 통해 즉시 적용됩니다.</sys:String>
     <sys:String x:Key="WelcomeSetup_Services">서비스 설정</sys:String>
     <sys:String x:Key="WelcomeSetup_TranslateServices">번역 서비스</sys:String>
-    <sys:String x:Key="WelcomeSetup_OcrTtsServices">OCR / TTS 서비스</sys:String>
+    <sys:String x:Key="WelcomeSetup_OcrServices">OCR 서비스</sys:String>
     <sys:String x:Key="WelcomeSetup_SpecialServices">전용 서비스</sys:String>
     <sys:String x:Key="WelcomeSetup_Hotkeys">단축키</sys:String>
     <sys:String x:Key="WelcomeSetup_SelectService">서비스 선택</sys:String>

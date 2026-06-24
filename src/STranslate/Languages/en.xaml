@@ -445,7 +445,7 @@
     <sys:String x:Key="WelcomeSetup_LanguageDescription">Choose the interface language. Changes use the existing language setting immediately.</sys:String>
     <sys:String x:Key="WelcomeSetup_Services">Services</sys:String>
     <sys:String x:Key="WelcomeSetup_TranslateServices">Translation Service</sys:String>
-    <sys:String x:Key="WelcomeSetup_OcrTtsServices">OCR / TTS Services</sys:String>
+    <sys:String x:Key="WelcomeSetup_OcrServices">OCR Service</sys:String>
     <sys:String x:Key="WelcomeSetup_SpecialServices">Dedicated Services</sys:String>
     <sys:String x:Key="WelcomeSetup_Hotkeys">Hotkeys</sys:String>
     <sys:String x:Key="WelcomeSetup_SelectService">Select Service</sys:String>

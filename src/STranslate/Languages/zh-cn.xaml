@@ -445,7 +445,7 @@
     <sys:String x:Key="WelcomeSetup_LanguageDescription">选择界面语言，更改会按现有设置立即生效。</sys:String>
     <sys:String x:Key="WelcomeSetup_Services">服务配置</sys:String>
     <sys:String x:Key="WelcomeSetup_TranslateServices">翻译服务</sys:String>
-    <sys:String x:Key="WelcomeSetup_OcrTtsServices">OCR / TTS 服务</sys:String>
+    <sys:String x:Key="WelcomeSetup_OcrServices">OCR 服务</sys:String>
     <sys:String x:Key="WelcomeSetup_SpecialServices">专用服务</sys:String>
     <sys:String x:Key="WelcomeSetup_Hotkeys">快捷键</sys:String>
     <sys:String x:Key="WelcomeSetup_SelectService">选择服务</sys:String>
