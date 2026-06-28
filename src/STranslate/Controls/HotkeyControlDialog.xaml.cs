@@ -152,7 +152,7 @@ public partial class HotkeyControlDialog : ContentDialog
             KeysToDisplay.Add(key);
         }
 
-        if (PART_InfoBar == null)
+        if (PART_NoticeBar == null)
             return;
 
         UpdateUI(hotkey.Value);
@@ -165,8 +165,8 @@ public partial class HotkeyControlDialog : ContentDialog
         if (_type.HasFlag(HotkeyType.Global) &&
             HotkeyMapper.TryGetReservedGlobalHotkeyMessageKey(hotkey, out var resourceKey))
         {
-            PART_InfoBar.Message = _i18n.GetTranslation(resourceKey);
-            PART_InfoBar.Visibility = Visibility.Visible;
+            PART_NoticeBar.Message = _i18n.GetTranslation(resourceKey);
+            PART_NoticeBar.IsOpen = true;
             SaveBtn.IsEnabled = false;
             return;
         }
@@ -177,10 +177,10 @@ public partial class HotkeyControlDialog : ContentDialog
             .FirstOrDefault(x => x.Hotkey == hotkey.ToString());
         if (registeredHotkey != null)
         {
-            PART_InfoBar.Visibility = Visibility.Visible;
+            PART_NoticeBar.IsOpen = true;
             if (registeredHotkey.OnRemovedHotkey != null)
             {
-                PART_InfoBar.Message = string.Format(_i18n.GetTranslation("HotkeyUnavailableEditable"), _i18n.GetTranslation(registeredHotkey.ResourceKey));
+                PART_NoticeBar.Message = string.Format(_i18n.GetTranslation("HotkeyUnavailableEditable"), _i18n.GetTranslation(registeredHotkey.ResourceKey));
                 SaveBtn.IsEnabled = false;
                 SaveBtn.Visibility = Visibility.Collapsed;
                 OverwriteBtn.Visibility = Visibility.Visible;
@@ -188,7 +188,7 @@ public partial class HotkeyControlDialog : ContentDialog
             }
             else
             {
-                PART_InfoBar.Message = string.Format(_i18n.GetTranslation("HotkeyUnavailableUneditable"), _i18n.GetTranslation(registeredHotkey.ResourceKey));
+                PART_NoticeBar.Message = string.Format(_i18n.GetTranslation("HotkeyUnavailableUneditable"), _i18n.GetTranslation(registeredHotkey.ResourceKey));
                 SaveBtn.IsEnabled = false;
                 SaveBtn.Visibility = Visibility.Visible;
                 OverwriteBtn.Visibility = Visibility.Collapsed;
@@ -196,15 +196,15 @@ public partial class HotkeyControlDialog : ContentDialog
         }
         else if (!CheckHotkeyAvailability(hotkey, !SingleKeyMode)) // 单键模式下不验证 KeyGesture
         {
-            PART_InfoBar.Message = _i18n.GetTranslation("HotkeyUnavailable");
-            PART_InfoBar.Visibility = Visibility.Visible;
+            PART_NoticeBar.Message = _i18n.GetTranslation("HotkeyUnavailable");
+            PART_NoticeBar.IsOpen = true;
             SaveBtn.IsEnabled = false;
         }
     }
 
     private void ResetUI()
     {
-        PART_InfoBar.Visibility = Visibility.Collapsed;
+        PART_NoticeBar.IsOpen = false;
         SaveBtn.IsEnabled = true;
         SaveBtn.Visibility = Visibility.Visible;
         OverwriteBtn.Visibility = Visibility.Collapsed;

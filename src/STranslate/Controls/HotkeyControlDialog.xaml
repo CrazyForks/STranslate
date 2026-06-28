@@ -94,18 +94,13 @@
                 </ItemsControl>
             </StackPanel>
         </Border>
-        <ui:InfoBar
-            x:Name="PART_InfoBar"
+        <control:NoticeBar
+            x:Name="PART_NoticeBar"
             Grid.Row="1"
             VerticalAlignment="Bottom"
             IsClosable="False"
-            IsOpen="True"
-            Severity="Warning"
-            Visibility="Collapsed">
-            <ui:InfoBar.Resources>
-                <FontWeight x:Key="InfoBarMessageFontWeight">SemiBold</FontWeight>
-            </ui:InfoBar.Resources>
-        </ui:InfoBar>
+            IsOpen="False"
+            Severity="Warning" />
 
         <!--  Action buttons at the bottom of the dialog  -->
         <Border

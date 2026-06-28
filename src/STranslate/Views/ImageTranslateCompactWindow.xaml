@@ -16,7 +16,6 @@
     Height="400"
     MinWidth="1"
     MinHeight="1"
-    control:SnackbarBehavior.EnableSnackbar="True"
     d:DataContext="{d:DesignInstance Type=vm:ImageTranslateWindowViewModel,
                                      IsDesignTimeCreatable=False}"
     AllowsTransparency="True"
@@ -146,7 +145,7 @@
             </control:ImageZoom.ContextMenu>
         </control:ImageZoom>
 
-        <ui:InfoBar
+        <control:NoticeBar
             Title="{DynamicResource NoLocationInfoTitle}"
             MaxWidth="480"
             Margin="12"

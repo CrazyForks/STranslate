@@ -21,7 +21,6 @@
     Height="{Binding Settings.OcrWindowHeight, Mode=TwoWay}"
     MinWidth="550"
     MinHeight="500"
-    control:SnackbarBehavior.EnableSnackbar="True"
     d:DataContext="{d:DesignInstance Type=vm:OcrWindowViewModel,
                                      IsDesignTimeCreatable=False}"
     d:Width="600"
@@ -115,7 +114,7 @@
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <ui:InfoBar
+                        <control:NoticeBar
                             Title="{DynamicResource NoLocationInfoTitle}"
                             Margin="10"
                             VerticalAlignment="Top"

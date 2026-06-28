@@ -1,4 +1,3 @@
-using iNKORE.UI.WPF.Modern.Controls;
 using STranslate.Plugin;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,17 +6,23 @@ using System.Windows.Threading;
 
 namespace STranslate.Controls;
 
-public partial class SnackbarContainer : UserControl
+public partial class SnackbarContainer : UserControl, IDisposable
 {
-    private DispatcherTimer? _autoHideTimer;
+    private readonly DispatcherTimer _autoHideTimer;
     private Action? _actionCallback;
     private Storyboard? _currentShowStoryboard;
     private Storyboard? _currentHideStoryboard;
+    private bool _disposed;
 
     public SnackbarContainer()
     {
         InitializeComponent();
         Visibility = Visibility.Collapsed;
+
+        _autoHideTimer = new DispatcherTimer();
+        _autoHideTimer.Tick += AutoHideTimer_Tick;
+        NoticeBarControl.CloseRequested += NoticeBarControl_CloseRequested;
+        NoticeBarControl.ActionRequested += NoticeBarControl_ActionRequested;
     }
 
     public void Show(
@@ -27,125 +32,144 @@ public partial class SnackbarContainer : UserControl
         string? actionText = null,
         Action? actionCallback = null)
     {
-        // 立即停止所有正在进行的动画
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
         CancelCurrentAnimations();
+        StopAutoHideTimer();
 
-        InfoBarControl.Title = string.Empty;
-        InfoBarControl.Message = message;
-        InfoBarControl.Severity = ConvertSeverity(severity);
-        _actionCallback = actionCallback;
+        NoticeBarControl.Title = string.Empty;
+        NoticeBarControl.Message = message;
+        NoticeBarControl.Severity = severity;
+        var hasAction = !string.IsNullOrEmpty(actionText) && actionCallback != null;
+        NoticeBarControl.ActionText = hasAction ? actionText! : string.Empty;
+        _actionCallback = hasAction ? actionCallback : null;
 
-        // 设置动作按钮
-        if (!string.IsNullOrEmpty(actionText) && actionCallback != null)
-        {
-            var actionButton = new Button
-            {
-                Content = actionText,
-                Margin = new Thickness(0, 0, 8, 0)
-            };
-            actionButton.Click += ActionButton_Click;
-            InfoBarControl.ActionButton = actionButton;
-        }
-        else
-        {
-            InfoBarControl.ActionButton = null;
-        }
-
-        // 显示
         Visibility = Visibility.Visible;
-        InfoBarHost.IsHitTestVisible = true;
-        InfoBarControl.IsOpen = true;
+        NoticeBarHost.IsHitTestVisible = true;
+        NoticeBarControl.IsOpen = true;
 
-        // 播放显示动画
-        _currentShowStoryboard = (Storyboard)FindResource("ShowStoryboard");
-        _currentShowStoryboard.Begin();
+        _currentShowStoryboard = ((Storyboard)FindResource("ShowStoryboard")).Clone();
+        _currentShowStoryboard.Completed += ShowStoryboard_Completed;
+        _currentShowStoryboard.Begin(this, HandoffBehavior.SnapshotAndReplace, isControllable: true);
 
-        // 自动隐藏
         if (durationMs > 0)
         {
-            _autoHideTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(durationMs)
-            };
-            _autoHideTimer.Tick += (s, e) =>
-            {
-                _autoHideTimer.Stop();
-                Hide();
-            };
+            _autoHideTimer.Interval = TimeSpan.FromMilliseconds(durationMs);
             _autoHideTimer.Start();
         }
     }
 
     public void Hide()
     {
-        // 立即停止所有正在进行的动画
+        if (_disposed || Visibility != Visibility.Visible)
+            return;
+
         CancelCurrentAnimations();
+        StopAutoHideTimer();
 
-        _currentHideStoryboard = (Storyboard)FindResource("HideStoryboard");
-
-        // 使用命名的事件处理程序，确保可以正确移除
-        EventHandler? completedHandler = null;
-        completedHandler = (s, e) =>
-        {
-            // 移除事件处理程序，避免重复触发
-            if (_currentHideStoryboard != null)
-            {
-                _currentHideStoryboard.Completed -= completedHandler;
-            }
-
-            InfoBarControl.IsOpen = false;
-            Visibility = Visibility.Collapsed;
-            InfoBarHost.IsHitTestVisible = false;
-            _currentHideStoryboard = null;
-        };
-
-        _currentHideStoryboard.Completed += completedHandler;
-        _currentHideStoryboard.Begin();
+        _currentHideStoryboard = ((Storyboard)FindResource("HideStoryboard")).Clone();
+        _currentHideStoryboard.Completed += HideStoryboard_Completed;
+        _currentHideStoryboard.Begin(this, HandoffBehavior.SnapshotAndReplace, isControllable: true);
     }
 
-    /// <summary>
-    /// 取消所有正在进行的动画和定时器
-    /// </summary>
-    private void CancelCurrentAnimations()
+    public void Dispose()
     {
-        // 停止定时器
-        _autoHideTimer?.Stop();
-        _autoHideTimer = null;
+        if (_disposed)
+            return;
 
-        // 停止显示动画
+        _disposed = true;
+        StopAutoHideTimer();
+        _autoHideTimer.Tick -= AutoHideTimer_Tick;
+        CancelCurrentAnimations();
+
+        NoticeBarControl.CloseRequested -= NoticeBarControl_CloseRequested;
+        NoticeBarControl.ActionRequested -= NoticeBarControl_ActionRequested;
+        NoticeBarControl.IsOpen = false;
+        NoticeBarControl.ActionText = string.Empty;
+        NoticeBarHost.IsHitTestVisible = false;
+        Visibility = Visibility.Collapsed;
+        _actionCallback = null;
+    }
+
+    private void AutoHideTimer_Tick(object? sender, EventArgs e)
+    {
+        StopAutoHideTimer();
+        Hide();
+    }
+
+    private void HideStoryboard_Completed(object? sender, EventArgs e)
+    {
+        if (_currentHideStoryboard != null)
+        {
+            _currentHideStoryboard.Completed -= HideStoryboard_Completed;
+            _currentHideStoryboard.Remove(this);
+            _currentHideStoryboard = null;
+        }
+
+        NoticeBarHost.Opacity = 0;
+        if (NoticeBarHost.RenderTransform is System.Windows.Media.TranslateTransform transform)
+            transform.Y = -100;
+        NoticeBarControl.IsOpen = false;
+        NoticeBarControl.ActionText = string.Empty;
+        NoticeBarHost.IsHitTestVisible = false;
+        Visibility = Visibility.Collapsed;
+        _actionCallback = null;
+    }
+
+    private void ShowStoryboard_Completed(object? sender, EventArgs e)
+    {
         if (_currentShowStoryboard != null)
         {
-            _currentShowStoryboard.Stop();
+            _currentShowStoryboard.Completed -= ShowStoryboard_Completed;
+            _currentShowStoryboard.Remove(this);
             _currentShowStoryboard = null;
         }
 
-        // 停止隐藏动画
+        NoticeBarHost.Opacity = 1;
+        if (NoticeBarHost.RenderTransform is System.Windows.Media.TranslateTransform transform)
+            transform.Y = 0;
+    }
+
+    private void StopAutoHideTimer() => _autoHideTimer.Stop();
+
+    private void CancelCurrentAnimations()
+    {
+        var currentOpacity = NoticeBarHost.Opacity;
+        var transform = NoticeBarHost.RenderTransform as System.Windows.Media.TranslateTransform;
+        var currentOffset = transform?.Y ?? 0;
+
+        if (_currentShowStoryboard != null)
+        {
+            _currentShowStoryboard.Completed -= ShowStoryboard_Completed;
+            _currentShowStoryboard.Remove(this);
+            _currentShowStoryboard = null;
+        }
+
         if (_currentHideStoryboard != null)
         {
-            _currentHideStoryboard.Stop();
+            _currentHideStoryboard.Completed -= HideStoryboard_Completed;
+            _currentHideStoryboard.Remove(this);
             _currentHideStoryboard = null;
         }
+
+        NoticeBarHost.Opacity = currentOpacity;
+        if (transform != null)
+            transform.Y = currentOffset;
     }
 
-    private void ActionButton_Click(object sender, RoutedEventArgs e)
-    {
-        _actionCallback?.Invoke();
-        Hide();
-    }
+    private void NoticeBarControl_CloseRequested(object? sender, EventArgs e) => Hide();
 
-    private void InfoBar_Closed(InfoBar sender, InfoBarClosedEventArgs args)
+    private void NoticeBarControl_ActionRequested(object? sender, EventArgs e)
     {
-        Hide();
-    }
-
-    private static InfoBarSeverity ConvertSeverity(Severity severity)
-    {
-        return severity switch
+        var callback = _actionCallback;
+        _actionCallback = null;
+        try
         {
-            Severity.Success => InfoBarSeverity.Success,
-            Severity.Warning => InfoBarSeverity.Warning,
-            Severity.Error => InfoBarSeverity.Error,
-            _ => InfoBarSeverity.Informational
-        };
+            callback?.Invoke();
+        }
+        finally
+        {
+            Hide();
+        }
     }
 }

@@ -18,7 +18,6 @@
     Height="{Binding Settings.ImTranWindowHeight, Mode=TwoWay}"
     MinWidth="550"
     MinHeight="500"
-    control:SnackbarBehavior.EnableSnackbar="True"
     d:DataContext="{d:DesignInstance Type=vm:ImageTranslateWindowViewModel,
                                      IsDesignTimeCreatable=False}"
     d:Width="600"
@@ -94,7 +93,7 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="48" />
                 </Grid.RowDefinitions>
-                <ui:InfoBar
+                <control:NoticeBar
                     Title="{DynamicResource NoLocationInfoTitle}"
                     Margin="10"
                     VerticalAlignment="Top"

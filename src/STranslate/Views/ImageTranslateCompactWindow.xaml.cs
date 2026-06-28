@@ -93,7 +93,7 @@ public partial class ImageTranslateCompactWindow
 
     protected override void OnClosed(EventArgs e)
     {
-        // 主动拆解视觉树：移除 InfoBar、SnackbarContainer 等控件并清空 Content，
+        // 主动拆解视觉树：移除 NoticeBar、SnackbarContainer 等控件并清空 Content，
         // 断开 WPF 静态 PropertyDescriptor._propertyMap 通过 PropertyChangeTracker
         // 对窗口内部控件的锚定，避免已关闭窗口被静态缓存钉死无法 GC。
         DetachVisualTree();
@@ -105,7 +105,7 @@ public partial class ImageTranslateCompactWindow
 
     /// <summary>
     /// 拆解精简窗口视觉树并释放控件引用。
-    /// 精简窗口每次截图翻译都会新建并关闭，若不主动断开 InfoBar/SnackbarContainer 等
+    /// 精简窗口每次截图翻译都会新建并关闭，若不主动断开 NoticeBar/SnackbarContainer 等
     /// 控件与窗口的连接，WPF 属性描述符静态表会通过 PropertyChangeTracker 反向持有窗口，
     /// 导致整窗（含 BitmapSource 原生帧缓冲）无法回收。
     /// </summary>

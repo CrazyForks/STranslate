@@ -17,7 +17,6 @@
     Height="760"
     MinWidth="940"
     MinHeight="600"
-    control:SnackbarBehavior.EnableSnackbar="True"
     d:DataContext="{d:DesignInstance Type=vm:SettingsWindowViewModel,
                                      IsDesignTimeCreatable=False}"
     d:DesignHeight="450"
