@@ -97,10 +97,8 @@ public partial class ImageTranslateCompactWindow
         // 主动拆解视觉树：移除 NoticeBar、SnackbarContainer 等控件并清空 Content、InputBindings，
         // 断开 WPF 静态 PropertyDescriptor._propertyMap 通过 PropertyChangeTracker
         // 对窗口内部控件的锚定，避免已关闭窗口被静态缓存钉死无法 GC。
-        ModernWindowLifecycle.DetachVisualTree(this);
-
-        // VM 由独立 DI scope 持有，只释放 scope，避免重复调用 ViewModel.Dispose()。
-        _serviceScope.Dispose();
+        // VM 由独立 DI scope 持有，释放 scope 触发 ViewModel.Dispose()。
+        ModernWindowLifecycle.Release(this, _serviceScope.Dispose);
         base.OnClosed(e);
     }
 

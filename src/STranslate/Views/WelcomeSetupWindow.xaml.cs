@@ -39,22 +39,8 @@ public partial class WelcomeSetupWindow
 
     protected override void OnClosed(EventArgs e)
     {
-        try
-        {
-            ModernWindowLifecycle.DetachVisualTree(this);
-        }
-        finally
-        {
-            try
-            {
-                // VM 由独立 DI scope 持有，释放 scope 会触发 WelcomeSetupViewModel.Dispose()，
-                // 取消 CollectionChanged 订阅并脱离 root provider 跟踪。
-                _serviceScope.Dispose();
-            }
-            finally
-            {
-                base.OnClosed(e);
-            }
-        }
-    }
-}
+        // VM 由独立 DI scope 持有，释放 scope 会触发 WelcomeSetupViewModel.Dispose()，
+        // 取消 CollectionChanged 订阅并脱离 root provider 跟踪。
+        ModernWindowLifecycle.Release(this, _serviceScope.Dispose);
+        base.OnClosed(e);
+    }}

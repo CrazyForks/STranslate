@@ -261,7 +261,7 @@ public partial class PromptEditViewModel : ObservableObject, IDisposable
 
         window.DialogResult = true;
 
-        Dispose();
+        // VM 释放统一交由 PromptEditWindow.OnClosed 处理，确保 X / Alt+F4 等关闭路径也释放。
         window.Close();
     }
 
@@ -270,17 +270,12 @@ public partial class PromptEditViewModel : ObservableObject, IDisposable
     {
         window.DialogResult = false;
 
-        Dispose();
+        // VM 释放统一交由 PromptEditWindow.OnClosed 处理，确保 X / Alt+F4 等关闭路径也释放。
         window.Close();
     }
 
-    // 清理资源
-    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
-    {
-        base.OnPropertyChanged(e);
-    }
-
-    // 添加析构函数来清理事件监听
+    // 清理事件监听：取消每个 Prompt.PropertyChanged 与集合变化订阅，
+    // 由 PromptEditWindow.OnClosed 统一调用，避免单例持有的 Prompt 集合反向钉住 VM。
     public void Dispose()
     {
         foreach (var prompt in Prompts)

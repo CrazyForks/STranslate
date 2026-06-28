@@ -39,25 +39,12 @@ public partial class ImageTranslateWindow
 
     protected override void OnClosed(EventArgs e)
     {
-        try
-        {
-            ModernWindowLifecycle.DetachVisualTree(this);
-        }
-        finally
-        {
-            try
-            {
-                // VM 由独立 DI scope 持有，释放 scope 会触发 ViewModel.Dispose()，
-                // 取消对 OcrService/TranslateService/Settings 等单例的事件订阅。
-                // 直接从 root provider 解析 Transient 不被跟踪、Dispose 永不触发，
-                // 单例会通过事件委托反向持有 VM 导致泄漏。
-                _serviceScope.Dispose();
-            }
-            finally
-            {
-                base.OnClosed(e);
-            }
-        }
+        // VM 由独立 DI scope 持有，释放 scope 会触发 ViewModel.Dispose()，
+        // 取消对 OcrService/TranslateService/Settings 等单例的事件订阅。
+        // 直接从 root provider 解析 Transient 不被跟踪、Dispose 永不触发，
+        // 单例会通过事件委托反向持有 VM 导致泄漏。
+        ModernWindowLifecycle.Release(this, _serviceScope.Dispose);
+        base.OnClosed(e);
     }
 
 }

@@ -52,6 +52,25 @@ internal static class ModernWindowLifecycle
         window.Content = null;
     }
 
+    /// <summary>
+    /// 窗口 OnClosed 的标准释放流程：先拆解视觉树，再执行 VM/scope 释放回调。
+    /// 两层 try/finally 保证即使某一步抛异常，后续清理与调用方的 base.OnClosed 仍会执行。
+    /// 调用方负责在之后调用 base.OnClosed(e)（C# 不允许静态方法代调基类实现）。
+    /// </summary>
+    /// <param name="window">正在关闭的窗口。</param>
+    /// <param name="releaseCore">VM 或 DI scope 的释放回调，可为 null。</param>
+    internal static void Release(Window window, Action? releaseCore)
+    {
+        try
+        {
+            DetachVisualTree(window);
+        }
+        finally
+        {
+            releaseCore?.Invoke();
+        }
+    }
+
     private static void RemoveModernTitleBarHandlers(DependencyObject parent)
     {
         for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
