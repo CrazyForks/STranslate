@@ -128,29 +128,31 @@
 - 用户取消执行：捕获 `TaskCanceledException`，当前实现不额外弹提示。
 
 ## 内存与生命周期
-图片翻译窗口的内存释放主要涉及窗口视觉树、消息提示控件和 ViewModel 所有权。当前修复优先保证每次使用后自动关闭的**精简窗口**可回收，同时把共用的 Snackbar 控件链路改为显式生命周期管理：
+图片翻译窗口的内存释放主要涉及窗口视觉树、消息提示控件和 ViewModel 所有权。精简窗口与独立窗口都使用独立 DI scope，并在关闭时显式拆解各自的长生命周期持有链：
 
 - **窗口视觉树泄漏（已修复）**：精简窗口每次截图翻译都新建并 `OnDeactivated → Close()` 关闭。旧版 `ui:InfoBar` 会被 WPF 静态 `System.ComponentModel.PropertyDescriptor._propertyMap` 通过 `MS.Internal.ComponentModel.DependencyObjectPropertyDescriptor` 注册 `PropertyChangeTracker`，窗口关闭后反向钉死整窗及其 BitmapSource 原生帧缓冲。
   - 根因修复：`SnackbarContainer`、图片翻译/OCR 窗口的内联提示和热键冲突提示统一改用纯 WPF `NoticeBar`，应用代码不再创建 iNKORE `InfoBar`。
   - Snackbar 所有权：删除窗口 XAML 上的 `SnackbarBehavior` 预挂载；全局 `Snackbar` 首次向某个窗口显示消息时才把一个 `SnackbarContainer` 加入该窗口，并在 `Window.Closed` 时从视觉树移除并 `Dispose()`。
   - 容器清理：`SnackbarContainer.Dispose()` 幂等停止自动隐藏计时器和可控 Storyboard，解绑 `NoticeBar` 事件并清除 action callback；释放后再次 `Show()` 会抛出 `ObjectDisposedException`。
   - 防御性清理：`ImageTranslateCompactWindow.OnClosed` 在释放独立 DI scope 前继续调用 `DetachVisualTree()`，清除子元素、`Content` 和 `DataContext`，避免后续新增控件重新把整窗生命周期延长。
+  - 独立窗口的 iNKORE `TitleBarControl` 会通过 `DependencyPropertyDescriptor` 监听父窗口的 `WindowStyle` / `ResizeMode`；普通 `Window.Close()` 不会触发其视觉父级清理。`ImageTranslateWindow.OnClosing` 会显式解除这两个监听并替换 modern window template，`OnClosed` 再清空内容、输入绑定和 `DataContext`。
 
-- **ViewModel 被 DI root scope 钉住（精简窗口已修复）**：`ImageTranslateWindowViewModel` 注册为 `Transient` 且实现 `IDisposable`。Microsoft.Extensions.DI 会跟踪从 **root provider** 解析的 Disposable Transient 服务，窗口手动调用 `Dispose()` 也不会把实例从 root scope 的 `_disposables` 列表移除；实例要到应用退出、根容器释放时才解除引用。修复前两个图片翻译窗口都从 root provider 解析，精简窗口每次新建都会累积一个 VM 及其异步执行状态。
-  - 修复：精简窗口改用 `Ioc.Default.CreateScope()` 解析 VM，`OnClosed` 时 `scope.Dispose()` 释放 VM，使其脱离 root 跟踪列表。
+- **ViewModel 被 DI root scope 钉住（两个图片翻译窗口均已修复）**：`ImageTranslateWindowViewModel` 注册为 `Transient` 且实现 `IDisposable`。Microsoft.Extensions.DI 会跟踪从 **root provider** 解析的 Disposable Transient 服务，窗口手动调用 `Dispose()` 也不会把实例从 root scope 的 `_disposables` 列表移除；实例要到应用退出、根容器释放时才解除引用。
+  - 修复：精简窗口和独立窗口都改用 `Ioc.Default.CreateScope()` 解析 VM，`OnClosed` 时 `scope.Dispose()` 释放 VM，使其脱离 root 跟踪列表。
   - **该类累积的条件**：①Disposable Transient VM 从 root provider 解析；②窗口反复新建关闭。只有同时满足才会按窗口创建次数在 root scope 中累积。
 
-- **其他窗口的风险评估**：独立图片翻译窗口、`OcrWindow` 和 `WelcomeSetupWindow` 都会关闭，且其 `IDisposable` transient VM 当前仍从 root provider 解析；反复关闭并重新创建时存在同类 DI 跟踪风险。`SettingsWindowViewModel` 未实现 `IDisposable`，没有这一条 VM 跟踪问题，但其页面 scope 和视觉树生命周期需要单独评估。
+- **其他窗口的风险评估**：`OcrWindow` 和 `WelcomeSetupWindow` 都会关闭，且其 `IDisposable` transient VM 当前仍从 root provider 解析；反复关闭并重新创建时存在同类 DI 跟踪风险。`SettingsWindowViewModel` 未实现 `IDisposable`，没有这一条 VM 跟踪问题，但其页面 scope 和视觉树生命周期需要单独评估。
 
 - **渲染峰值优化（顺带）**：
   - `ExecuteAsync` 生成结果图时复用已缓存并 `Freeze` 的 `_sourceImage`，取消对原图的第二次 `ToBitmapImage` 解码。
 
-- **回归测试**：`SnackbarLifecycleTests` 覆盖 `NoticeBar.IsOpen` 可见性、容器重复释放、显示/隐藏动画最终状态，以及 `NoticeBar`/`SnackbarContainer` 在重复创建释放后可被 GC 回收。
+- **回归测试**：`SnackbarLifecycleTests` 覆盖 `NoticeBar.IsOpen` 可见性、容器重复释放、显示/隐藏动画最终状态，以及 `NoticeBar`/`SnackbarContainer` 在重复创建释放后可被 GC 回收；`ImageTranslateWindowLifecycleTests` 验证独立窗口关闭后 `WindowStyle` / `ResizeMode` 的属性描述符 tracker 已移除，并验证视觉树引用被清空。
 
 - **诊断方法**：复现泄漏后用 `dotnet-gcdump report` 看是否有 `ImageTranslateCompactWindow`/`ImageTranslateWindowViewModel` 实例数随操作次数线性增长；用 `dotnet-dump analyze` 的 `gcroot <地址>` 追踪引用链，确认是 `PropertyDescriptor._propertyMap` 静态链还是 `ServiceProviderEngineScope._disposables` 钉住。
 
 ## 关键文件
 - `STranslate/ViewModels/ImageTranslateWindowViewModel.cs`
+- `STranslate/Views/ImageTranslateWindow.xaml.cs`
 - `STranslate/Views/ImageTranslateCompactWindow.xaml`
 - `STranslate/Controls/NoticeBar.xaml`
 - `STranslate/Controls/SnackbarContainer.xaml`
@@ -166,6 +168,7 @@
 - `STranslate.Plugin/IOcrPlugin.cs`
 - `Tests/STranslate.Tests/OcrLayoutAnalyzerTests.cs`
 - `Tests/STranslate.Tests/ImageTranslateTextOverlayLayoutTests.cs`
+- `Tests/STranslate.Tests/ImageTranslateWindowLifecycleTests.cs`
 - `Tests/STranslate.Tests/SnackbarLifecycleTests.cs`
 
 ## 常见改动任务
@@ -177,4 +180,4 @@
 - 调整图片上选中文本行为：改 `RefreshSelectableOcrWords()`、`OcrWordBuilder` 或 `ImageZoom` 的选区逻辑。
 - 调整精简窗口定位或关闭行为：改 `ImageTranslateCompactWindow` 的 `PlaceForCapture` / `PlaceOnPhysicalWindowBounds`，选区物理坐标由 `Screenshot.GetScreenshotCaptureAsync` 经 ScreenGrab `CaptureWithRegionAsync` 直接回传。
 - 调整精简窗口布局/定位/按钮条翻向逻辑：改 `ImageTranslateCompactWindowPlacement.CreateLayout`，并补 `ImageTranslateCompactWindowPlacementTests` 对应场景；按钮条尺寸/间距常量在 `ImageTranslateCompactWindow`（`ToolbarWidth`/`GapH`/`GapV`/`WindowMargin`）。
-- 排查/修复图片翻译窗口内存泄漏：优先看"内存与生命周期"章节。精简窗口关闭走 `ImageTranslateCompactWindow.OnClosed` → `DetachVisualTree` + `_serviceScope.Dispose`；消息提示生命周期由 `Snackbar`、`SnackbarContainer` 和 `NoticeBar` 负责，禁止重新引入未配对 `DependencyPropertyDescriptor.AddValueChanged` 的控件。
+- 排查/修复图片翻译窗口内存泄漏：优先看"内存与生命周期"章节。精简窗口关闭走 `ImageTranslateCompactWindow.OnClosed` → `DetachVisualTree` + `_serviceScope.Dispose`；独立窗口关闭走 `DetachModernWindowStyle` → `DetachVisualTree` → `_serviceScope.Dispose`；消息提示生命周期由 `Snackbar`、`SnackbarContainer` 和 `NoticeBar` 负责，禁止重新引入未配对 `DependencyPropertyDescriptor.AddValueChanged` 的控件。
